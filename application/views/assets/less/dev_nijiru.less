@@ -1,0 +1,67 @@
+@charset "utf-8";
+
+@import "foundation/_conf";
+@import "foundation/_reset";
+@import "foundation/_base";
+
+// ==========================================================================================
+// markdown
+// ==========================================================================================
+
+h1{
+	font-size: 3em;
+	color: #900;
+}
+
+h2{
+	font-size: 2em;
+	color: #600;
+}
+
+// ==========================================================================================
+// WebApps
+// ※ class名にAction_Prefixを使用する関係で、-ではなく_をトップレベルPrefixに使用する
+
+// ========================================
+// SCP-Search
+
+.scp_search{
+
+	html & ,
+	body & {
+		height:95%;
+	}
+
+	&__wrapper{
+		position: relative;
+		min-height: 100%;
+		text-align: center;
+	}
+
+	&__table {
+		&-wrapper{
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+		}
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 5px;
+		margin-top: 00px;
+		&-tr{
+			height: 60px;
+		}
+		&-th{
+
+		}
+		&-td{
+			.button {
+				.button_mixin();
+				text-align: center;
+				height: 60px;
+				line-height: 60px;
+				background: #ddd;
+			}
+		}
+	}
+}

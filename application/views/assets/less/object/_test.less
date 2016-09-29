@@ -1,0 +1,110 @@
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+  // テスト用ボーダー表示
+  .debug {
+
+    &__border {
+      .bdr(@njr_gray);
+    }
+
+  }
+
+  .demo {
+    color:#fff;
+    &.constrain-to-parent {
+      background: #f3eee6;
+      width: 100%;
+      height: 300px;
+    }
+    .pep {
+      background: #f5b188;
+      height: 60px;
+      width: 60px;
+      z-index: 10;
+      &.pep-active {
+        background: #d59168;
+      }
+    }
+    .drop-target {
+      border: 5px solid #f5b188;
+      height: 70px;
+      width: 70px;
+      position: absolute;
+      &.lt{
+        top: 0;
+        left: 0;
+      }
+      &.rt{
+        top: 0;
+        right: 0;
+      }
+      &.lb{
+        bottom: 0;
+        left: 0;
+      }
+      &.rb{
+        bottom: 0;
+        right: 0;
+      }
+      &.pep-dpa{
+        background: #ffedc4;
+      }
+    }
+  }
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+  .demo {
+    color:#fff;
+    &.constrain-to-parent {
+      background: #f3eee6;
+      width: 100%;
+      height: 300px;
+    }
+    .pep {
+      background: #f5b188;
+      height: 60px;
+      width: 60px;
+      z-index: 10;
+      &.pep-active {
+        background: #d59168;
+      }
+    }
+    .drop-target {
+      border: 5px solid #f5b188;
+      height: 70px;
+      width: 70px;
+      position: absolute;
+      &.lt{
+        top: 0;
+        left: 0;
+      }
+      &.rt{
+        top: 0;
+        right: 0;
+      }
+      &.lb{
+        bottom: 0;
+        left: 0;
+      }
+      &.rb{
+        bottom: 0;
+        right: 0;
+      }
+      &.pep-dpa{
+        background: #ffedc4;
+      }
+    }
+  }
+
+}

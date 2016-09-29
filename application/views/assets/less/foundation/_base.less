@@ -1,0 +1,42 @@
+body,
+html {
+  min-width:100%;
+}
+
+body {
+  color: @njr_txt;
+  font-size: 1.4em;
+  background: @njr_bg;
+  letter-spacing: 1px;
+  -webkit-text-size-adjust : 100% ;
+}
+
+ul,ol {
+  list-style-type: none;
+}
+
+a {
+  color: @njr_l_blue;
+  text-decoration: none;
+  &:visited {
+    color: @njr_l_blue_visit;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+  &:active {
+    .lighten(50);
+  }
+}
+
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+  body {
+    min-width: 940px;
+  }
+
+}

@@ -1,0 +1,143 @@
+
+// フォント
+//=========================================================
+@import url(//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700,700italic);
+.fz(@size) { font-size:@size * 1px; font-size:(@size / 10) * 1rem;}
+.f_family { font-family: Avenir , "Open Sans" , "Helvetica Neue" , Helvetica , Arial , Verdana , Roboto , "メイリオ", Meiryo, Verdana, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", sans-serif;}
+.b { font-weight: bold; }
+.red{ color:@njr_red; }
+.center{ text-align: center; }
+
+
+// カラー
+//=========================================================
+@njr_blue: #1c3144;
+@njr_red: #d00000;
+@njr_red_light: #ff3030;
+@njr_yellow: #ffba08;
+@njr_gray: #a2aebb;
+@njr_gray_dark: darken(@njr_gray, 20%);
+@njr_gray_light:lighten(@njr_gray, 20%);
+@njr_l_blue: #3f88c5;
+
+@njr_l_blue_visit: darken(@njr_l_blue, 20%);
+
+@njr_bg: #f9f9f9;
+@njr_bg_dark: darken(@njr_bg, 10%);
+@njr_txt: #222;
+
+@clr_white: #fff;
+
+// 透明化
+.lighten(@int) {
+  filter: alpha(opacity=@int);
+  -moz-opacity: @int * 0.01;
+  opacity: @int * 0.01;
+}
+
+// 余白
+//=========================================================
+
+.mg10{ margin: 10px; }
+.mg20{ margin: 20px; }
+.mg30{ margin: 30px; }
+.mg40{ margin: 40px; }
+.mg50{ margin: 50px; }
+
+.mb10{ margin-bottom: 10px; }
+.mb20{ margin-bottom: 20px; }
+.mb30{ margin-bottom: 30px; }
+.mb40{ margin-bottom: 40px; }
+.mb50{ margin-bottom: 50px; }
+
+.pl10{ padding-left: 10px; }
+.pl20{ padding-left: 20px; }
+.pl30{ padding-left: 30px; }
+.pl40{ padding-left: 40px; }
+.pl50{ padding-left: 50px; }
+
+
+
+// クリアフィックス
+//=========================================================
+.clearfix {
+  zoom:1;
+  &:after{ content:""; display:block; clear:both; }
+}
+
+
+// 角丸
+//=========================================================
+.b_radius(@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.b_radius--upper(@radius){
+	border-radius: @radius @radius 0 0 / @radius @radius 0 0;
+	-webkit-border-radius: @radius @radius 0 0 / @radius @radius 0 0;
+	-moz-border-radius: @radius @radius 0 0 / @radius @radius 0 0;
+}
+
+// マテリアルデザイン
+//=========================================================
+
+// 影
+.shadow1() {
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+.shadow2() {
+	box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+}
+.shadow3() {
+	box-shadow: 0 0 8px rgba(0,0,0,.18),0 8px 16px rgba(0,0,0,.36);
+}
+
+.card_mixin() {
+	.fz(12);
+	.shadow1;
+	.b_radius(2px);
+}
+
+.button_mixin() {
+
+	cursor:pointer;
+	.shadow1;
+	.b_radius(2px);
+	transition: .1s;
+	&:hover{
+		.lighten(75);
+		.shadow2;
+	}
+	&:active {
+		.lighten(50);
+		.shadow3;
+	}
+}
+
+// ボーダー
+//=========================================================
+.bdr(@clr) { border: solid 1px @clr; }
+.bdr_b(@clr) { border-bottom: solid 1px @clr; }
+
+
+// ボーダーボックス
+//=========================================================
+.bxs {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+// 横並び
+//=========================================================
+.inline_p { display:table; width:100%; letter-spacing: -0.4em; word-spacing: -0.4em;}
+.inline_c { display:inline-block; letter-spacing: normal; word-spacing: normal; vertical-align:top;}
+
+// 汎用
+//=========================================================
+
+.hidden {
+  display: none;
+}

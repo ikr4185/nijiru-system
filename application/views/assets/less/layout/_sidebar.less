@@ -1,0 +1,134 @@
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+  #sidebar {
+    width: 300px;
+    margin-bottom: 40px;
+
+    // リンク位置ずれ対策
+    margin-top:-60px;
+    padding-top:60px;
+
+    aside {
+      height: 100%;
+      background: @njr_bg;
+    }
+  }
+
+  .side_section {
+
+    margin-bottom: 50px;
+    padding-left: 10px;
+
+    &__sub{
+
+      padding-left: 20px;
+      position: relative;
+
+      &::after {
+        display: block;
+        content: '';
+        position: absolute;
+
+        top: .3em;
+        left: .2em;
+        width: 12px;
+        height: 12px;
+        background-color: @njr_gray;
+//        border-radius: 100%;
+      }
+
+      &::before {
+        display: block;
+        content: '';
+        position: absolute;
+
+        z-index: 2;
+        top: .5em;
+        left: .35em;
+        width: 4px;
+        height: 4px;
+        border-right: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
+
+  }
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+  #sidebar {
+    width: 100%;
+    margin-bottom: 40px;
+
+    // リンク位置ずれ対策
+    margin-top:-50px;
+    padding-top:50px;
+
+    aside {
+      height: 100%;
+      background: @njr_bg;
+    }
+  }
+
+  .side_section {
+
+    margin-bottom: 50px;
+    padding-left: 10px;
+
+    a {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    &__sub{
+
+      padding-left: 20px;
+      position: relative;
+
+      // しかく
+      &::after {
+        display: block;
+        content: '';
+        position: absolute;
+
+        top: .25em;
+        left: .2em;
+        width: 12px;
+        height: 12px;
+        background-color: @njr_gray;
+        //        border-radius: 100%;
+      }
+
+      // > ←これ
+      &::before {
+        display: block;
+        content: '';
+        position: absolute;
+
+        z-index: 2;
+        top: .5em;
+        left: .35em;
+        width: 4px;
+        height: 4px;
+        border-right: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
+
+  }
+
+}

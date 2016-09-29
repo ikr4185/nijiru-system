@@ -1,0 +1,22 @@
+Config.ini をこの階層においてください
+入れる値は[]内に入れてあります
+
+----------------------------------------
+
+[api]
+endpoint	= '[WikidotAPIのエンドポイント]'
+key		= '[WikidotAPIのKey]'
+
+[db]
+dsn		= 'mysql:dbname=[DBのなまえ];host=[ホスト];charset=[文字エンコード]'
+user	= '[DBユーザー名]'
+pass	= '[DBのパス]'
+
+[path]
+site = "http://njr-sys.net"
+app = "http://njr-sys.net/application"
+
+[dir]
+app = "/home/njr-sys/public_html/application"
+assets	= "/home/njr-sys/public_html/application/views/assets"
+cli	= "/home/njr-sys/public_html/cli"

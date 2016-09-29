@@ -1,0 +1,294 @@
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+	.flat_form{
+
+		textarea,
+		input[type="text"],
+		input[type="email"],
+		input[type="password"],
+		input[type="number"] {
+			.bxs;
+			display: inline-block;
+
+			padding:10px;
+			font-size:1.3em;
+			border:solid 1px #ccc;
+			width:100%;
+
+			-moz-box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+			-webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+			box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+		}
+
+		input[type="file"]{
+			width: 100%;
+		}
+
+		// ラジオボタン ----------------------------------------
+		#publication,
+		#favorite-scp{
+			&-2, &-1 {
+				display: none;
+			}
+		}
+		input[type="radio"]:checked {
+			+ .public {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .private{
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .enable {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .disable {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+		}
+		&-label {
+
+			.button_mixin;
+
+			.bxs;
+			display: inline-block;
+			width: 100%;
+
+			margin: 0;
+			padding: 10px;
+
+			background: @njr_gray;
+			color: lighten(@njr_txt, 20%);
+			cursor: pointer;
+
+			font-size: 16px;
+			text-align: center;
+			line-height: 1;
+
+		}
+		// ----------------------------------------
+
+
+		&-button {
+
+			.button_mixin();
+
+			.bxs;
+			border: none;
+			width:75%;
+			background: @njr_gray;
+
+			font-size:1em;
+			font-weight:bold;
+			line-height: 43px;
+			overflow: hidden;
+
+			// for IDgenerator
+			&--idgen {
+
+				.button_mixin();
+
+				.bxs;
+				border: none;
+				width:100%;
+				background: @njr_gray;
+
+				font-size:1em;
+				font-weight:bold;
+				line-height: 43px;
+				overflow: hidden;
+
+				&-disable {
+					.bxs;
+					border: none;
+					width:100%;
+					background: @njr_gray_light;
+
+					font-size:1em;
+					font-weight:bold;
+					line-height: 43px;
+					overflow: hidden;
+
+					color: @njr_gray_dark;
+				}
+
+			}
+
+			// for Downloader
+			&--download {
+
+				.button_mixin();
+
+				.bxs;
+				border: none;
+				width:100%;
+				background: @njr_gray;
+
+				font-size:1em;
+				font-weight:bold;
+				line-height: 43px;
+				overflow: hidden;
+			}
+
+		}
+
+
+
+	}
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+	.flat_form{
+
+		textarea,
+		input[type="text"],
+		input[type="email"],
+		input[type="password"],
+		input[type="number"],
+		textarea {
+			.bxs;
+			display: inline-block;
+
+			padding:10px; // 入力カーソル移動のため、文字幅より大きくする
+			font-size:1.3em;
+			border:solid 1px #ccc;
+			width:100%;
+
+			-moz-box-shadow: inset 1px 4px 9px -6px rgba(0,0,0,0.5);
+			-webkit-box-shadow: inset 1px 4px 9px -6px rgba(0, 0, 0, 0.5);
+			box-shadow: inset 1px 4px 9px -6px rgba(0,0,0,0.5);
+		}
+
+		input[type="file"]{
+			width: 100%;
+		}
+
+		// ラジオボタン ----------------------------------------
+		#publication,
+		#favorite-scp{
+			&-2, &-1 {
+				display: none;
+			}
+		}
+		input[type="radio"]:checked {
+			+ .public {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .private{
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .enable {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+			+ .disable {
+				background: #ffba08;
+				color: @njr_txt;
+			}
+		}
+		&-label {
+
+			.button_mixin();
+
+			.bxs;
+			display: inline-block;
+			width: 100%;
+
+			margin: 0;
+			padding: 10px;
+
+			background: @njr_gray;
+			color: lighten(@njr_txt, 20%);
+
+			font-size: 16px;
+			text-align: center;
+			line-height: 1;
+		}
+		// ----------------------------------------
+
+		&-button {
+
+			.button_mixin();
+
+			.bxs;
+			border: none;
+			width:75%;
+			background: @njr_gray;
+
+			font-size:1em;
+			font-weight:bold;
+			line-height: 43px;
+			overflow: hidden;
+
+
+			// for IDgenerator
+			&--idgen {
+
+				.button_mixin();
+
+				.bxs;
+				border: none;
+				width:100%;
+				background: @njr_gray;
+
+				font-size:1em;
+				font-weight:bold;
+				line-height: 43px;
+				overflow: hidden;
+				cursor:pointer;
+
+				&-disable {
+
+					.button_mixin();
+
+					.bxs;
+					border: none;
+					width:100%;
+					background: @njr_gray_light;
+
+					font-size:1em;
+					font-weight:bold;
+					line-height: 43px;
+					overflow: hidden;
+
+					color: @njr_gray_dark;
+				}
+
+			}
+
+			// for Downloader
+			&--download {
+
+				.button_mixin();
+
+				.bxs;
+				border: none;
+				width:100%;
+				background: @njr_gray;
+
+				font-size:1em;
+				font-weight:bold;
+				line-height: 43px;
+				overflow: hidden;
+			}
+
+		}
+
+	}
+
+}

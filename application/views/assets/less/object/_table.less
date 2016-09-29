@@ -1,0 +1,270 @@
+// ==========================================================================================
+// Common
+// ==========================================================================================
+
+// 情報を詰め込みたい貴方に
+.tight-table {
+
+	.fz(11);
+	.bdr(@njr_gray);
+
+	tr {
+		background: @njr_bg_dark;
+		&:nth-child(even){
+			background: @njr_bg;
+		}
+	}
+	td,th {
+		padding: 5px;
+		word-break: break-all;
+	}
+	thead{
+		th {
+			.fz(12);
+			.b;
+		}
+	}
+	tbody{
+		td {
+			.fz(12);
+		}
+	}
+
+}
+
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+  .flat_table {
+    .bxs;
+    table-layout: fixed;
+    width: 100%;
+
+    tr {
+      text-align: center;
+      vertical-align: middle;
+      height: 70px;
+    }
+
+    th {
+      font-weight: normal;
+    }
+
+    .input {
+      text-align: center;
+    }
+
+    // 幅が狭いデザイン
+    &--narrow {
+      .bxs;
+      width: 100%;
+
+      tr {
+        text-align: center;
+        vertical-align: middle;
+        height: 30px;
+      }
+
+      th {
+        font-weight: normal;
+      }
+
+      .input {
+        text-align: center;
+      }
+    }// --narrow
+
+  }
+
+  // しましまテーブルの設定
+  .zebra-table{
+
+    tr {
+      background: @njr_bg_dark;
+
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+
+    }
+
+  }
+
+  // JP記事リーダー:既存テーブル整形
+  .wiki-content-table {
+
+    .fz(11);
+    margin-bottom: 30px;
+    .bdr(@njr_gray);
+
+    tr {
+      background: @njr_bg_dark;
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+    }
+
+    th {
+      .fz(13);
+    }
+
+    td,th {
+      padding: 10px;
+    }
+
+  }
+
+  // JP記事リーダー:ログ
+  .log-table {
+
+    margin-bottom: 30px;
+    .bdr(@njr_gray);
+
+    tr {
+      background: @njr_bg_dark;
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+    }
+
+    th {
+      .fz(16);
+      .b;
+    }
+
+    td,th {
+      padding: 10px;
+    }
+
+  }
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+  .flat_table {
+    table-layout: fixed;
+    width: 100%;
+
+    tr {
+      text-align: center;
+      vertical-align: middle;
+      height: 70px;
+    }
+
+    th {
+      font-weight: normal;
+    }
+
+    .input {
+      text-align: center;
+    }
+
+    // 幅が狭いデザイン
+    &--narrow {
+      width: 100%;
+
+      tr {
+        text-align: center;
+        vertical-align: middle;
+        height: 30px;
+      }
+
+      th {
+        font-weight: normal;
+      }
+
+      .input {
+        text-align: center;
+      }
+    }// --narrow
+
+  }
+
+  // 強制的に改行
+  .sp-word-wrap {
+    word-break: break-all;
+  }
+
+
+  .zebra-table {
+
+    tr {
+      background: @njr_bg_dark;
+
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+
+    }
+
+  }
+
+  // JP記事リーダーの設定
+  .wiki-content-table {
+
+    .fz(11);
+    margin-bottom: 20px;
+    .bdr(@njr_gray);
+
+    tr {
+      background: @njr_bg_dark;
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+    }
+
+    th {
+      .fz(13);
+    }
+
+    td,th {
+      padding: 5px;
+    }
+
+  }
+
+  // JP記事リーダー:ログ
+  .log-table {
+
+    margin-bottom: 20px;
+    .bdr(@njr_gray);
+
+    tr {
+      background: @njr_bg_dark;
+      &:nth-child(even){
+        background: @njr_bg;
+      }
+    }
+
+    th {
+      .fz(16);
+      .b;
+    }
+
+    td,th {
+      padding: 10px;
+    }
+
+  }
+
+	// 情報を詰め込みたい貴方に
+	.tight-table {
+		td,th {
+			padding: 2px;
+		}
+		tbody{
+			td {
+				.fz(10);
+			}
+		}
+	}
+
+}

@@ -1,0 +1,73 @@
+table{
+    width:1000px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    background: #d0e9c6;
+}
+th{
+    width: 25%;
+    padding: 4px;
+    text-align: left;
+    vertical-align: top;
+    color: #444;
+    background-color: #ccc;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.article_title {
+    width: 75%;
+}
+td{
+    padding: 4px;
+    background-color: #fafafa;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+
+/* メディアクエリ---------------------------------------------- */
+/* iPHone4,iPhone5,iPhone5sのみ */
+@media screen and (max-width: 374px) {
+    h1 {
+        color: #008;
+    }
+    table{
+        width:320px;
+    }
+}
+/* iPhone6のみ */
+@media screen and (max-width: 413px) {
+    h1 {
+        color: #080;
+    }
+    table{
+        width:320px;
+    }
+    td{
+        font-size: 16px;
+    }
+}
+/* iPhone6 Plus ~ ちょっと大きいスマホまで */
+@media screen and (max-width: 500px) {
+    h1 {
+        color: #800;
+    }
+    table{
+        width:480px;
+    }
+    td{
+        font-size: 16px;
+    }
+}
+@media screen and (max-width: 1000px) {
+    h1 {
+        color: #000;
+    }
+    table{
+        width:760px;
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "require": {
+    "smarty/smarty": "dev-trunk"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cores\\" : "_cores/",
+      "Cores\\Abstracts\\" : "_cores/abstracts/",
+      "Cores\\Interfaces\\" : "_cores/interfaces/",
+      "Cores\\Config\\" : "_cores/config/",
+      "Cores\\Helper\\" : "_cores/helper/",
+      "Controllers\\" : "controllers/",
+      "Controllers\\Commons\\" : "controllers/commons/",
+      "Models\\"      : "models/",
+      "Models\\Commons\\"      : "models/commons/",
+      "Inputs\\"      : "inputs/",
+      "Inputs\\Commons\\"      : "inputs/commons/",
+      "Logics\\"      : "logics/",
+      "Logics\\Commons\\"      : "logics/commons/",
+      "Cli\\"      : "cli/",
+      "Cli\\Commons\\"      : "cli/commons/"
+    },
+    "classmap": [
+      "controllers"
+    ]
+  },
+  "scripts": {
+    "ncl": "php /home/njr-sys/public_html/application/cli/cli_load.php"
+  }
+}

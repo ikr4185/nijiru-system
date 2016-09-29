@@ -1,0 +1,132 @@
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+	// 主にフォーラムスクレイピングに最適化
+	.multi-box {
+
+		.bxs;
+		padding: 20px;
+
+		&__bg {
+			background: @njr_gray_light;
+		}
+
+		&__mini {
+			padding-top: 10px;
+			.fz(12);
+		}
+
+		&__main {
+
+			line-height: 2em;
+
+			p {
+				margin-bottom: 2em;
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			blockquote {
+				margin: 2em 0;
+				&+ p {
+					margin-bottom: 1em;
+				}
+			}
+
+			a {
+				word-wrap : break-word;
+				overflow-wrap : break-word;
+			}
+
+		}
+
+		&__notice {
+			.mb10;
+			color: @njr_red;
+			.fz(14);
+			font-weight: normal;
+		}
+
+		&__guide {
+			padding-left: 20px;
+		}
+
+		&__li {
+			margin-bottom: 5px;
+			&:last-child{
+				margin-bottom: 0;
+			}
+		}
+	}
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+	.multi-box {
+
+		.bxs;
+		padding: 10px;
+
+		&__bg {
+			background: @njr_gray_light;
+		}
+
+		&__mini {
+			padding-top: 10px;
+			.fz(12);
+		}
+
+		&__main {
+
+			line-height: 2em;
+
+			p {
+				margin-bottom: 2em;
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			blockquote {
+				margin: 2em 0;
+				&+ p {
+					margin-bottom: 1em;
+				}
+			}
+
+			a {
+				word-wrap : break-word;
+				overflow-wrap : break-word;
+			}
+
+		}
+
+		&__notice {
+			.mb10;
+			color: @njr_red;
+			.fz(14);
+			font-weight: normal;
+		}
+
+		&__guide {
+			padding-left: 10px;
+		}
+
+		&__li {
+			margin-bottom: 5px;
+			&:last-child{
+				margin-bottom: 0;
+			}
+		}
+	}
+
+}

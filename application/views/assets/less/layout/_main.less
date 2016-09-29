@@ -1,0 +1,118 @@
+// 共通
+
+article {
+	.section {
+		//.card_mixin;
+	}
+}
+
+
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+  #container {
+    width: 100%;
+    padding-top: 90px;
+  }
+
+  #wrapper {
+    position: relative;
+    display: flex;
+    display : -webkit-box;
+    display : -ms-flexbox;
+    display : -webkit-flex;
+    align-items:flex-start;
+    width: 940px;
+    margin: 0 auto;
+  }
+
+  #main_contents {
+    width: 620px;
+    margin-right: 20px;
+    padding-bottom: 80px;
+
+    &__inner {
+      margin: 0 24px;
+    }
+
+    a:hover > img {
+      opacity: 0.75;
+    }
+  }
+
+  main {
+    min-height: 100%;
+    background: @njr_bg;
+  }
+
+  article {
+    .section {
+      margin-bottom: 50px;
+
+      &__inner {
+        margin-bottom: 30px;
+      }
+
+      &__head {
+        margin-bottom: 20px;
+      }
+
+    }
+  }
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+  #container {
+    padding-top: 90px;
+  }
+
+  #wrapper {
+    position: relative;
+    display: block;
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  #main_contents {
+    width: 100%;
+    padding-bottom: 40px;
+
+    &__inner {
+      margin: 0 24px;
+    }
+
+    a:hover > img {
+      opacity: 0.75;
+    }
+  }
+
+  main {
+    min-height: 100%;
+    background: @njr_bg;
+  }
+
+  article {
+    .section {
+      margin-bottom: 50px;
+
+      &__inner {
+        margin-bottom: 30px;
+      }
+
+      &__head {
+        margin-bottom: 20px;
+      }
+
+    }
+  }
+
+}

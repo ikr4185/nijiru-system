@@ -1,0 +1,113 @@
+@charset "UTF-8";
+
+/* main =================================================================*/
+
+div.main {
+    width:1000px;
+    margin:0px auto;
+    padding:0px;
+
+    background-color: rgba(255,255,255,1);/*メイン背景色*/
+
+    text-align:left;
+    font-family: "メイリオ", Meiryo, sans-serif;
+
+}
+
+/* header ================================================================*/
+
+div.header {
+	background: #eee; /*チェック用*/
+    width:1000px;
+    height:100px;
+}
+
+div.title {
+    font-size: 80px;
+    text-align: center;
+    line-height:100px;
+}
+
+/* inner =================================================================*/
+
+div.inner {
+    margin:10px 0;
+}
+
+/* contents ----------------------------------------------*/
+
+div.contents{
+    float:right;
+    width:730px;
+    margin:0px auto;
+    padding:0px 5px;
+
+    background: #eee;
+
+    font-size:14px;
+    line-height:1.5;
+    text-align:left;
+}
+
+/* side ----------------------------------------------*/
+
+div.side{
+    float:left;
+    width:250px;
+    margin:0px;
+
+    background: #eee;
+
+    font-size:13px;
+    line-height:1.2;
+    text-align:left;
+}
+
+div.sidesection{
+    width:250px;
+    margin-bottom:5px;
+    padding-bottom:5px;
+
+    /*background: #f8fcfc ;外枠、薄青の領域*/
+
+}
+
+/* footer =================================================================*/
+
+div.footer {
+    text-align: center;
+    background: #aaa;
+
+    color: #fff;
+}
+
+div.copyright {
+    font-size: 8px;
+}
+
+/* clearfix =================================================================*/
+
+.clearfix:after{
+    content: ".";
+    display: block;
+    height: 0;
+    font-size:0;
+    clear: both;
+    visibility:hidden;
+}
+
+.clearfix{
+    display: inline-block;
+}
+
+/* Hides from IE Mac \*/
+
+* html .clearfix {
+    height: 1%;
+}
+
+.clearfix{
+    display:block;
+}
+
+/* End Hack */
