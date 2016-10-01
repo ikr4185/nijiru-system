@@ -12,7 +12,7 @@ if ( !isset($_SESSION["id"]) ) {
 }
 
 // システム設定ファイルを読み込み
-require_once './class/FilePath/FilePath.php';
+require_once './mvc/file_path.php';
 
 // 汎用静的関数ラッパーの読み込み
 require_once STATICS;

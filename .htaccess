@@ -1,0 +1,36 @@
+DirectoryIndex index.php index.html
+AddDefaultCharset UTF-8
+
+# ==========================================================================================
+# セッション保存パスを独自に設定
+php_value session.save_path '/home/njr-sys/php.session'
+
+# ==========================================================================================
+# リダイレクト設定
+RewriteEngine On
+RewriteBase /
+
+# 旧フレームワーク
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_URI} !^/application/
+#RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php
+
+# phpMyAdmin へのアクセスを分岐
+RewriteCond %{REQUEST_URI} !^/php_my_admin/
+
+# リソースファイルを除く、全アクセスを application/index.php に集中
+RewriteRule !\.(js|ico|gif|jpg|png|css)$ application/index.php
+
+# ==========================================================================================
+# アクセス制限
+
+<Files php.ini>
+Order deny,allow
+Deny from all
+</Files>
+
+<Files ~ "config\.ini$">
+Order deny,allow
+Deny from all
+</Files>
