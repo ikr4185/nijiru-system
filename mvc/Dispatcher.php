@@ -1,12 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: th1nk0
- * Date: 2015/05/17
- * Time: 17:59
- */
-
-/**
  * Class Dispatcher
  * コントローラー振り分けクラス
  */
