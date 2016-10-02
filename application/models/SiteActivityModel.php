@@ -8,16 +8,17 @@ class SiteActivityModel extends AbstractModel
 	/**
 	 * 情報の保存
 	 * @param $name
+	 * @param $type
 	 * @param $recent_date
 	 * @return bool
 	 */
-	public function insert( $name, $recent_date ) {
-		$sql = 'insert into site_activity(name, recent_date) values ( ?, ? )';
+	public function insert( $name, $type, $recent_date ) {
+		$sql = 'insert into site_activity(name, type, recent_date) values ( ?, ?, ? )';
 		$stmt = $this->pdo->prepare($sql);
 
-		return $stmt->execute( array( $name, $recent_date ) );
+		return $stmt->execute( array( $name, $type, $recent_date ) );
 	}
-	
+
 	/**
 	 * 情報の更新
 	 * @param $name
@@ -31,6 +32,14 @@ SET recent_date = ?,
 WHERE name = ?',
 			array( $recent_date, $name )
 		);
+	}
+	
+	/**
+	 * DB上、最新のレコードを取得
+	 * @return array|string
+	 */
+	public function getRecent() {
+		return $this->execSql( 'SELECT * FROM site_activity WHERE 1 ORDER BY recent_date DESC LIMIT 1', array(), true );
 	}
 
 	/**
