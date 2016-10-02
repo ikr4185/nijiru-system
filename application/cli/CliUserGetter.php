@@ -21,6 +21,8 @@ class CliUserGetter {
 	}
 
 	public function indexAction(){
+		
+		// TODO ページ数を取得する処理
 
 		for ( $page=1; $page<=14; $page++ ) {
 

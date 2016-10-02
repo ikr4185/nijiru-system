@@ -66,23 +66,23 @@ class DevelopController extends AbstractController {
 				
 	}
 
-	public function apiAction() {
+//	public function apiAction() {
+//
+//		$result = $this->logic->getApi();
+//
+//		echo "<pre>";
+//		var_dump($result);
+//		echo "</pre>";
+//
+//	}
 
-		$result = $this->logic->getApi();
-
-		echo "<pre>";
-		var_dump($result);
-		echo "</pre>";
-
-	}
-
-	public function apiTestAction() {
-		$result = $this->logic->test();
-
-		echo "<pre>";
-		var_dump($result);
-		echo "</pre>";
-	}
+//	public function apiTestAction() {
+//		$result = $this->logic->test();
+//
+//		echo "<pre>";
+//		var_dump($result);
+//		echo "</pre>";
+//	}
 
 	
 	

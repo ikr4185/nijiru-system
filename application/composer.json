@@ -25,6 +25,6 @@
     ]
   },
   "scripts": {
-    "ncl": "php /home/njr-sys/public_html/application/cli/cli_load.php"
+    "ncl": "php /home/njr-sys/public_html/application/cli/commons/cli_load.php"
   }
 }
