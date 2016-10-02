@@ -42,10 +42,13 @@ class CliLowVoteChecker extends CliAbstract{
 	/**
 	 * @var CliLowVoteCheckerLogic
 	 */
-	protected $logic;
+	protected $logic = null;
+
+	protected $is_debug = false;
 	
 	protected function getLogic() {
 		$this->logic = new CliLowVoteCheckerLogic();
+		$this->is_debug = false;
 	}
 	
 	public function indexAction() {
@@ -61,20 +64,85 @@ class CliLowVoteChecker extends CliAbstract{
 		
 		// LVC標準配列に変換
 		Console::log("convertLvcArray");
-		$lvcArray = $this->logic->convertLvcArray( $lowVotes );
+		$lvcArray = $this->logic->convertLvcArray( $lowVotes, $this->is_debug );
 		
-//		// 削除対象フラグで記事配列を振り分け
-//		$redCardsLvcArray = array();
-//		$yellowCardsLvcArray = array();
-//		foreach ( $lvcArray as $key=>$val ) {
-//			$this->isExpanding( $key, $val, $redCardsLvcArray, $yellowCardsLvcArray );
-//		}
+		// 削除対象フラグで記事配列を振り分け
+		Console::log("isExpanding");
+		$redAndYellow  = $this->isExpanding( $lvcArray );
+
+		if ($this->is_debug) {
+			// 評価を無理やり回復したことにする
+			$redAndYellow["yellow"]["SCP-395-JP"] = $redAndYellow["red"]["SCP-395-JP"];
+			unset($redAndYellow["red"]["SCP-395-JP"]);
+		}
+
+		// イエローカード記事配列の中から、DBに記録があるもの = 過去記録されたが、評価が回復した記事を抽出
+		Console::log("extractRecoveredPosts");
+		$recovered_lvcArray = array();
+		if ( !empty($redAndYellow["yellow"]) ) {
+			$recovered_lvcArray = $this->logic->extractRecoveredPosts( $redAndYellow["yellow"] );
+		}
 		
-		var_dump($lvcArray);
+		// DB保存
+		Console::log("Save Data");
+		$saveInfoArray = $this->logic->saveData( $redAndYellow["red"] );
+		
+//		 DBのみに存在するレコード = 削除された記事 ( or Voteが0以上になった記事 )を検出して、ソフトデリート TODO こうじゃない(DBにはレッドカード記事しか無い)
+//		 DBのみに存在するレコード = 評価が回復した記事を検出して、ソフトデリート // TODO これもあやしい？要調査
+		Console::log("deleteLowVotes");
+		$deletion_existed = $this->logic->deleteLowVotes( $redAndYellow["yellow"] );
+		
+		// 各メール通知の条件をまとめる ( Linuxパーミッションの要領で計算 )
+		Console::log("calculateLvcStatus");
+		$lvcStatus = $this->logic->calculateLvcStatus( $saveInfoArray, $recovered_lvcArray, $redAndYellow["red"], $deletion_existed );
+		
+		$sendMail = false;
+		// 新着(1)があれば | 基準抜け(2)がアレば | 猶予期間を過ぎていたら(4) → メール通知
+		if ( $lvcStatus > 0 ) {
+			$sendMail = true;
+		}
+		// 7:00 だったら一回メールする TODO 夜中に溜まった通知をどげんかせんといかん
+		if ( intval(date("H")) == 7 && intval(date("i")) == 0 ) {
+			$sendMail = true;
+			$lvcStatus = 99;
+		}
+		// SendMail
+		if ($sendMail) {
+			Console::log("semdMail");
+			$this->logic->sendMail( $saveInfoArray, $recovered_lvcArray, $lvcArray, $lvcStatus, $redAndYellow["yellow"], $this->is_debug );
+		}
 		
 		Console::log("Done.");
 	}
-	
+
+	/**
+	 * 削除対象フラグで記事配列を振り分け
+	 * @param $lvcArray
+	 * @return array
+	 */
+	private function isExpanding( $lvcArray ) {
+
+		$redCardsLvcArray = array();
+		$yellowCardsLvcArray = array();
+
+		foreach ( $lvcArray as $key=>$val ) {
+
+			if ($val["is_expanding"]) {
+				// レッドカード記事の配列 (削除対象)
+				$redCardsLvcArray[$key] = $val;
+			} else {
+				// イエローカード記事の配列 (非削除対象)
+				$yellowCardsLvcArray[$key] = $val;
+			}
+
+		}
+
+		return array(
+			"red" => $redCardsLvcArray,
+			"yellow" => $yellowCardsLvcArray,
+		);
+
+	}
 	
 }
 

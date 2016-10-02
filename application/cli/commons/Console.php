@@ -15,12 +15,12 @@ class Console {
 	 */
 	public static function log( $msg, $category="" ) {
 		
-		$preMsg = "[".self::getTime()."]\t";
+		$preMsg = "[".self::getTime()."]";
 		if (!empty($category)) {
-			$preMsg .= "[{$category}]\t";
+			$preMsg .= "[{$category}]";
 		}
 		
-		echo $preMsg.$msg."\n";
+		echo $preMsg."\t".$msg."\n";
 	}
 	
 	/**
