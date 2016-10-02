@@ -189,17 +189,18 @@ class CliUserActivityLogic extends AbstractLogic {
 		// DB上の最新のレコード
 		$record = $this->recentRecord;
 
-		// debug ////////////////////////////////////////
-		file_put_contents("/home/njr-sys/public_html/cli/logs/test.dat", serialize($userActivity));
-
 		$saveCount=0;
 		foreach ( $userActivity as $item ) {
+
+
+			// debug ////////////////////////////////////////
+			file_put_contents("/home/njr-sys/public_html/cli/logs/test.dat", $item["recent_date"]."\n", FILE_APPEND);
 
 			// DBにレコードがある
 			if ( isset($record[0]["recent_date"]) ) {
 
 				// もしDB上の最新レコードまで到達したら、処理終了
-				if ( strtotime($record[0]["recent_date"]) > $item["timestamp"] ) {
+				if ( strtotime($record[0]["recent_date"]) <= $item["timestamp"] ) {
 					Console::log("save end ".$item["recent_date"],"Save Data");
 					break;
 				}
