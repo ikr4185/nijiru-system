@@ -90,7 +90,7 @@ class CliLowVoteChecker extends CliAbstract{
 //		 DBのみに存在するレコード = 削除された記事 ( or Voteが0以上になった記事 )を検出して、ソフトデリート TODO こうじゃない(DBにはレッドカード記事しか無い)
 //		 DBのみに存在するレコード = 評価が回復した記事を検出して、ソフトデリート // TODO これもあやしい？要調査
 		Console::log("deleteLowVotes");
-		$deletion_existed = $this->logic->deleteLowVotes( $redAndYellow["yellow"] );
+		$deletion_existed = $this->logic->deleteLowVotes( $redAndYellow["red"] );
 		
 		// 各メール通知の条件をまとめる ( Linuxパーミッションの要領で計算 )
 		Console::log("calculateLvcStatus");

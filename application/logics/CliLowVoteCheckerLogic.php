@@ -281,6 +281,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 				
 				if ( !$dbRecord ) {
 					// DBにレコードがなかった時の処理
+					Console::log("no record {$info['url']}","saveData");
 					
 					// 新規レコードをインサート
 					$this->insertPost( $key, $info );
@@ -294,6 +295,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 					if ( 1 == $dbRecord["del_flg"] ) {
 						// ソフトデリート済みがまた来た時
 						// 「ばかだな　またきたのか」
+						Console::log("ReEntry {$info['url']}","saveData");
 						
 						// ソフトデリート解除
 						$this->model->setSoftDeleteLowVotes( 0, $dbRecord["url"] );
@@ -336,7 +338,10 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 	 * @param $msg
 	 */
 	public function saveLogs( $msg ) {
-		file_put_contents("/home/njr-sys/public_html/cli/logs/low_vote_log.log",$msg."\n",FILE_APPEND);
+		$result = file_put_contents("/home/njr-sys/public_html/application/cli/logs/low_vote_log.log",$msg."\n",FILE_APPEND);
+		if ($result) {
+			Console::log("logged","saveLogs");
+		}
 	}
 	
 	/**
@@ -435,7 +440,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 		$expire_flg = $this->checkDelDate( $lvcArray ) ? 4 : 0 ;
 //		$deletion_flg = $deletion_existed ? 8 : 0 ;
 		$deletion_flg = 0; // TODO 開発中
-		
+
 		// 単純に足し算
 		$lvcStatus = $newInfo_flg + $delPost_flg + $expire_flg + $deletion_flg;
 
@@ -602,7 +607,7 @@ EOD;
 //		$message3 = "";
 		foreach ( $yellowCardsLvcArray as $key=>$info ) {
 
-			var_dump($key,$info);
+//			var_dump($key,$info);
 
 //			$message3 .= <<< EOD
 //
@@ -630,6 +635,7 @@ EOD;
 
 
 		// 送信する
+		$logMsg = "";
 		if ( !$is_debug) {
 
 			$lvcUsers = $this->model->getAvailableLvcUsers();
@@ -646,6 +652,7 @@ EOD;
 
 		}else{ // debug mode
 
+			Console::log("debug mode!","semdMail");
 			$lvcUsers = $this->model->getAvailableLvcUsers();
 			foreach ( $lvcUsers as $item ) {
 
@@ -658,12 +665,13 @@ EOD;
 					));
 				}
 			}
-			echo "debug mode!";
+
+			$logMsg = "is_debug";
 
 		}
 
 		// メール送信ログ
-		$this->saveLogs( date("Y-m-d H:i:s")."\t".$message1_title."\t".$lvcStatus.count($saveInfoArray)."\t".count($dbRecords) );
+		$this->saveLogs( date("Y-m-d H:i:s")."\t".$message1_title."\t".$lvcStatus.count($saveInfoArray)."\t".count($dbRecords)."\t".$logMsg);
 
 	}
 
