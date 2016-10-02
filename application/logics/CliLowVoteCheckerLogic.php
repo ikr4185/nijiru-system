@@ -3,7 +3,6 @@ namespace Logics;
 use Logics\Commons\AbstractLogic;
 use Logics\Commons\Scraping;
 use Cli\Commons\Console;
-use Logics\Commons\WikidotApi;
 
 /**
  * Class CliLowVoteCheckerLogic
@@ -23,7 +22,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 
 	protected function getModel() {
 //		$this->SiteMembers = SiteMembersModel::getInstance();
-		$this->WikidotApi = new WikidotApi();
 	}
 
 	/**
@@ -36,44 +34,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 		// curlのrangeオプションが死んでるっぽいので暫定対応
 		$html = substr( $html, 22826, 4000 );
 		return $html;
-	}
-
-	/**
-	 * WikidotAPI
-	 * @param $pageName
-	 * @return array
-	 */
-	private function getPage( $pageName ) {
-
-		Console::log("{$pageName}","api");
-		$rawData = $this->WikidotApi->pagesGetMeta( "scp-jp", array($pageName) );
-
-		// retry once
-		if (empty($rawData)) {
-			// debug //////////
-			Console::log("retry {$pageName}","api");
-			sleep(3);
-			$rawData = $this->WikidotApi->pagesGetMeta( "scp-jp", array($pageName) );
-		}
-
-		// データ取得失敗時(存在しない記事への参照等)
-		if ( empty($rawData) ) {
-			return array ();
-		}
-
-		// 日付の修正(XMLRPC形式->Mysqlへ変換)
-		if( !empty($rawData[$pageName]["created_at"]) ) {
-			$rawData[$pageName]["created_at"] = date( "Y-m-d H:i:s", strtotime($rawData[$pageName]["created_at"]));
-		}
-
-		// データが欠けている場合の補完(アカウント退会済み等)
-		if( empty($rawData[$pageName]["title"]) )         $rawData[$pageName]["title"] = "";
-		if( empty($rawData[$pageName]["rating"]) )        $rawData[$pageName]["rating"] = "";
-		if( empty($rawData[$pageName]["created_by"]) )    $rawData[$pageName]["created_by"] = "";
-		if( empty($rawData[$pageName]["created_at"]) )    $rawData[$pageName]["created_at"] = "";
-//		if( empty($rawData["scp-{$itemNumber}-jp"]["tags"]) )          $rawData["scp-{$itemNumber}-jp"]["tags"] = "[データ削除済]";
-
-		return $rawData[$pageName];
 	}
 
 	/**
