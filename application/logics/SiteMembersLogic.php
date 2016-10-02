@@ -3,6 +3,7 @@ namespace Logics;
 use Logics\Commons\AbstractLogic;
 use Models\ScpJpModel;
 use Models\SiteMembersModel;
+use Models\SiteActivityModel;
 use Models\UsersModel;
 
 /**
@@ -17,6 +18,11 @@ class SiteMembersLogic extends AbstractLogic {
 	protected $SiteMembers = null;
 	
 	/**
+	 * @var SiteActivityModel
+	 */
+	protected $SiteActivity = null;
+	
+	/**
 	 * @var ScpJpModel
 	 */
 	protected $ScpJp = null;
@@ -28,6 +34,7 @@ class SiteMembersLogic extends AbstractLogic {
 	
 	protected function getModel() {
 		$this->SiteMembers = SiteMembersModel::getInstance();
+		$this->SiteActivity = SiteActivityModel::getInstance();
 		$this->ScpJp = ScpJpModel::getInstance();
 		$this->Users = UsersModel::getInstance();
 	}
@@ -56,6 +63,27 @@ class SiteMembersLogic extends AbstractLogic {
 	public function getUserIndex() {
 		$siteMembers = $this->SiteMembers->getAll();
 		return $siteMembers;
+	}
+	
+	/**
+	 * メンバーの直近の活動を取得
+	 * @param $name
+	 * @return mixed
+	 */
+	public function getUserRecentActivity( $name ) {
+		$result = $this->SiteActivity->getRecentByName( $name );
+		return $result[0];
+	}
+	
+	/**
+	 * 最近活動のあったメンバーを取得
+	 * @param $day
+	 * @return mixed
+	 */
+	public function getActiveUser( $day ) {
+		$result = $this->SiteActivity->getRecentDate( $day );
+		$result = \Cores\Helper\SortHelper::sort( $result, "recent_date", true );
+		return $result;
 	}
 
 	/**

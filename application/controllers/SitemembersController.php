@@ -35,6 +35,9 @@ class SitemembersController extends AbstractController {
 
 		// メンバー総数
 		$count = count($siteMembers);
+		
+		// アクティブメンバーの取得
+		$activeMembers = $this->logic->getActiveUser(30);
 
 		// 各メンバーの情報
 		foreach($siteMembers as &$member){
@@ -50,6 +53,11 @@ class SitemembersController extends AbstractController {
 			
 			// 平均評価
 			$member["averageVote"] = $this->logic->getAverageVote( $member["name"], $member["articleCount"] );
+
+			// 最後の活動時刻
+			$recentActivity = $this->logic->getUserRecentActivity($member["name"]);
+			$member["recentDate"] =  $recentActivity["recent_date"];
+			$member["recentActivity"] =  $recentActivity["type"];
 		}
 		unset($member);
 
@@ -67,15 +75,22 @@ class SitemembersController extends AbstractController {
 		}elseif( $this->input->getRequest("date",true) == "desc" ){
 			$this->logic->sortArrayByKey($siteMembers,"since",SORT_DESC);
 			$sortBy = "date";
+		}elseif( $this->input->getRequest("recent",true) == "desc" ){
+			$this->logic->sortArrayByKey($siteMembers,"recentDate",SORT_DESC);
+			$sortBy = "recent";
 		}
 		
 		$result = array(
 			"siteMembers"  => $siteMembers,
+			"activeMembers"  => $activeMembers,
 			"count"  => $count,
 			"sortBy"  => $sortBy,
 			"msg"   => $this->logic->getMsg(),
 		);
-		$this->getView( "index", "サイトメンバー一覧", $result );
+		$jsPathArray = array(
+			"http://njr-sys.net/application/views/assets/js/nijiru_accordion.js",
+		);
+		$this->getView( "index", "サイトメンバー一覧", $result, $jsPathArray );
 		
 	}
 
