@@ -41,6 +41,36 @@ WHERE name = ?',
 	public function getRecent() {
 		return $this->execSql( 'SELECT * FROM site_activity WHERE 1 ORDER BY recent_date DESC LIMIT 1', array(), true );
 	}
+	
+	/**
+	 * サイトメンバーの、直近の活動時刻を取得
+	 * @param $name
+	 * @return array|string
+	 */
+	public function getRecentByName( $name ) {
+		return $this->execSql( 'SELECT * FROM site_activity WHERE name = ? ORDER BY recent_date DESC LIMIT 1', array($name), true );
+	}
+	
+	
+	/**
+	 * 最近活動のあったサイトメンバー
+	 * @param $day
+	 * @return array|string
+	 */
+	public function getRecentDate( $day ) {
+		if (!is_numeric($day)) {
+			return false;
+		}
+		return $this->execSql( 'SELECT * 
+FROM (SELECT * 
+FROM site_activity
+WHERE recent_date >= DATE_ADD( NOW( ) , INTERVAL -7
+DAY ) 
+ORDER BY recent_date DESC
+) AS recent
+GROUP BY name', array(), true );
+	}
+
 
 	/**
 	 * 情報の取得
