@@ -17,6 +17,16 @@ class CliUserActivityLogic extends AbstractLogic {
 	 * @var SiteActivityModel
 	 */
 	protected $SiteActivity = null;
+
+	// DB上の、最新のレコード
+	protected $recentRecord = null;
+
+	public function __construct() {
+		parent::__construct();
+
+		// DB上、最新のレコードを取得
+		$this->recentRecord = $this->SiteActivity->getRecent();
+	}
 	
 	protected function getModel() {
 		$this->SiteMembers = SiteMembersModel::getInstance();
@@ -121,6 +131,54 @@ class CliUserActivityLogic extends AbstractLogic {
 		
 	}
 
+	public function getIrcUser() {
+
+		$result = array();
+
+		// 今日の分のログを取得
+		$today = date("Y-m-d");
+		$todayLogName = "irc-logs_".$today.".dat";
+		$logArray = file("/home/njr-sys/public_html/cli/logs/irc/".$todayLogName);
+		
+		// まだログが無い場合はnull
+		if (empty($logArray)) {
+			return null;
+		}
+
+		// 前回取得したIRCログの時刻が、前日のものだったら、前日のIRCログも参照する
+		$record = $this->recentRecord;
+		if ( strpos($record[0]["recent_date"], $today) === false ) {
+
+			Console::log("load yesterday log","Save Data");
+
+			$yesterday = date('Y-m-d', strtotime('-1 day'));
+			$yesterdayLogName = "irc-logs_".$yesterday.".dat";
+			$yesterdaylogArray = file("/home/njr-sys/public_html/cli/logs/irc/".$yesterdayLogName);
+
+			$logArray = array_merge($logArray,$yesterdaylogArray);
+		}
+
+		// パース
+		foreach ($logArray as $line) {
+
+			// 名前
+			preg_match('/((\d{2}):(\d{2}):(\d{2})) - \((.*?)\) - /', $line, $matches);
+
+			// カシマちゃん以外を取得
+			if ( $matches[5] != "KASHIMA-EXE") {
+
+				$result[] = array(
+					"name" => $matches[5],
+					"timestamp" => strtotime($today." ".$matches[1]),
+					"recent_date" => $today." ".$matches[1],
+					"type" => "irc_scp-jp",
+				);
+			}
+		}
+
+		return $result;
+	}
+
 	/**
 	 * データベース保存
 	 * @param $userActivity
@@ -128,28 +186,36 @@ class CliUserActivityLogic extends AbstractLogic {
 	 */
 	public function saveData( $userActivity ) {
 
-		// DB上、最新のレコードを取得
-		$record = $this->SiteActivity->getRecent();
+		// DB上の最新のレコード
+		$record = $this->recentRecord;
 
+		// debug ////////////////////////////////////////
+		file_put_contents("/home/njr-sys/public_html/cli/logs/test.dat", serialize($userActivity));
+
+		$saveCount=0;
 		foreach ( $userActivity as $item ) {
 
 			// DBにレコードがある
 			if ( isset($record[0]["recent_date"]) ) {
 
 				// もしDB上の最新レコードまで到達したら、処理終了
-				if ( $record[0]["recent_date"] != $item["recent_date"] ) {
+				if ( strtotime($record[0]["recent_date"]) > $item["timestamp"] ) {
+					Console::log("save end ".$item["recent_date"],"Save Data");
 					break;
 				}
 
 			}
 
 			// レコードを追加
-			$result = $this->SiteActivity->insert( $item["name"], $item["type"], $item["recent_date"] );
+//			$result = $this->SiteActivity->insert( $item["name"], $item["type"], $item["recent_date"] );
+			$result = true; // debug ////////////////////////////////////////
 			if (!$result) {
 				return false;
 			}
-
+			$saveCount++;
 		}
+
+		Console::log("saved {$saveCount} records","Save Data");
 		return true;
 	}
 }
