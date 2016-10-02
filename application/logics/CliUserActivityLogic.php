@@ -181,7 +181,7 @@ class CliUserActivityLogic extends AbstractLogic {
 
 	/**
 	 * データベース保存
-	 * @param $userActivity
+	 * @param $userActivity array 日付昇順のアクティビティデータ
 	 * @return bool
 	 */
 	public function saveData( $userActivity ) {
@@ -189,34 +189,40 @@ class CliUserActivityLogic extends AbstractLogic {
 		// DB上の最新のレコード
 		$record = $this->recentRecord;
 
-		$saveCount=0;
-		foreach ( $userActivity as $item ) {
+		// 日付降順のアクティビティデータを生成
+		$userActivityReverse = array_reverse($userActivity, true);
 
-
-			// debug ////////////////////////////////////////
-			file_put_contents("/home/njr-sys/public_html/cli/logs/test.dat", $item["recent_date"]."\n", FILE_APPEND);
+		// DB上の最新レコードまでの、新規データを抽出
+		$endKey = 0;
+		foreach ( $userActivityReverse as $key=>$item ) {
 
 			// DBにレコードがある
 			if ( isset($record[0]["recent_date"]) ) {
 
-				// もしDB上の最新レコードまで到達したら、処理終了
-				if ( strtotime($record[0]["recent_date"]) <= $item["timestamp"] ) {
-					Console::log("save end ".$item["recent_date"],"Save Data");
+				// もしDB上の最新レコードまで到達したら、キーを取得
+				if ( strtotime($record[0]["recent_date"]) > $item["timestamp"] ) {
+					Console::log("end found key: {$key} Data:{$item["recent_date"]} < DB:{$record[0]["recent_date"]}","Save Data");
+					$endKey = $key;
 					break;
 				}
-
 			}
+		}
+		unset($userActivityReverse);
 
+		// $endKeyまでの要素を削除する
+		for ($i=0;$i<=$endKey;$i++) {
+			unset($userActivity[$i]);
+		}
+
+		foreach ($userActivity as $key=>$item) {
 			// レコードを追加
-//			$result = $this->SiteActivity->insert( $item["name"], $item["type"], $item["recent_date"] );
-			$result = true; // debug ////////////////////////////////////////
+			$result = $this->SiteActivity->insert( $item["name"], $item["type"], $item["recent_date"] );
 			if (!$result) {
 				return false;
 			}
-			$saveCount++;
 		}
 
-		Console::log("saved {$saveCount} records","Save Data");
+		Console::log("saved ".count($userActivity)." records","Save Data");
 		return true;
 	}
 }
