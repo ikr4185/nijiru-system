@@ -5,12 +5,14 @@ function drawChart(){
 	// 表示するデータの設定
 	var data = new google.visualization.DataTable();
 	data.addColumn('string', 'date');
-	data.addColumn('number', 'NewMemberCount');
-	data.addColumn('number', 'TotalMemberCount');
+	data.addColumn('number', 'NewMember');
+	data.addColumn('number', 'ActiveMember');
+	data.addColumn('number', 'Total');
 
 	// データの取得
 	var dates = document.getElementsByClassName("j_dates");
 	var counts = document.getElementsByClassName("j_count");
+	var activeMemberCounts = document.getElementsByClassName("j_activeMemberCount");
 	var allMemberCounts = document.getElementsByClassName("j_allMemberCount");
 
 	var rows = [];
@@ -18,6 +20,7 @@ function drawChart(){
 		rows.push([
 			dates[i].innerText,
 			Number(counts[i].innerText),
+			Number(activeMemberCounts[i].innerText),
 			Number(allMemberCounts[i].innerText)
 		]);
 	}
@@ -30,11 +33,12 @@ function drawChart(){
 		height: '100%',
 		series: [
 			{ type: 'line', targetAxisIndex: 0 },
+			{ type: 'line', targetAxisIndex: 0 },
 			{ type: 'bars', targetAxisIndex: 1 }
 		],
 		vAxes: [
-			{ title: 'NewMemberCount' },
-			{ title: 'TotalMemberCount' }
+			{ title: 'Member' },
+			{ title: 'Total' }
 		]
 	};
 

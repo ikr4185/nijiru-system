@@ -36,8 +36,11 @@ class SitemembersController extends AbstractController {
 		// メンバー総数
 		$count = count($siteMembers);
 		
-		// アクティブメンバーの取得
+		// アクティブメンバー: 直近1ヶ月
 		$activeMembers = $this->logic->getActiveUser(30);
+
+		// アクティブメンバー: 直近1週間
+		$activeMembersWeek = $this->logic->getActiveUser(7);
 
 		// 各メンバーの情報
 		foreach($siteMembers as &$member){
@@ -83,6 +86,7 @@ class SitemembersController extends AbstractController {
 		$result = array(
 			"siteMembers"  => $siteMembers,
 			"activeMembers"  => $activeMembers,
+			"activeMembersWeek"  => $activeMembersWeek,
 			"count"  => $count,
 			"sortBy"  => $sortBy,
 			"msg"   => $this->logic->getMsg(),
@@ -129,18 +133,25 @@ class SitemembersController extends AbstractController {
 
 			// 月間の新人職員のアカウント名配列
 			$allMemberName = $this->logic->getNewbiesInDateRange($date);
+			
+			// 月間のアクティブメンバー名配列
+			$activeMemberName = $this->logic->getActiveUserInDateRange( $date );
 
-			// 人数
+			// 月間新規メンバー数
 			$count = count($allMemberName);
 			
 			// 累計メンバー数
 			$allMemberCount = $allMemberCount + $count;
+			
+			// 月間アクティブメンバー数
+			$activeMemberCount = count($activeMemberName);
 
 			// 結果を格納
 			$memberHistory[$i] = array(
 				"date"=>$date,
 				"count"=>$count,
 				"allMemberCount"=>$allMemberCount,
+				"activeMemberCount"=>$activeMemberCount,
 				"newbies"=> implode("/",$allMemberName)
 			);
 
@@ -161,7 +172,6 @@ class SitemembersController extends AbstractController {
 			"https://www.google.com/jsapi",
 			"http://njr-sys.net/application/views/assets/js/member_history_chart.js",
 			"http://njr-sys.net/application/views/assets/js/jquery.balloon.js",
-			"http://njr-sys.net/application/views/assets/js/member_balloon.js",
 		);
 		$this->getView( "memberhistory", "Site Member History Statistics", $result, $jsPathArray );
 	}

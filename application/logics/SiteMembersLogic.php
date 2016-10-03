@@ -87,6 +87,28 @@ class SiteMembersLogic extends AbstractLogic {
 	}
 
 	/**
+	 * 月間のアクティブメンバー数を取得
+	 * @param $date
+	 * @return mixed
+	 */
+	public function getActiveUserInDateRange( $date ) {
+		$result = $this->SiteActivity->getRecentInDateRange( $date );
+
+		// debug ////////////////////////////////////////
+//		vD($result);
+		
+		if (!$result) return array();
+		
+		$return=array();
+		foreach ( $result as $record ){
+			$return[] = $record["name"];
+		}
+		
+		$result = \Cores\Helper\SortHelper::sort( $result, "recent_date", true );
+		return $result;
+	}
+
+	/**
 	 * メンバーの執筆数を計上
 	 * @param $name
 	 * @return mixed

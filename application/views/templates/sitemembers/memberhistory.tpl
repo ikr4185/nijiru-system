@@ -29,6 +29,7 @@
 					<th>月日</th>
 					<th>月間登録数</th>
 					<th>累計登録数</th>
+					<th>活動人数</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -40,6 +41,8 @@
 							<div class="j_newbies hidden">{$item["newbies"]}</div>
 						</td>
 						<td class="j_allMemberCount">{$item["allMemberCount"]}</td>
+						<td class="j_activeMemberCount {if empty($item["activeMemberCount"]) }hidden{/if}">{$item["activeMemberCount"]}</td>
+						<td class="{if !empty($item["activeMemberCount"]) }hidden{/if}">N/A</td>
 					</tr>
 				{/foreach}
 				</tbody>
