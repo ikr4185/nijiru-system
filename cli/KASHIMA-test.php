@@ -27,7 +27,7 @@ $irc_pass = null;
 class Kashima
 {
 
-	function welcome( $irc, $data)
+	function welcome($irc, $data)
 	{
 		if ( IRC_NAME == $data->nick ) {
 			$msg = IRC_NAME.' 起動しました';
@@ -67,7 +67,7 @@ class Kashima
 		$this->botMsg( $irc, $data, $msg );
 	}
 
-	function bye( $irc, $data)
+	function bye($irc, $data)
 	{
 		if( "hal-aki" == $data->nick || "hal_aki" == $data->nick ) {
 
@@ -106,7 +106,7 @@ class Kashima
 	}
 
 	// 停止中
-	function url( $irc, $data )
+	function url($irc,$data)
 	{
 		preg_match_all('|http://\w+(?:-\w+)*(?:\.\w+(?:-\w+)*)+(?::\d+)?(?:[/\?][\w%&=~\-\+/;\.\?]*(?:#[^]*)?)?|', $data->message, $match);
 
@@ -183,7 +183,7 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function hello( $irc, $data)
+	function hello($irc, $data)
 	{
 		$msg = 'こんにちは';
 
@@ -196,7 +196,7 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function scp( $irc, $data)
+	function scp($irc, $data)
 	{
 		// めざせ
 		// haruharu: http://scpjapan.wiki.fc2.com/wiki/SCP-173/ - 彫刻 - オリジナル
@@ -212,19 +212,22 @@ class Kashima
 		}
 
 		$url = "http://scpjapan.wiki.fc2.com/wiki/SCP-{$match[2]}/";
-		$html = file_get_contents($url, NULL, NULL, 0, 3200);
-		if (!$html) {
-			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
-		}
+		$html = $this->curl( $url, "0-3200" );
+		if (!$html) $irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
 
 		preg_match( '@(<div><span style="font-weight: bold;">)(.*?)(</span></div>)@i', $html, $matches);
 		unset($html); // メモリ節約
+		if (!isset($matches[2])) {
+			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 記事が見つかりませんでした');
+			return;
+		}
 
 		$title = str_replace('<span style="font-style: italic;">','',$matches[2]);
 		$title = str_replace('<span style="font-weight: bold;">','',$title);
 		$title = str_replace('</span>','',$title);
+		$title = htmlspecialchars_decode($title);
 
-		$msg = "{$data->nick}: [SCP] {$url} \" {$title} \"";
+		$msg = "{$data->nick}: [SCP] {$title} {$url}";
 
 		// 発言
 		$this->botMsg( $irc, $data, $msg );
@@ -235,7 +238,7 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function scpjp( $irc, $data)
+	function scpjp($irc, $data)
 	{
 		// めざせ
 		// haruharu: http://scpjapan.wiki.fc2.com/wiki/SCP-173/ - 彫刻 - オリジナル
@@ -251,18 +254,27 @@ class Kashima
 		}
 
 		$num = $match[2];
-		$url = "http://ja.scp-wiki.net/scp-series-jp";
-		$html = file_get_contents($url);
+		if ($num >= 1000) {
+			$url = "http://ja.scp-wiki.net/scp-series-jp-2";
+		}else{
+			$url = "http://ja.scp-wiki.net/scp-series-jp";
+		}
+
+		$html = $this->curl( $url );
 		if (!$html) {
 			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
 		}
 
 		preg_match( "@(<li><a href=\"/scp-{$num}-jp\">SCP-{$num}-JP</a> - )(.*?)(</li>)@i", $html, $matches);
 		unset($html); // メモリ節約
+		if (!isset($matches[2]) && $num!=242) {
+			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 記事が見つかりませんでした');
+			return;
+		}
 
 		$title = htmlspecialchars_decode($matches[2]);
 
-		$msg = "{$data->nick}: [SCP-JP] http://ja.scp-wiki.net/scp-{$num}-jp SCP-{$num}-JP \"{$title}\"";
+		$msg = "{$data->nick}: [SCP-JP] SCP-{$num}-JP \"{$title}\" http://ja.scp-wiki.net/scp-{$num}-jp";
 
 		// 発言
 		$this->botMsg( $irc, $data, $msg );
@@ -273,7 +285,7 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function wiki( $irc, $data)
+	function wiki($irc, $data)
 	{
 		// めざせ
 		// haruharu: http://scpjapan.wiki.fc2.com/wiki/SCP-173/ - 彫刻 - オリジナル
@@ -287,7 +299,7 @@ class Kashima
 
 		$page = $match[2];
 		$url = "http://ja.scp-wiki.net/{$page}";
-		$html = file_get_contents($url, NULL, NULL, 0, 1000);
+		$html = $this->curl( $url, "0-1000" );
 		if (!$html) {
 			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
 		}
@@ -309,8 +321,9 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function sandbox( $irc, $data) {
-		
+	function sandbox($irc, $data)
+	{
+
 		preg_match('/^(\.sb )(.*)$/i', $data->message, $match);
 		// 再試行
 		if (empty($match)) {
