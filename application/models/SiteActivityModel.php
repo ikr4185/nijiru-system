@@ -64,11 +64,28 @@ WHERE name = ?',
 		return $this->execSql( 'SELECT * 
 FROM (SELECT * 
 FROM site_activity
-WHERE recent_date >= DATE_ADD( NOW( ) , INTERVAL -7
+WHERE recent_date >= DATE_ADD( NOW( ) , INTERVAL -'.$day.'
 DAY ) 
 ORDER BY recent_date DESC
 ) AS recent
 GROUP BY name', array(), true );
+	}
+
+
+	/**
+	 * 月間のアクティブメンバーを取得
+	 * @param $date
+	 * @return array|string
+	 */
+	public function getRecentInDateRange( $date ) {
+		$date = $date."%";
+		return $this->execSql( 'SELECT * 
+FROM (SELECT * 
+FROM site_activity
+WHERE recent_date like (?)
+ORDER BY recent_date DESC
+) AS recent
+GROUP BY name', array($date), true );
 	}
 
 

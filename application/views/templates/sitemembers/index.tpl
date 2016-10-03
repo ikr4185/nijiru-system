@@ -19,15 +19,34 @@
 <div class="section">
 
 	<div class="section__inner">
+		<h3 class="subhead">統計</h3>
+
+		<table class="flat_table flat_table--narrow zebra-table tight-table">
+			<tbody>
+				<tr>
+					<th>現在の総メンバー</th>
+					<td>{$result["count"]} 人</td>
+				</tr>
+				<tr>
+					<th>直近1ヶ月のアクティブメンバー</th>
+					<td>{count($result["activeMembers"])} 人</td>
+				</tr>
+				<tr>
+					<th>直近1週間のアクティブメンバー</th>
+					<td>{count($result["activeMembersWeek"])} 人</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>※ アクティブメンバー統計は、2016/10/02 より計測中です。</p>
+
+	</div>
+
+	<div class="section__inner">
 		<h3 class="subhead">メンバー一覧</h3>
 
-		<p>
-			現在の総メンバー数は<span class="b">{$result["count"]}</span>人です。<br>
-			アクティブメンバー数※は<span class="b">{count($result["activeMembers"])}</span>人です。<br>
-			※ 過去一ヶ月に活動のあったサイトメンバーの集計です(2016/10/02～ 計測中)。<br>
-		</p>
-
 		{if !empty($result["siteMembers"]) }
+
+			{*<div id="chart" style="width: 100%; height: 100%; border: 1px solid #aaa;"></div>*}
 
 			<a class="toggle-switch">リストを開く/閉じる</a>
 			<table class="flat_table flat_table--narrow zebra-table tight-table">
