@@ -213,18 +213,21 @@ class Kashima
 
 		$url = "http://scpjapan.wiki.fc2.com/wiki/SCP-{$match[2]}/";
 		$html = $this->curl( $url, "0-3200" );
-		if (!$html) {
-			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
-		}
+		if (!$html) $irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
 
 		preg_match( '@(<div><span style="font-weight: bold;">)(.*?)(</span></div>)@i', $html, $matches);
 		unset($html); // メモリ節約
+		if (!isset($matches[2])) {
+			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 記事が見つかりませんでした');
+			return;
+		}
 
 		$title = str_replace('<span style="font-style: italic;">','',$matches[2]);
 		$title = str_replace('<span style="font-weight: bold;">','',$title);
 		$title = str_replace('</span>','',$title);
+		$title = htmlspecialchars_decode($title);
 
-		$msg = "{$data->nick}: [SCP] {$url} \" {$title} \"";
+		$msg = "{$data->nick}: [SCP] {$title} {$url}";
 
 		// 発言
 		$this->botMsg( $irc, $data, $msg );
@@ -251,7 +254,12 @@ class Kashima
 		}
 
 		$num = $match[2];
-		$url = "http://ja.scp-wiki.net/scp-series-jp";
+		if ($num >= 1000) {
+			$url = "http://ja.scp-wiki.net/scp-series-jp-2";
+		}else{
+			$url = "http://ja.scp-wiki.net/scp-series-jp";
+		}
+
 		$html = $this->curl( $url );
 		if (!$html) {
 			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 接続に失敗しました');
@@ -259,10 +267,14 @@ class Kashima
 
 		preg_match( "@(<li><a href=\"/scp-{$num}-jp\">SCP-{$num}-JP</a> - )(.*?)(</li>)@i", $html, $matches);
 		unset($html); // メモリ節約
+		if (!isset($matches[2]) && $num!=242) {
+			$irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, '[ERROR] 記事が見つかりませんでした');
+			return;
+		}
 
 		$title = htmlspecialchars_decode($matches[2]);
 
-		$msg = "{$data->nick}: [SCP-JP] http://ja.scp-wiki.net/scp-{$num}-jp SCP-{$num}-JP \"{$title}\"";
+		$msg = "{$data->nick}: [SCP-JP] SCP-{$num}-JP \"{$title}\" http://ja.scp-wiki.net/scp-{$num}-jp";
 
 		// 発言
 		$this->botMsg( $irc, $data, $msg );
@@ -309,7 +321,8 @@ class Kashima
 	 * @param $irc
 	 * @param $data
 	 */
-	function sandbox($irc, $data){
+	function sandbox($irc, $data)
+	{
 
 		preg_match('/^(\.sb )(.*)$/i', $data->message, $match);
 		// 再試行
