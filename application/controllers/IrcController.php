@@ -108,7 +108,10 @@ class IrcController extends AbstractController {
 			"after_date"  => $after_date,
 			"msg"   => $this->IrcLogic->getMsg(),
 		);
-		$this->getView( "log_81", "IRC-Reader #site8181", $result );
+		$jsPathArray = array(
+			"http://njr-sys.net/application/views/assets/js/irc_log_search.js",
+		);
+		$this->getView( "log_81", "IRC-Reader #site8181", $result, $jsPathArray );
 	}
 	
 }

@@ -1,7 +1,9 @@
 $(window).load(function(){
 
 	// get_DOM
-	var lists = document.querySelectorAll('.js_irc_log');
+	var
+		lists = document.querySelectorAll('.js_irc_log'),
+		search_input = $('#search');
 
 	var searchUsersList = function(event){
 
@@ -9,7 +11,7 @@ $(window).load(function(){
 			i,
 			id,
 			contents_text,
-			input_text = $('#search').val(),
+			input_text = search_input.val(),
 			regex;
 
 		for (i = 0; i < lists.length; i++){
@@ -37,6 +39,11 @@ $(window).load(function(){
 			}
 		}
 	};
-	$('#search').on('focusout', searchUsersList);
+	search_input.on('focusout', searchUsersList);
+	search_input.keypress(function(e) {
+		if (e.which == 13) {
+			searchUsersList();
+		}
+	})
 
 });
