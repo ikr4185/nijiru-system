@@ -2,6 +2,13 @@
 
 	<h2 class="sub_title">#scp-jp {date( 'Y-m-d (D)', strtotime($result["date"]))}</h2>
 
+	<div class="section__inner">
+		<div class="flat_form--search">
+			<input class="flat_form--search__input" type="text" id="search" placeholder="search" value="">
+			<input class="flat_form--search__button" type="button" value="Search">
+		</div>
+	</div>
+
 	<div class="section__inner text__wrap">
 		{if !empty($result["before_date"])}<a href="{$result["logsLink"]}/log/{$result["before_date"]}" class="text__item">&lt; {$result["before_date"]}</a>{/if}
 		<a href="{$result["logsLink"]}/" class="text__item">一覧へ</a>
