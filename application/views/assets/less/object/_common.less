@@ -2,30 +2,6 @@
 // 共通
 // ==========================================================================
 
-.notice_text {
-	background: @njr_l_blue;
-	color: #fff;
-	.card_mixin;
-	p {
-		&:before{
-			content: url("../img/icons/ic_announcement_white_18dp_1x.png");
-			position: relative;
-			top: 5px;
-			margin-right: 10px;
-		}
-	}
-}
-
-.download_text {
-	word-break: break-all;
-	&:before{
-		content: url("../img/icons/ic_get_app_black_18dp_1x.png");
-		position: relative;
-		top: 5px;
-		margin-right: 10px;
-	}
-}
-
 // nijiru_accordion.js
 a.toggle-switch{
 	display: inline-block;
@@ -39,6 +15,12 @@ a.toggle-switch{
 	&:hover,
 	&:active{
 		text-decoration: none;
+	}
+}
+
+.width{
+	&--full{
+		width: 100%;
 	}
 }
 
@@ -84,11 +66,6 @@ a.toggle-switch{
       max-width: 100%;
     }
 
-  }
-
-  // システムメッセージ
-  .notice_text {
-	  padding: 20px;
   }
 
   .id_gen_img {
@@ -206,11 +183,6 @@ a.toggle-switch{
     }
 
   }
-
-	// システムメッセージ
-	.notice_text {
-		padding: 10px;
-	}
 
   .id_gen_img {
     width:100%;
