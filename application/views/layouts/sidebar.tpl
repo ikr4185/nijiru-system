@@ -89,6 +89,7 @@
 		<h2 class="sub_title">System</h2>
 		<div class="side_section">
 			<a href="http://{$view["serverName"]}/admin/login">Nijiru Administrator</a><br>
+			<a href="https://github.com/ikr4185/nijiru-system">GitHub ikr4185/nijiru-system</a><br>
 		</div>
 	</aside>
 </div>
