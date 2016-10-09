@@ -131,6 +131,7 @@ class IrcLogic extends AbstractLogic {
 			die('ファイルが存在しません');
 		}
 
+		$i=0;
 		if (flock($fp, LOCK_SH)){
 
 			while (!feof($fp)) {
@@ -140,7 +141,8 @@ class IrcLogic extends AbstractLogic {
 				$buffer = htmlspecialchars($buffer);
 
 				// パース処理
-				$buffer = $this->pearseLog( $buffer );
+				$buffer = $this->pearseLog( $buffer, $i );
+				$i++;
 
 				// $html 追記
 				$html .= $buffer;
@@ -158,10 +160,11 @@ class IrcLogic extends AbstractLogic {
 	/**
 	 * ログデータのパース
 	 * @param $html
+	 * @param $i
 	 * @return mixed
 	 * @TODO 一行ずつこれを回すのでめっちゃ重い → かしまちゃんにやらせる？
 	 */
-	public function pearseLog( $html )
+	public function pearseLog( $html, $i )
 	{
 		// 改行を<br>に
 		$html = str_replace( "\n", "<br>", $html );
@@ -195,9 +198,9 @@ class IrcLogic extends AbstractLogic {
 			|| false!==strpos($html,'さんが入室しました')
 			|| false!==strpos($html,'さんが退室しました')
 		) {
-			$html = "<tr class=\"irc-bot\"><td class=\"nowrap\">".$html."</td></tr>\n";
+			$html = "<tr id=\"js_irc_log_{$i}\" class=\"js_irc_log irc-bot\"><td class=\"nowrap\">".$html."</td></tr>\n";
 		}else{
-			$html = "<tr><td class=\"nowrap\">".$html."</td></tr>\n";
+			$html = "<tr id=\"js_irc_log_{$i}\" class=\"js_irc_log\"><td class=\"nowrap\">".$html."</td></tr>\n";
 		}
 
 		// なまえ

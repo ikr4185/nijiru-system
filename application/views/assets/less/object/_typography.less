@@ -1,0 +1,78 @@
+// ==========================================================================
+// 共通
+// ==========================================================================
+.notice_text {
+	background: @njr_l_blue;
+	color: #fff;
+	.card_mixin;
+	p {
+		&:before{
+			content: url("../img/icons/ic_announcement_white_18dp_1x.png");
+			position: relative;
+			top: 5px;
+			margin-right: 10px;
+		}
+	}
+}
+
+.download_text {
+	word-break: break-all;
+	&:before{
+		content: url("../img/icons/ic_get_app_black_18dp_1x.png");
+		position: relative;
+		top: 5px;
+		margin-right: 10px;
+	}
+}
+
+// 汎用文字寄せ
+.text{
+	&--right{
+		text-align:right;
+	}
+	&--left {
+		text-align:left;
+	}
+
+	// flexを利用したもの
+	&__wrap {
+		//position: relative;
+		width: 100%;
+		display: -webkit-flex; /* Safari用 */
+		display: flex;
+		-webkit-justify-content: space-between; /* Safari用 */
+		justify-content: space-between;
+		-webkit-align-items: center; /* Safari用 */
+		align-items: center;
+	}
+	&__item{
+		display: inline-block;
+		//padding: 0 10px;
+	}
+}
+
+// ==========================================================================
+// PC
+// ==========================================================================
+
+@media screen and (min-width:769px){
+
+	// システムメッセージ
+	.notice_text {
+		padding: 20px;
+	}
+
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+	// システムメッセージ
+	.notice_text {
+		padding: 10px;
+	}
+
+}

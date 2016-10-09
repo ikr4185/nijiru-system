@@ -54,14 +54,24 @@ class IrcController extends AbstractController {
 
 		// 記事読み込み +  パース
 		$html = $this->IrcLogic->getLog( $date );
+
+		// 日付の調整
+		$timestamp = strtotime($date);
+		$before_date = ( "2014-06-28" == $date ) ? null : date( 'Y-m-d', strtotime('-1 day', $timestamp) );
+		$after_date = ( date('Y-m-d') == $date ) ? null : date( 'Y-m-d', strtotime('+1 day', $timestamp) );
 		
 		$result = array(
 			"html"  => $html,
 			"logsLink"  =>  "/irc",
 			"date"  => $date,
+			"before_date"  => $before_date,
+			"after_date"  => $after_date,
 			"msg"   => $this->IrcLogic->getMsg(),
 		);
-		$this->getView( "log", "IRC-Reader", $result );
+		$jsPathArray = array(
+			"http://njr-sys.net/application/views/assets/js/irc_log_search.js",
+		);
+		$this->getView( "log", "IRC-Reader", $result, $jsPathArray );
 	}
 	
 	public function logs81Action() {
@@ -85,12 +95,23 @@ class IrcController extends AbstractController {
 		// DB読み込み
 		$logs = $this->Irc81Logic->getLog81( $date );
 		
+		// 日付の調整
+		$timestamp = strtotime($date);
+		$before_date = ( "2014-06-28" == $date ) ? null : date( 'Y-m-d', strtotime('-1 day', $timestamp) );
+		$after_date = ( date('Y-m-d') == $date ) ? null : date( 'Y-m-d', strtotime('+1 day', $timestamp) );
+		
 		$result = array(
 			"logs"  => $logs,
 			"logsLink"  =>  "/irc/logs81",
+			"date"  => $date,
+			"before_date"  => $before_date,
+			"after_date"  => $after_date,
 			"msg"   => $this->IrcLogic->getMsg(),
 		);
-		$this->getView( "log_81", "IRC-Reader #site8181", $result );
+		$jsPathArray = array(
+			"http://njr-sys.net/application/views/assets/js/irc_log_search.js",
+		);
+		$this->getView( "log_81", "IRC-Reader #site8181", $result, $jsPathArray );
 	}
 	
 }
