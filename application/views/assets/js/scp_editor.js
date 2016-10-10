@@ -20,7 +20,28 @@ $(function(){
 	
 	function wikidotParser(str){
 
+		// block quote
+		str = str.replace(/> ((.|>)*?)$/gim,'njr-blockquote-start$1njr-blockquote-end');
+		str = str.replace(/(njr-blockquote-end)\n(njr-blockquote-start)/gim,'<br>');
+		str = str.replace(/(njr-blockquote-start)(.*?)(njr-blockquote-end)/gi,'<blockquote><p>$2</p></blockquote>');
+
+		// bold
 		str = str.replace(/\*\*(.*?)\*\*/gi,'<b>$1</b>');
+
+		// italic
+		str = str.replace(/\/\/(.*?)\/\//gi,'<em>$1</em>');
+
+		// underline
+		str = str.replace(/__(.*?)__/gi,'<span style="text-decoration: underline;">$1</span>');
+
+		// line-through
+		str = str.replace(/--(.*?)--/gi,'<span style="text-decoration: line-through;">$1</span>');
+
+		// head h1~h5
+		str = str.replace(/\+\+\+\+\+ (.*?)\n/gi,'<h5>$1</h5>\n');
+		str = str.replace(/\+\+\+\+ (.*?)\n/gi,'<h4>$1</h4>\n');
+		str = str.replace(/\+\+\+ (.*?)\n/gi,'<h3>$1</h3>\n');
+		str = str.replace(/\+\+ (.*?)\n/gi,'<h2>$1</h2>\n');
 		str = str.replace(/\+ (.*?)\n/gi,'<h1>$1</h1>\n');
 
 		str = str.replace(/\n*((.|\n|\/)+?)(\n\n|$)/g, "\n\n<p>$1</p>\n\n");
