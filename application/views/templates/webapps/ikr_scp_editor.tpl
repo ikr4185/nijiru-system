@@ -6,6 +6,7 @@
 
 		<div id="preview" class="scp_editor__preview"></div>
 
+		<code id="debug" class="scp_editor__debug"></code>
 
 		<div id="textarea" class="scp_editor__textarea" contenteditable="true">[[>]]
 [[module Rate]]
