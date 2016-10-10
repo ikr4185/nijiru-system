@@ -80,13 +80,26 @@
 	&__wrapper{
 		position: relative;
 		min-height: 100%;
+		max-width: 1000px;
+		margin: 0 auto;
 		text-align: center;
+
+		font-size: 12px;
 	}
 
 	&__main{
 		margin: 0 auto;
 		max-width: 800px;
 		text-align: left;
+	}
+
+	&__title{
+		&--1{
+			word-wrap: break-word;
+		}
+		&--2{
+			//.fz(18px);
+		}
 	}
 
 	&__preview{
@@ -102,6 +115,8 @@
 		// user resize
 		overflow: auto;
 		resize: vertical;
+
+		.fz(10);
 
 		p {
 			margin: .5em 0;
@@ -146,4 +161,30 @@
 			margin: 0;
 		}
 	}
+
+	&__debug{
+		.fz(10);
+	}
+}
+
+// ==========================================================================
+// SP
+// ==========================================================================
+
+@media screen and (max-width:768px){
+
+	.scp_editor {
+
+		&__title{
+			&--1{
+				text-align: left;
+				.fz(40);
+				word-wrap: break-word;
+			}
+			&--2{
+				.fz(30);
+			}
+		}
+	}
+
 }

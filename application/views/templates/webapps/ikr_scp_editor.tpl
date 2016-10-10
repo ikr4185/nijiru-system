@@ -1,13 +1,13 @@
 <div class="scp_editor__wrapper">
 
-	<h1>IKR_SCP_EDITOR_WEB</h1>
+	<h1 class="scp_editor__title--1">IKR_SCP_EDITOR_WEB(BETA)</h1>
 
 	<div class="scp_editor__main">
 
+		<h2 class="scp_editor__title--2">Preview</h2>
 		<div id="preview" class="scp_editor__preview"></div>
 
-		<code id="debug" class="scp_editor__debug"></code>
-
+		<h2 class="scp_editor__title--2">Edit</h2>
 		<div id="textarea" class="scp_editor__textarea" contenteditable="true">[[>]]
 [[module Rate]]
 [[/>]]
@@ -21,6 +21,9 @@
 
 **説明:** 武藏野、今や野にあらずして、畑也。其大部分は、##new|ネオサイタマ####old|埼玉縣##に屬す。日本國中、最も麥の收穫の多きは##new|ネオサイタマ####old|埼玉縣##なるが、この臺地、水田となすに由なければ、自然に多く麥を植ゑるに由るなるべし。臺地も間斷あり。其の凹める處は、小川流れ、水田あり。其の川の水、池より出づるもあれど、臺地方面の近郊にては、多く玉川上水の水をひけり。玉川上水は、啻に東京市内に入りて、飮用に供せらるゝのみならず、用水として田に引かるゝもの、二十餘處の多きに及べり。
 		</div>
+
+		<h2 class="scp_editor__title--2">debug(only beta)</h2>
+		<code id="debug" class="scp_editor__debug"></code>
 
 	</div>
 
