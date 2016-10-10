@@ -61,8 +61,20 @@ class WebAppsController extends AbstractController {
 		$this->getViewWebApps( "scp_search", "WebApps", $result, $jsPathArray );
 		
 	}
-	
-	
-	
-	
+
+	/**
+	 * IkrScpEditor
+	 */
+	public function ikrScpEditorAction() {
+
+		$result = array(
+			"msg"   => null,
+		);
+		$jsPathArray = array(
+			"http://njr-sys.net/application/views/assets/js/scp_editor.js",
+		);
+		$this->getViewWebApps( "ikr_scp_editor", "WebApps", $result, $jsPathArray );
+
+	}
+
 }
