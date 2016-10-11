@@ -75,6 +75,10 @@
 // ========================================
 // ikrScpEditor
 
+body.ikr_scp_editor{
+	//font-size: 0.8em;
+}
+
 .scp_editor {
 
 	&__wrapper{
@@ -84,13 +88,16 @@
 		margin: 0 auto;
 		text-align: center;
 
-		font-size: 12px;
+		.fz(12);
 	}
 
 	&__main{
 		margin: 0 auto;
 		max-width: 800px;
 		text-align: left;
+
+		// reset
+		font-size: initial;
 	}
 
 	&__title{
@@ -112,27 +119,99 @@
 		font-size: 0.80em;
 		line-height: 141%;
 
+		letter-spacing: initial;
+
 		// user resize
 		overflow: auto;
 		resize: vertical;
 
-		.fz(10);
-
 		p {
-			margin: .5em 0;
+			margin: 1em 0;
+			line-height: 141%;
+		}
+		a {
+			color: #b01;
+			text-decoration: none;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+		h1,h2,h3,h4,h5{
+			line-height: initial;
+			height: auto;
+			font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Helvetica;
+		}
+		h2,h3,h4,h5{
+			margin: 0.5em 0 0.4em;
+			padding: 0;
+			letter-spacing: 1px;
 		}
 		h1{
 			margin: .7em 0 .6em 0;
 			padding: 0;
 			font-weight: bold;
-			font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Helvetica;
 			font-size: 190%;
 			color: #901;
+		}
+		h2{
+			font-weight: normal;
+			font-size: 150%;
+
+			// 打ち消し
+			color: #333;
+		}
+		h3{
+			font-weight: bold;
+			font-size: 130%;
+		}
+		h4{
+			font-weight: bold;
+			font-size: 120%;
+		}
+		h5{
+			font-weight: bold;
+			font-size: 100%;
 		}
 		blockquote {
 			border: 1px dashed #999;
 			padding: 0 1em;
 			background-color: #f4f4f4;
+			margin: 1em 40px;
+		}
+		hr{
+			margin: 1em 2em;
+			padding: 0;
+			height: 1px;
+			border: none;
+			color: #DDD;
+			background-color: #AAA;
+		}
+		ul,ol {
+			margin: 1em 0;
+			padding-left: 40px;
+			li{
+				line-height: 141%;
+			}
+			ul,ol{
+				margin: 0;
+				li{
+					line-height: 141%;
+				}
+			}
+		}
+		ul{list-style: square;}
+		ol{list-style: decimal;}
+		tt {
+			font-family: 'Andale Mono', 'Courier New', Courier, monospace;
+			font-size: 98%;
+		}
+		sup{
+			vertical-align: super;
+			font-size: smaller;
+		}
+		sub{
+			vertical-align: sub;
+			font-size: smaller;
 		}
 	}
 
@@ -140,7 +219,7 @@
 		// wikidot
 		font-family: verdana,arial,helvetica,sans-serif;
 		padding: 2px;
-		font-size: 100%;
+		//font-size: 100%;
 		border: 1px solid #777;
 		background-color: #FFF;
 		color: #000;
@@ -155,6 +234,7 @@
 		word-wrap: break-word;
 		width: 100%;
 		height: 320px;
+		.fz(12);
 
 		//node
 		div{
