@@ -9,7 +9,11 @@
 
 		<h2 class="scp_editor__title--2">Edit</h2>
 
-		<div id="textarea" class="scp_editor__textarea" contenteditable="true">{literal}testtest
+		<div id="textarea" class="scp_editor__textarea" contenteditable="true">{literal}[[>]]
+[[module Rate]]
+[[/>]]
+
+testtest
 testtest
 
 **test**: test

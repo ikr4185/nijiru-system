@@ -98,6 +98,16 @@ $(function(){
 		// span
 		str = str.replace(/\[\[SPAN(.*?)]]((.|\n)*?)\[\[\/SPAN]]/gim,'<span$1>$2</span>');
 
+		// text-align
+		str = str.replace(/\[\[>]]((.|\n)*?)\[\[\/>]]/gim,'<div style="text-align: right;">$1</div>');
+		str = str.replace(/\[\[=]]((.|\n)*?)\[\[\/=]]/gim,'<div style="text-align: center;">$1</div>');
+		str = str.replace(/\[\[<]]((.|\n)*?)\[\[\/<]]/gim,'<div style="text-align: left;">$1</div>');
+
+		// module
+		str = str = str.replace(/\[\[module Rate]]/gim,'\n\n<div class="page-rate-widget-box"><span class="rate-points">評価:&nbsp;<span class="number prw54353">+5</span></span><span class="rateup btn btn-default"><a title="+投票をする">+</a></span><span class="ratedown btn btn-default"><a title="-投票をする">–</a></span><span class="cancel btn btn-default"><a title="投票を取り消し">x</a></span></div>\n\n');
+		str = str = str.replace(/\[\[module(.*?)]]((.|\n)*?)(\[\[\/module]])*?/gim,'\n\nMODULE $1 $2 /MODULE\n\n');
+		str = str = str.replace(/\[\[module(.*?)]]((.|\n)*?)(\[\[\/module]])*?/gim,'\n\nMODULE $1 $2 /MODULE\n\n');
+
 		// link
 		str = str.replace(/\[\[\[\*(.*?)]]]/gim,'<a href="http://ja.scp-wiki.net/wiki-syntax" target="_blank">$1</a>');
 		str = str.replace(/\[\*(.*?)( )*?\|( )*?(.*?)]/gim,'<a href="$1" target="_blank">$4</a>');
@@ -108,7 +118,7 @@ $(function(){
 		str = str.replace(/\[(.*?) (.*?)]/gim,'<a href="$1">$2</a>');
 
 		// ==========================================================================================
-		// modules
+		// p/br
 
 		// p
 		str = str.replace(/\n*((.|\n|\/)+?)(\n\n|$)/g, "\n\n<p>$1</p>\n\n");
@@ -127,7 +137,7 @@ $(function(){
 		str = str.replace(/(<\/p><br>)/g, '</p>');
 
 		// del div/span p
-		str = str.replace(/<p><(\/?(div)|(span))><\/p>/g, '<$1>');
+		str = str.replace(/<p><(\/?(div)|(span))(.*?)><\/p>/g, '<$1$4>');
 
 		// del block quote/ul/ol/h1-5 p
 		str = str.replace(/<p><(blockquote|ul|ol|h(\d))>/g, '<$1>');
