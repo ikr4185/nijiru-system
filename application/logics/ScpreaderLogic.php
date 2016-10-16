@@ -632,4 +632,20 @@ class ScpreaderLogic extends AbstractLogic {
 
 		return $result;
 	}
+	
+	
+	
+	/**
+	 * cliMtfChecker : 検索
+	 * @param $search
+	 * @return array
+	 */
+	public function searchScpJpNoLimit( $search ) {
+		$result = array();
+		
+		$result["protocol"] = $this->ScpJp->selectScpJpWhereProtocolNoLimit( $search );
+		$result["description"] = $this->ScpJp->selectScpJpWhereDescriptionNoLimit ( $search );
+		
+		return $result;
+	}
 }
