@@ -4,9 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d1dada7ac2d45ab4fa08d394bd123455",
-    "content-hash": "cbc1650dede207eec9efd3f6fa8660b6",
+    "hash": "e77c48b2748101162b5f484204ae9ed1",
+    "content-hash": "0ddc80e82188b2048fdd62ed7be165ca",
     "packages": [
+        {
+            "name": "abraham/twitteroauth",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abraham/twitteroauth.git",
+                "reference": "adf6a8ee92b0bac69cae7dded9743d5a7de0057e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abraham/twitteroauth/zipball/adf6a8ee92b0bac69cae7dded9743d5a7de0057e",
+                "reference": "adf6a8ee92b0bac69cae7dded9743d5a7de0057e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abraham\\TwitterOAuth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abraham Williams",
+                    "email": "abraham@abrah.am",
+                    "homepage": "https://abrah.am",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The first PHP Library to support OAuth 1.0A for Twitter's REST API.",
+            "homepage": "https://github.com/abraham/twitteroauth",
+            "keywords": [
+                "api",
+                "oauth",
+                "twitter"
+            ],
+            "time": "2014-11-18 00:05:59"
+        },
         {
             "name": "smarty/smarty",
             "version": "dev-master",
