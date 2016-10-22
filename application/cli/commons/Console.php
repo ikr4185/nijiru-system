@@ -32,5 +32,13 @@ class Console {
 		$microTime = str_pad($arrTime[1], 4, 0, STR_PAD_RIGHT);
 		return date('Y-m-d H:i:s', $arrTime[0]) . '.' .$microTime;
 	}
-	
+
+	/**
+	 * エラーログの出力
+	 * @param $msg
+	 */
+	public static function errorLog( $msg ) {
+		$preMsg = "[".self::getTime()."]";
+		file_put_contents("/home/njr-sys/public_html/error.log",$preMsg.$msg,FILE_APPEND);
+	}
 }
