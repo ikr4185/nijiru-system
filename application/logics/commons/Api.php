@@ -84,20 +84,29 @@ class Api {
         // サーバのHHPS証明書を信頼
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
+        // ヘッダも含めて全て取得
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
         // 実行
         $content = curl_exec($ch);
 
         $errNum = curl_errno($ch);
         $error = curl_error($ch);
 
+        //リクエストに関する情報
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($content, 0, $header_size);
+        $body = substr($content, $header_size);
+
         curl_close($ch);
 
         // エラー処理
         if (CURLE_OK !== $errNum) {
             die("{$error}__{$errNum}");
+//            throw new Exception($error . '__' . $errNum);
         }
 
-        return $content;
+        return array("head"=>$header, "body"=>$body);
     }
 
 }
