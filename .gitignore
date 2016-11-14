@@ -14,3 +14,5 @@
 /application/_cores/config/config.ini
 /php_my_admin
 cli/logs/
+node_modules/*
+!.gitkeep
