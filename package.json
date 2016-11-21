@@ -1,0 +1,30 @@
+{
+  "name": "nijiru-system",
+  "version": "1.0.0",
+  "description": "scp foundation jp auxiliary system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikr4185/nijiru-system.git"
+  },
+  "author": "ikr_4185",
+  "license": "CC-BY-SA-3.0",
+  "homepage": "http://njr-sys.net",
+  "keywords": [
+    "scp",
+    "foundation",
+    "jp",
+    "auxiliary",
+    "system"
+  ],
+  "bugs": {
+    "url": "https://github.com/ikr4185/nijiru-system/issues"
+  },
+  "dependencies": {
+    "casperjs": "^1.1.3",
+    "phantomjs": "^2.1.7"
+  }
+}
