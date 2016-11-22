@@ -14,4 +14,5 @@ echo -e ${date}"\t81\t"${memory_used_81} >> ${logfile}
 echo -e ${date}"\t"${server_free} >> ${logfile}
 echo -e "----------" >> ${logfile}
 #echo -e ${date}"\t"${server_pmap} >> ${logfile}
-exit;
+
+exit 0

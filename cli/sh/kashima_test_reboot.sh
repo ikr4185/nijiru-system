@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# rootで実行する事
-# sh /home/njr-sys/public_html/cli/sh/kashima_reboot.sh
 
-logfile="/home/njr-sys/public_html/cli/logs/KASHIMA_run.log"
+# sh /home/njr-sys/public_html/cli/sh/kashima_test_reboot.sh
+
+logfile="/home/njr-sys/public_html/cli/logs/KASHIMA_test_run.log"
 
 #現在のプロセスIDを取得
 pid_now=`sed -n '$p' ${logfile}`
@@ -15,7 +15,7 @@ kill -9 ${pid_now}
 sleep 3s
 
 # 起動
-nohup php /home/njr-sys/public_html/cli/KASHIMA-EXE2.php &
+nohup php /home/njr-sys/public_html/cli/KASHIMA-test.php &
 
 # pid 保存
 pid_new=$!
@@ -29,4 +29,4 @@ echo ${pid_new} >> ${logfile}
 
 echo reboot KASHIMA-EXE pid: ${pid_new}
 
-exit 0
+exit

@@ -14,4 +14,4 @@ if [ $isAlive != 1 ]; then
 	sh /home/njr-sys/public_html/cli/sh/kashima_81_reboot.sh
 fi
 
-exit;
+exit 0

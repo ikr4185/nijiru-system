@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# sh /home/njr-sys/public_html/cli/sh/kashima_stop.sh
+# sh /home/njr-sys/public_html/cli/sh/kashima_test_stop.sh
 
-logfile="/home/njr-sys/public_html/cli/logs/KASHIMA_run.log"
+logfile="/home/njr-sys/public_html/cli/logs/KASHIMA_test_run.log"
 
 #現在のプロセスIDを取得
 pid_now=`sed -n '$p' ${logfile}`
