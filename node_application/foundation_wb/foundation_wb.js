@@ -5,10 +5,17 @@
  * @see http://www.cosketch.com/API
  */
 
-var app = require('express').createServer()
-	, io = require('socket.io').listen(app);
-app.listen(8124);
+var express = require('express'),
+	app = express(),
+    http = require('http').Server(app),
+	io = require('socket.io')(http);
 
+// サーバーをポート8124番で起動
+http.listen(8124, function(){
+	console.log('listening on *:8124');
+});
+
+// GETを受けたらindex.htmlを返す
 app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/index.html');
 });
