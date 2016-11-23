@@ -29,4 +29,4 @@ echo ${pid_new} >> ${logfile}
 
 echo reboot KASHIMA-EXE pid: ${pid_new}
 
-exit
+exit 0
