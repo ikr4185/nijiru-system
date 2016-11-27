@@ -1,5 +1,6 @@
 <?php
 namespace Controllers;
+
 use Controllers\Commons\AbstractController;
 use Logics\WebAppsLogic;
 use Inputs\BasicInput;
@@ -10,57 +11,62 @@ use Inputs\BasicInput;
  * ニジルシステムWEBアプリケーション
  * @package Controllers
  */
-class WebAppsController extends AbstractController {
+class WebAppsController extends AbstractController
+{
 
-	/**
-	 * @var WebAppsLogic
-	 */
-	protected $logic;
-	/**
-	 * @var BasicInput
-	 */
-	protected $input;
+    /**
+     * @var WebAppsLogic
+     */
+    protected $logic;
+    /**
+     * @var BasicInput
+     */
+    protected $input;
 
-	protected function getLogic() {
-		$this->logic = new WebAppsLogic();
-	}
+    protected function getLogic()
+    {
+        $this->logic = new WebAppsLogic();
+    }
 
-	protected function getInput() {
-		$this->input = new BasicInput();
-	}
+    protected function getInput()
+    {
+        $this->input = new BasicInput();
+    }
 
-	public function indexAction() {
+    public function indexAction()
+    {
 
-		// 国へ帰るんだな
-		$this->redirect("index");
+        // 国へ帰るんだな
+        $this->redirect("index");
 
-	}
+    }
 
-	/**
-	 * SCP-Search
-	 */
-	public function scpSearchAction() {
+    /**
+     * SCP-Search
+     */
+    public function scpSearchAction()
+    {
 
-		// ポストされたらリダイレクト
-		if ( $this->input->isPost() ) {
+        // ポストされたらリダイレクト
+        if ($this->input->isPost()) {
 
-			$inputNumber = $this->input->getRequest("scp_search");
+            $inputNumber = $this->input->getRequest("scp_search");
 
-			if($this->logic->validateScpSearch( $inputNumber )){
-				$url = "http://scpjapan.wiki.fc2.com/wiki/SCP-" . $inputNumber;
-				$this->redirectTo($url);
-			}
-		}
+            if ($this->logic->validateScpSearch($inputNumber)) {
+                $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-" . $inputNumber;
+                $this->redirectTo($url);
+            }
+        }
 
-		$result = array(
-			"msg"   => $this->logic->getMsg(),
-		);
-		$jsPathArray = array(
-			"http://njr-sys.net/application/views/assets/js/webapps/scp_search.js",
-		);
-		$this->getViewWebApps( "scp_search", "WebApps", $result, $jsPathArray );
+        $result = array(
+            "msg" => $this->logic->getMsg(),
+        );
+        $jsPathArray = array(
+            "http://njr-sys.net/application/views/assets/js/webapps/scp_search.js",
+        );
+        $this->getViewWebApps("scp_search", "WebApps", $result, $jsPathArray);
 
-	}
+    }
 
     public function foundation_wbAction($id)
     {
@@ -68,13 +74,13 @@ class WebAppsController extends AbstractController {
         $this->validateFwbId($id);
 
         $result = array(
-            "msg"   => $this->logic->getMsg(),
-            "id"    => htmlspecialchars($id),
+            "msg" => $this->logic->getMsg(),
+            "id" => htmlspecialchars($id),
         );
         $jsPathArray = array(
             "http://njr-sys.net/application/views/assets/js/webapps/foundation_wb.js",
         );
-        $this->getViewWebApps( "foundation_wb", "WebApps", $result, $jsPathArray );
+        $this->getViewWebApps("foundation_wb", "WebApps", $result, $jsPathArray);
     }
 
     protected function validateFwbId($id)
@@ -89,7 +95,6 @@ class WebAppsController extends AbstractController {
             exit;
         }
     }
-
 
 
 }
