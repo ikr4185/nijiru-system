@@ -1,7 +1,7 @@
 <?php
 namespace Controllers;
 use Controllers\Commons\AbstractController;
-//use Logics\ContactLogic;
+use Logics\WebAppsLogic;
 use Inputs\BasicInput;
 
 
@@ -13,7 +13,7 @@ class ApiController extends AbstractController
 {
 
     /**
-     * @var ContactLogic
+     * @var WebAppsLogic
      */
     protected $logic;
     /**
@@ -22,7 +22,7 @@ class ApiController extends AbstractController
     protected $input;
 
     protected function getLogic() {
-//        $this->logic = new ContactLogic();
+        $this->logic = new WebAppsLogic();
     }
 
     protected function getInput() {
@@ -32,32 +32,40 @@ class ApiController extends AbstractController
     public function indexAction() {
         echo json_encode("error");
     }
-
+    
+    
+    /**
+     * 財団絵チャ: 保存
+     */
     public function saveWhiteBoardAction()
     {
+        $token = $this->input->getRequest("token");
         $data = $this->input->getRequest("data");
+        $pass = $this->input->getRequest("pass");
 
-        if (!empty($data)) {
-            echo json_encode("ok {$data}");
-        } else{
-            echo json_encode("error {$data}");
+        if (empty($token) || empty($data) || empty($pass)) {
+            echo json_encode("Empty! please fill data.");
             exit;
         }
-
-        //ヘッダに「data:image/png;base64,」が付いているので、それは外す
-        $canvas = preg_replace("/data:[^,]+,/i","",$data);
-
-        //残りのデータはbase64エンコードされているので、デコードする
-        $canvas = base64_decode($canvas);
-
-        //まだ文字列の状態なので、画像リソース化
-        $image = imagecreatefromstring($canvas);
-
-        //画像として保存（ディレクトリは任意）
-        imagesavealpha($image, TRUE); // 透明色の有効
-        imagepng($image ,'/home/njr-sys/public_html/node_application/foundation_wb/test.png');
-
-        exit;
+        
+        // DBに保存
+        $result = $this->logic->saveFwbImage($token, $data, $pass);
+    
+        if ($result) {
+            echo json_encode("ok");
+        } else{
+            echo json_encode("error");
+        }
+    }
+    
+    /**
+     * 財団絵チャ : 読み込み
+     * @param $token
+     */
+    public function loadWhiteBoardAction($token)
+    {
+        $record = $this->logic->loadFwbImage($token);
+        echo json_encode($record);
     }
 
 }

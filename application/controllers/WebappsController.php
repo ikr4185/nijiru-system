@@ -35,7 +35,6 @@ class WebAppsController extends AbstractController
 
     public function indexAction()
     {
-
         // 国へ帰るんだな
         $this->redirect("index");
 
@@ -46,7 +45,6 @@ class WebAppsController extends AbstractController
      */
     public function scpSearchAction()
     {
-
         // ポストされたらリダイレクト
         if ($this->input->isPost()) {
 
@@ -67,33 +65,24 @@ class WebAppsController extends AbstractController
         $this->getViewWebApps("scp_search", "WebApps", $result, $jsPathArray);
 
     }
-
-    public function foundation_wbAction($id)
+    
+    /**
+     * 財団絵チャ
+     * @param $token
+     */
+    public function foundation_wbAction($token)
     {
         // id バリデーション
-        $this->validateFwbId($id);
+        $this->logic->validateFwbToken($token);
 
         $result = array(
             "msg" => $this->logic->getMsg(),
-            "id" => htmlspecialchars($id),
+            "token" => htmlspecialchars($token),
         );
         $jsPathArray = array(
             "http://njr-sys.net/application/views/assets/js/webapps/foundation_wb.js",
         );
         $this->getViewWebApps("foundation_wb", "WebApps", $result, $jsPathArray);
-    }
-
-    protected function validateFwbId($id)
-    {
-        if (empty($id)) {
-            echo "ID Empty. please insert your id.";
-            exit;
-        }
-
-        if (!preg_match("/^[a-zA-Z0-9]+$/", $id)) {
-            echo "ID Error. please check your id.";
-            exit;
-        }
     }
 
 

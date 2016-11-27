@@ -5,37 +5,10 @@ $(function () {
 	var drawFlag = false;
 	var context = $("canvas").get(0).getContext('2d');
 
+	var token = $("#fwb-token").val();
+
 	// 初期ペンサイズ
 	context.lineWidth = 1;
-//		var socket = io.connect('http://localhost');
-
-//		// サーバからメッセージ受信
-//		socket.on('send user', function (msg) {
-//			context.strokeStyle = msg.color;
-//			context.lineWidth = 2;
-//			context.beginPath();
-//			context.moveTo(msg.fx, msg.fy);
-//			context.lineTo(msg.tx, msg.ty);
-//			context.stroke();
-//			context.closePath();
-//		});
-//
-//		socket.on('clear user', function () {
-//			context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
-//		});
-
-	$('#load').click(function (e) {
-		e.preventDefault();
-
-		var img = new Image();
-		var timestamp = new Date().getTime();
-
-		img.src = "http:///njr-sys.net/node_application/foundation_wb/test.png?" + timestamp;
-		img.onload = function () {
-			context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
-			context.drawImage(img, 0, 0);
-		};
-	});
 
 	$('canvas').mousedown(function (e) {
 		drawFlag = true;
@@ -81,6 +54,10 @@ $(function () {
 		context.lineWidth = 10;
 	});
 
+	/**
+	 * 描画処理
+	 * @param e
+	 */
 	function draw(e) {
 		var toX = e.pageX - $('canvas').offset().left - offset;
 		var toY = e.pageY - $('canvas').offset().top - offset;
@@ -91,46 +68,88 @@ $(function () {
 		context.stroke();
 		context.closePath();
 
-		// ３．サーバへのデータ送信方法
-//			// サーバへメッセージ送信
-//			socket.emit('server send', { fx:fromX, fy:fromY, tx:toX, ty:toY, color:context.strokeStyle });
 		fromX = toX;
 		fromY = toY;
 	}
 
+	/**
+	 * データ読み込み
+	 * @returns {boolean}
+	 */
+	function load(){
+
+		$.ajax({
+			type: 'GET',
+			url: 'http://njr-sys.net/api/loadWhiteBoard/'+token,
+			dataType: 'json',
+			success: function (data, dataType) {
+
+				// debug ////////////////////////////////////////
+				console.log("load / token : " + token);
+
+				// レコードが存在しない
+				if (!data) {
+					return false;
+				}
+
+				// 画像の表示
+				var image = new Image();
+				image.src = data[0].data;
+				image.onload = function(){
+					context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
+					context.drawImage(image, 0, 0);
+				};
+
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {
+				alert(errorThrown);
+			},
+			complete: function () {
+			}
+		});
+		return false;
+	}
+	// 初回ロード時に読み込み実行
+	load();
+
+	/**
+	 * 読み込みボタンによる読み込み
+	 */
+	$('#load').click(function (e) {
+		e.preventDefault();
+		load();
+	});
+
+	/**
+	 * データ保存
+	 */
 	$('#save').click(function () {
 		var d = $("canvas")[0].toDataURL("image/png");
 
 		var data = {
-			id: '1',
-			data: d
+			token: token,
+			data: d,
+			pass: "test"
 		};
 		$.ajax({
 			type: 'POST',
 			url: 'http://njr-sys.net/api/saveWhiteBoard',
 			data: data,
-//				scriptCharset: 'utf-8',
+			dataType: 'json',
 			success: function (data, dataType) {
-				alert("saved - njr-sys.net");
+				if (data === "ok") {
+					alert("saved - njr-sys.net");
+				}else{
+					alert(data);
+				}
 				console.log(data);
 			},
 			error: function (XMLHttpRequest, textStatus, errorThrown) {
-				alert("error - njr-sys.net");
-				console.log('通信失敗 ' + errorThrown);
+				alert(errorThrown);
 			},
 			complete: function () {
-				console.log('処理終了');
 			}
 		});
 		return false;
-//
-//			//スクリプトタグ生成
-//			var sc = document.createElement("script");
-//			sc.type = 'text/javascript';
-//			//アクセス先を指定
-//			sc.src = "//example.com/api/getData.php?key=xxx&callback=callbackFunc";
-//			//生成したスクリプトタグを追加、実行
-//			var parent = document.getElementsByTagName("script")[0];
-//			parent.parentNode.insertBefore(sc,parent);
 	});
 });

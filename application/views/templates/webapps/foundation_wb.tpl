@@ -1,13 +1,14 @@
 <div class="foundation_wb__wrapper">
 
+	{*JSでのToken判別で使用する*}
+	<input type="hidden" id="fwb-token" value="{$result["token"]}">
+
 	<div class="canvas-wrap">
 		<canvas width="500" height="400"></canvas>
 		<ul>
 			<li style="background-color:#000"></li>
 			<li style="background-color:#f00"></li>
-			<!--<li style="background-color:#0f0"></li>-->
 			<li style="background-color:#00f"></li>
-			<!--<li style="background-color:#ff0"></li>-->
 			<li style="background-color:#fff"></li>
 		</ul>
 		<div class="pen-size" id="pen-size">

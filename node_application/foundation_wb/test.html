@@ -1,216 +1,216 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<title>Canvas</title>
-	<style>
-		body {
-			/*margin: 20px;*/
-			margin: 0;
-		}
+<!--<!doctype html>-->
+<!--<html>-->
+<!--<head>-->
+	<!--<meta charset="utf-8">-->
+	<!--<title>Canvas</title>-->
+	<!--<style>-->
+		<!--body {-->
+			<!--/*margin: 20px;*/-->
+			<!--margin: 0;-->
+		<!--}-->
 
-		.canvas-wrap {
-			width: 550px;
-			height: 550px;
-		}
+		<!--.canvas-wrap {-->
+			<!--width: 550px;-->
+			<!--height: 550px;-->
+		<!--}-->
 
-		canvas {
-			top: 20px;
-			left: 20px;
-			border: 5px solid #ccc;
-		}
+		<!--canvas {-->
+			<!--top: 20px;-->
+			<!--left: 20px;-->
+			<!--border: 5px solid #ccc;-->
+		<!--}-->
 
-		#button {
-			position: relative;
-			top: -55px;
-			left: 260px;
-		}
+		<!--#button {-->
+			<!--position: relative;-->
+			<!--top: -55px;-->
+			<!--left: 260px;-->
+		<!--}-->
 
-		.buttons {
-			font-size: 120%;
-			width: 80px;
-			height: 50px;
-		}
+		<!--.buttons {-->
+			<!--font-size: 120%;-->
+			<!--width: 80px;-->
+			<!--height: 50px;-->
+		<!--}-->
 
-		ul {
-			margin: 0;
-			padding: 0;
-			list-style: none;
-		}
+		<!--ul {-->
+			<!--margin: 0;-->
+			<!--padding: 0;-->
+			<!--list-style: none;-->
+		<!--}-->
 
-		li {
-			cursor: pointer;
-			cursor: hand;
-			display: inline-block;
-			border: 1px solid #000;
-			width: 50px;
-			height: 50px;
-		}
-	</style>
-</head>
-<body>
-<div class="canvas-wrap">
-	<canvas width="500" height="400"></canvas>
-	<ul>
-		<li style="background-color:#000"></li>
-		<li style="background-color:#f00"></li>
-		<!--<li style="background-color:#0f0"></li>-->
-		<li style="background-color:#00f"></li>
-		<!--<li style="background-color:#ff0"></li>-->
-		<li style="background-color:#fff"></li>
-	</ul>
-	<div class="pen-size" id="pen-size">
-		<input type="button" id="pen-size_small" value="1px">
-		<input type="button" id="pen-size_medium" value="5px">
-		<input type="button" id="pen-size_large" value="10px">
-	</div>
-	<div id="button">
-		<input type="button" class="buttons" id="load" value="読込"/>
-		<input type="button" class="buttons" id="save" value="保存"/>
-		<input type="button" class="buttons" id="clear" value="消去"/>
-	</div>
-</div>
+		<!--li {-->
+			<!--cursor: pointer;-->
+			<!--cursor: hand;-->
+			<!--display: inline-block;-->
+			<!--border: 1px solid #000;-->
+			<!--width: 50px;-->
+			<!--height: 50px;-->
+		<!--}-->
+	<!--</style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="canvas-wrap">-->
+	<!--<canvas width="500" height="400"></canvas>-->
+	<!--<ul>-->
+		<!--<li style="background-color:#000"></li>-->
+		<!--<li style="background-color:#f00"></li>-->
+		<!--&lt;!&ndash;<li style="background-color:#0f0"></li>&ndash;&gt;-->
+		<!--<li style="background-color:#00f"></li>-->
+		<!--&lt;!&ndash;<li style="background-color:#ff0"></li>&ndash;&gt;-->
+		<!--<li style="background-color:#fff"></li>-->
+	<!--</ul>-->
+	<!--<div class="pen-size" id="pen-size">-->
+		<!--<input type="button" id="pen-size_small" value="1px">-->
+		<!--<input type="button" id="pen-size_medium" value="5px">-->
+		<!--<input type="button" id="pen-size_large" value="10px">-->
+	<!--</div>-->
+	<!--<div id="button">-->
+		<!--<input type="button" class="buttons" id="load" value="読込"/>-->
+		<!--<input type="button" class="buttons" id="save" value="保存"/>-->
+		<!--<input type="button" class="buttons" id="clear" value="消去"/>-->
+	<!--</div>-->
+<!--</div>-->
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-<!--<script src="/socket.io/socket.io.js"></script>-->
-<script type="text/javascript">
-	$(function () {
-		var offset = 5;
-		var fromX;
-		var fromY;
-		var drawFlag = false;
-		var context = $("canvas").get(0).getContext('2d');
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>-->
+<!--&lt;!&ndash;<script src="/socket.io/socket.io.js"></script>&ndash;&gt;-->
+<!--<script type="text/javascript">-->
+	<!--$(function () {-->
+		<!--var offset = 5;-->
+		<!--var fromX;-->
+		<!--var fromY;-->
+		<!--var drawFlag = false;-->
+		<!--var context = $("canvas").get(0).getContext('2d');-->
 
-		// 初期ペンサイズ
-		context.lineWidth = 1;
-//		var socket = io.connect('http://localhost');
+		<!--// 初期ペンサイズ-->
+		<!--context.lineWidth = 1;-->
+<!--//		var socket = io.connect('http://localhost');-->
 
-//		// サーバからメッセージ受信
-//		socket.on('send user', function (msg) {
-//			context.strokeStyle = msg.color;
-//			context.lineWidth = 2;
-//			context.beginPath();
-//			context.moveTo(msg.fx, msg.fy);
-//			context.lineTo(msg.tx, msg.ty);
-//			context.stroke();
-//			context.closePath();
-//		});
-//
-//		socket.on('clear user', function () {
-//			context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
-//		});
+<!--//		// サーバからメッセージ受信-->
+<!--//		socket.on('send user', function (msg) {-->
+<!--//			context.strokeStyle = msg.color;-->
+<!--//			context.lineWidth = 2;-->
+<!--//			context.beginPath();-->
+<!--//			context.moveTo(msg.fx, msg.fy);-->
+<!--//			context.lineTo(msg.tx, msg.ty);-->
+<!--//			context.stroke();-->
+<!--//			context.closePath();-->
+<!--//		});-->
+<!--//-->
+<!--//		socket.on('clear user', function () {-->
+<!--//			context.clearRect(0, 0, $('canvas').width(), $('canvas').height());-->
+<!--//		});-->
 
-		$('#load').click(function (e) {
-			e.preventDefault();
+		<!--$('#load').click(function (e) {-->
+			<!--e.preventDefault();-->
 
-			var img = new Image();
-			var timestamp = new Date().getTime();
+			<!--var img = new Image();-->
+			<!--var timestamp = new Date().getTime();-->
 
-			img.src = "http:///njr-sys.net/node_application/foundation_wb/test.png?" + timestamp;
-			img.onload = function () {
-				context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
-				context.drawImage(img, 0, 0);
-			};
-		});
+			<!--img.src = "http:///njr-sys.net/node_application/foundation_wb/test.png?" + timestamp;-->
+			<!--img.onload = function () {-->
+				<!--context.clearRect(0, 0, $('canvas').width(), $('canvas').height());-->
+				<!--context.drawImage(img, 0, 0);-->
+			<!--};-->
+		<!--});-->
 
-		$('canvas').mousedown(function (e) {
-			drawFlag = true;
-			fromX = e.pageX - $(this).offset().left - offset;
-			fromY = e.pageY - $(this).offset().top - offset;
-			return false;  // for chrome
-		});
+		<!--$('canvas').mousedown(function (e) {-->
+			<!--drawFlag = true;-->
+			<!--fromX = e.pageX - $(this).offset().left - offset;-->
+			<!--fromY = e.pageY - $(this).offset().top - offset;-->
+			<!--return false;  // for chrome-->
+		<!--});-->
 
-		$('canvas').mousemove(function (e) {
-			if (drawFlag) {
-				draw(e);
-			}
-		});
+		<!--$('canvas').mousemove(function (e) {-->
+			<!--if (drawFlag) {-->
+				<!--draw(e);-->
+			<!--}-->
+		<!--});-->
 
-		$('canvas').on('mouseup', function () {
-			drawFlag = false;
-		});
+		<!--$('canvas').on('mouseup', function () {-->
+			<!--drawFlag = false;-->
+		<!--});-->
 
-		$('canvas').on('mouseleave', function () {
-			drawFlag = false;
-		});
+		<!--$('canvas').on('mouseleave', function () {-->
+			<!--drawFlag = false;-->
+		<!--});-->
 
-		$('li').click(function () {
-			context.strokeStyle = $(this).css('background-color');
-		});
+		<!--$('li').click(function () {-->
+			<!--context.strokeStyle = $(this).css('background-color');-->
+		<!--});-->
 
-		$('#clear').click(function (e) {
-//			socket.emit('clear send');
-			e.preventDefault();
-			context.clearRect(0, 0, $('canvas').width(), $('canvas').height());
-		});
+		<!--$('#clear').click(function (e) {-->
+<!--//			socket.emit('clear send');-->
+			<!--e.preventDefault();-->
+			<!--context.clearRect(0, 0, $('canvas').width(), $('canvas').height());-->
+		<!--});-->
 
-		$('#pen-size_small').click(function (e) {
-			e.preventDefault();
-			context.lineWidth = 1;
-		});
-		$('#pen-size_medium').click(function (e) {
-			e.preventDefault();
-			context.lineWidth = 5;
-		});
-		$('#pen-size_large').click(function (e) {
-			e.preventDefault();
-			context.lineWidth = 10;
-		});
+		<!--$('#pen-size_small').click(function (e) {-->
+			<!--e.preventDefault();-->
+			<!--context.lineWidth = 1;-->
+		<!--});-->
+		<!--$('#pen-size_medium').click(function (e) {-->
+			<!--e.preventDefault();-->
+			<!--context.lineWidth = 5;-->
+		<!--});-->
+		<!--$('#pen-size_large').click(function (e) {-->
+			<!--e.preventDefault();-->
+			<!--context.lineWidth = 10;-->
+		<!--});-->
 
-		function draw(e) {
-			var toX = e.pageX - $('canvas').offset().left - offset;
-			var toY = e.pageY - $('canvas').offset().top - offset;
+		<!--function draw(e) {-->
+			<!--var toX = e.pageX - $('canvas').offset().left - offset;-->
+			<!--var toY = e.pageY - $('canvas').offset().top - offset;-->
 
-			context.beginPath();
-			context.moveTo(fromX, fromY);
-			context.lineTo(toX, toY);
-			context.stroke();
-			context.closePath();
+			<!--context.beginPath();-->
+			<!--context.moveTo(fromX, fromY);-->
+			<!--context.lineTo(toX, toY);-->
+			<!--context.stroke();-->
+			<!--context.closePath();-->
 
-			// ３．サーバへのデータ送信方法
-//			// サーバへメッセージ送信
-//			socket.emit('server send', { fx:fromX, fy:fromY, tx:toX, ty:toY, color:context.strokeStyle });
-			fromX = toX;
-			fromY = toY;
-		}
+			<!--// ３．サーバへのデータ送信方法-->
+<!--//			// サーバへメッセージ送信-->
+<!--//			socket.emit('server send', { fx:fromX, fy:fromY, tx:toX, ty:toY, color:context.strokeStyle });-->
+			<!--fromX = toX;-->
+			<!--fromY = toY;-->
+		<!--}-->
 
-		$('#save').click(function () {
-			var d = $("canvas")[0].toDataURL("image/png");
+		<!--$('#save').click(function () {-->
+			<!--var d = $("canvas")[0].toDataURL("image/png");-->
 
-			var data = {
-				id: '1',
-				data: d
-			};
-			$.ajax({
-				type: 'POST',
-				url: 'http://njr-sys.net/api/saveWhiteBoard',
-				data: data,
-//				scriptCharset: 'utf-8',
-				success: function (data, dataType) {
-					alert("saved - njr-sys.net");
-					console.log(data);
-				},
-				error: function (XMLHttpRequest, textStatus, errorThrown) {
-					alert("error - njr-sys.net");
-					console.log('通信失敗 ' + errorThrown);
-				},
-				complete: function () {
-					console.log('処理終了');
-				}
-			});
-			return false;
-//
-//			//スクリプトタグ生成
-//			var sc = document.createElement("script");
-//			sc.type = 'text/javascript';
-//			//アクセス先を指定
-//			sc.src = "//example.com/api/getData.php?key=xxx&callback=callbackFunc";
-//			//生成したスクリプトタグを追加、実行
-//			var parent = document.getElementsByTagName("script")[0];
-//			parent.parentNode.insertBefore(sc,parent);
-		});
-	});
-</script>
+			<!--var data = {-->
+				<!--id: '1',-->
+				<!--data: d-->
+			<!--};-->
+			<!--$.ajax({-->
+				<!--type: 'POST',-->
+				<!--url: 'http://njr-sys.net/api/saveWhiteBoard',-->
+				<!--data: data,-->
+<!--//				scriptCharset: 'utf-8',-->
+				<!--success: function (data, dataType) {-->
+					<!--alert("saved - njr-sys.net");-->
+					<!--console.log(data);-->
+				<!--},-->
+				<!--error: function (XMLHttpRequest, textStatus, errorThrown) {-->
+					<!--alert("error - njr-sys.net");-->
+					<!--console.log('通信失敗 ' + errorThrown);-->
+				<!--},-->
+				<!--complete: function () {-->
+					<!--console.log('処理終了');-->
+				<!--}-->
+			<!--});-->
+			<!--return false;-->
+<!--//-->
+<!--//			//スクリプトタグ生成-->
+<!--//			var sc = document.createElement("script");-->
+<!--//			sc.type = 'text/javascript';-->
+<!--//			//アクセス先を指定-->
+<!--//			sc.src = "//example.com/api/getData.php?key=xxx&callback=callbackFunc";-->
+<!--//			//生成したスクリプトタグを追加、実行-->
+<!--//			var parent = document.getElementsByTagName("script")[0];-->
+<!--//			parent.parentNode.insertBefore(sc,parent);-->
+		<!--});-->
+	<!--});-->
+<!--</script>-->
 
-</body>
-</html>
+<!--</body>-->
+<!--</html>-->
