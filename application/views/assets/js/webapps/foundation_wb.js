@@ -1,4 +1,35 @@
 $(function () {
+
+	// ----------------------------------------
+	// レスポンシブ対応
+	// ----------------------------------------
+
+	// var container = document.getElementById("canvas-wrap"),
+	// 	canvas1 = document.getElementById("canvas"),
+	// 	queue = null,
+	// 	wait = 300;
+	//
+	// // ページ読込時にCanvasサイズ設定 
+	// setCanvasSize();
+	//
+	// // リサイズ時にCanvasサイズを再設定 
+	// window.addEventListener("resize", function() {
+	// 	clearTimeout( queue );
+	// 	queue = setTimeout(function() {
+	// 		setCanvasSize();
+	// 	}, wait );
+	// }, false );
+	//
+	// // Canvasサイズをコンテナの100%に 
+	// function setCanvasSize() {
+	// 	canvas1.width = container.offsetWidth;
+	// 	canvas1.height = container.offsetHeight;
+	// }
+	
+	// ----------------------------------------
+	// 描画処理
+	// ----------------------------------------
+	
 	var offset = 5;
 	var fromX;
 	var fromY;
@@ -32,7 +63,8 @@ $(function () {
 	});
 
 	$('li').click(function () {
-		context.strokeStyle = $(this).css('background-color');
+		// context.strokeStyle = $(this).css('background-color');
+		context.strokeStyle = $(this).attr('data-pen-color');
 	});
 
 	$('#clear').click(function (e) {
@@ -125,11 +157,12 @@ $(function () {
 	 */
 	$('#save').click(function () {
 		var d = $("canvas")[0].toDataURL("image/png");
+		var pass = $("#fwb-pass").val();
 
 		var data = {
 			token: token,
 			data: d,
-			pass: "test"
+			pass: pass
 		};
 		$.ajax({
 			type: 'POST',

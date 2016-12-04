@@ -1,0 +1,94 @@
+.foundation_wb {
+
+	//body
+	margin: 0;
+	background: @clr_white;
+
+	.canvas-wrap {
+		height: 550px;
+	}
+
+	.canvas {
+		display: block;
+		width: 500px;
+		height: 400px;
+		//top: 20px;
+		//left: 20px;
+		border: 5px solid #ccc;
+	}
+
+	.controllers {
+
+		overflow: hidden;
+		width: 510px;
+
+		//display: flex;
+		//justify-content: flex-start;
+		//align-items: flex-start;
+		//flex-wrap: wrap;
+
+		&__pen-tools{
+			display: inline-block;
+		}
+		&__pen-color-ul{
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		&__pen-color {
+			cursor: hand;
+			display: inline-block;
+			border: 1px solid #000;
+			width: 50px;
+			height: 50px;
+
+			.button_mixin();
+
+			&--black {
+				background-color: #000;
+			}
+			&--red {
+				background-color: #f00;
+			}
+			&--blue {
+				background-color: #00f;
+			}
+			&--white {
+				background-color: #fff;
+			}
+		}
+		&__pen-size-div{
+
+		}
+		&__pen-size{
+			.button_mixin();
+			border: 1px solid #999;
+			&--s{}
+			&--m{}
+			&--l{}
+		}
+
+		&__load-tools{
+			//position: relative;
+			//top: -70px;
+			//left: 250px;
+			display: inline-block;
+			//width: 200px;
+			margin-bottom: 10px;
+		}
+		&__load-pass{
+
+		}
+		&__load-buttons {
+			.button_mixin();
+			border: 1px solid #999;
+			font-size: 120%;
+			width: 50px;
+			height: 30px;
+		}
+	}
+}
+
+@media screen and (max-width: 768px) {
+
+}
