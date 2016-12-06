@@ -19,6 +19,9 @@ RewriteBase /
 # phpMyAdmin へのアクセスを分岐
 RewriteCond %{REQUEST_URI} !^/php_my_admin/
 
+# Node系アプリケーションも分岐
+RewriteCond %{REQUEST_URI} !^/node_application/
+
 # リソースファイルを除く、全アクセスを application/index.php に集中
 RewriteRule !\.(js|ico|gif|jpg|png|css)$ application/index.php
 

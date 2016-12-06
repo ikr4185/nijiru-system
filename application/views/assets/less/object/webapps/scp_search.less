@@ -1,0 +1,58 @@
+.scp_search{
+
+	&__wrapper{
+		position: relative;
+		min-height: 100%;
+		text-align: center;
+	}
+
+	&__form {
+		.hidden();
+	}
+
+	&__number-display{
+		.card_mixin();
+		.fz(24);
+		padding: 20px;
+		margin: 20px;
+		background: @web-apps-blue-deep;
+		//.hidden;
+	}
+
+	&__table {
+		&-wrapper{
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+		}
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 5px;
+		margin-top: 0;
+		table-layout: fixed;
+		&-tr{
+			height: 60px;
+		}
+		&-th{
+
+		}
+		&-td{
+			.button {
+				.button_mixin();
+				text-align: center;
+				height: 60px;
+				line-height: 60px;
+				background: #C5C3C6;
+				color: @njr_txt;
+				&--go{
+					color: @web-apps-white;
+					background: @web-apps-blue;
+				}
+				&--clear{
+					color: @web-apps-white;
+					background: @web-apps-blue-deep;
+				}
+			}
+		}
+	}
+}

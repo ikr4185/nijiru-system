@@ -1,0 +1,141 @@
+.foundation_wb {
+
+	//body
+	margin: 0;
+	background: @clr_white;
+	letter-spacing: 0;
+
+	.canvas-wrap {
+		height: 500px;
+	}
+
+	.canvas {
+		display: block;
+		width: 500px;
+		height: 400px;
+		//top: 20px;
+		//left: 20px;
+		border: 5px solid @njr_gray_dark;
+	}
+
+	.controllers {
+
+		.bxs;
+
+		overflow: hidden;
+		width: 510px;
+		height: 100px;
+		padding: 4px;
+		border: 1px solid @njr_gray_dark;
+
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+
+		// ツールラッパー
+		&__pen-tools,
+		&__load-tools{
+			.bxs;
+			//display: inline-block;
+			height: 90px;
+		}
+
+		&__pen-tools,
+		&__load-tools{
+			.bxs;
+			height: 90px;
+			padding: 0 5px;
+		}
+
+		// ペンカラーバー
+		&__pen-color-ul,
+		&__pen-size-div,
+		&__load-buttons-div,
+		&__pen-alpha-div{
+			.bxs;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			font-size: 0; // 隙間の削除
+			width: 240px;
+		}
+
+
+		// ペンカラー
+		&__pen-color {
+			.bxs;
+			//display: table-cell;
+			cursor: hand;
+			display: inline-block;
+			border: 1px solid @njr_gray_dark;
+			width: 60px;
+			height: 30px;
+
+			.button_mixin();
+
+			&--black {
+				background-color: #000;
+			}
+			&--red {
+				background-color: #f00;
+			}
+			&--blue {
+				background-color: #00f;
+			}
+			&--white {
+				background-color: #fff;
+			}
+		}
+
+		// ペンサイズ
+		// ロードボタン
+		&__pen-size,
+		&__load-buttons,
+		&__pen-alpha{
+			.bxs;
+			.button_mixin();
+			border: 1px solid @njr_gray_dark;
+			width: 80px;
+			height: 30px;
+		}
+
+		&__pen-size{
+			&--s{}
+			&--m{}
+			&--l{}
+		}
+
+		// パスワード
+		&__load-pass{
+			.bxs;
+			display: block;
+			width: 240px;
+			height: 20px;
+			&-label{
+				.bxs;
+				display: block;
+				margin: 0;
+				padding: 0;
+				line-height: 20px;
+				color: @njr_txt;
+			}
+		}
+	}
+}
+
+
+// 幅が狭くなったら、編集できないようにする
+@media screen and (max-width: 510px) {
+
+	.foundation_wb {
+
+		.canvas {
+			width: 95%;
+			height: auto;
+		}
+		.controllers {
+			.hidden;
+		}
+	}
+}
