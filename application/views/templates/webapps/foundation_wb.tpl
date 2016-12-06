@@ -14,10 +14,15 @@
 					<li class="controllers__pen-color controllers__pen-color--blue" data-pen-color="#00f"></li>
 					<li class="controllers__pen-color controllers__pen-color--white" data-pen-color="#fff"></li>
 				</ul>
+				<div class="controllers__pen-alpha-div" id="pen-alpha">
+					<button class="controllers__pen-alpha" data-pen-alpha="1.0">α1.0</button>
+					<button class="controllers__pen-alpha" data-pen-alpha="0.5">α0.5</button>
+					<button class="controllers__pen-alpha" data-pen-alpha="0.1">α0.1</button>
+				</div>
 				<div class="controllers__pen-size-div" id="pen-size">
-					<button class="controllers__pen-size controllers__pen-size--s" id="pen-size_small">1px</button>
-					<button class="controllers__pen-size controllers__pen-size--m" id="pen-size_medium">5px</button>
-					<button class="controllers__pen-size controllers__pen-size--l" id="pen-size_large">10px</button>
+					<button class="controllers__pen-size controllers__pen-size--s" data-pen-size="1">1px</button>
+					<button class="controllers__pen-size controllers__pen-size--m" data-pen-size="10">10px</button>
+					<button class="controllers__pen-size controllers__pen-size--l" data-pen-size="30">30px</button>
 				</div>
 			</div>
 			<div class="controllers__load-tools" id="button">

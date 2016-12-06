@@ -43,12 +43,17 @@ class WebAppsLogic extends AbstractLogic {
     public function validateFwbToken($token)
     {
         if (empty($token)) {
-            echo "Token Empty. please insert your id.";
+            echo "Error. please insert your URL.";
             exit;
         }
 
-        if (!preg_match("/^[a-zA-Z0-9]+$/", $token)) {
-            echo "Token Error. please check your id.";
+        if (!preg_match('/^[a-zA-Z0-9\-]+$/', $token)) {
+            echo "Error. please check URL. you can use a~z, 0~9, and - (hyphen).";
+            exit;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9\-]{1,100}+$/', $token)) {
+            echo "Error. URL must be 100 characters or less";
             exit;
         }
     }

@@ -44,7 +44,22 @@ class ApiController extends AbstractController
         $pass = $this->input->getRequest("pass");
 
         if (empty($token) || empty($data) || empty($pass)) {
-            echo json_encode("Empty! please fill data.");
+            echo json_encode("Error. please fill pass.");
+            exit;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9\-]+$/', $token)) {
+            echo "Error. please check URL. you can use a~z, 0~9, and - (hyphen).";
+            exit;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9\-]+$/', $pass)) {
+            echo "Error. please check password. you can use a~z, 0~9, and - (hyphen).";
+            exit;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9\-]{1,100}+$/', $pass)) {
+            echo "Error. password must be 100 characters or less";
             exit;
         }
         

@@ -24,7 +24,7 @@
 
 		overflow: hidden;
 		width: 510px;
-		height: 90px;
+		height: 100px;
 		padding: 4px;
 		border: 1px solid @njr_gray_dark;
 
@@ -38,22 +38,21 @@
 		&__load-tools{
 			.bxs;
 			//display: inline-block;
-			height: 80px;
-			padding: 5px;
+			height: 90px;
 		}
 
-		&__pen-tools{
-		}
+		&__pen-tools,
 		&__load-tools{
 			.bxs;
-			height: 80px;
-			padding: 5px;
+			height: 90px;
+			padding: 0 5px;
 		}
 
 		// ペンカラーバー
 		&__pen-color-ul,
 		&__pen-size-div,
-		&__load-buttons-div{
+		&__load-buttons-div,
+		&__pen-alpha-div{
 			.bxs;
 			margin: 0;
 			padding: 0;
@@ -71,7 +70,7 @@
 			display: inline-block;
 			border: 1px solid @njr_gray_dark;
 			width: 60px;
-			height: 40px;
+			height: 30px;
 
 			.button_mixin();
 
@@ -92,15 +91,13 @@
 		// ペンサイズ
 		// ロードボタン
 		&__pen-size,
-		&__load-buttons {
+		&__load-buttons,
+		&__pen-alpha{
 			.bxs;
 			.button_mixin();
 			border: 1px solid @njr_gray_dark;
 			width: 80px;
 			height: 30px;
-			&--s{}
-			&--m{}
-			&--l{}
 		}
 
 		&__pen-size{
@@ -121,6 +118,7 @@
 				margin: 0;
 				padding: 0;
 				line-height: 20px;
+				color: @njr_txt;
 			}
 		}
 	}
