@@ -187,4 +187,28 @@ class ScpJpModel extends AbstractModel
 		return $this->execSql( 'SELECT vote FROM scp_jp WHERE del_flg = 0 AND created_at like (?);', array($date), true );
 	}
 	
+	// ==========================================================================================
+	// cli mtf checker 
+	
+	/**
+	 * 検索: プロトコル
+	 * @param $search
+	 * @return array|string
+	 */
+	public function selectScpJpWhereProtocolNoLimit ( $search ) {
+		
+		$search = "%{$search}%";
+		return $this->execSql( 'SELECT * FROM scp_jp WHERE protocol LIKE ? AND del_flg = 0 ORDER BY scp_num;', array($search), true );
+	}
+	/**
+	 * 検索: 説明
+	 * @param $search
+	 * @return array|string
+	 */
+	public function selectScpJpWhereDescriptionNoLimit ( $search ) {
+		
+		$search = "%{$search}%";
+		return $this->execSql( 'SELECT * FROM scp_jp WHERE description LIKE ? AND del_flg = 0 ORDER BY scp_num;', array($search), true );
+	}
+	
 }
