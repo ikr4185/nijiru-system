@@ -76,6 +76,7 @@ class WebAppsController extends AbstractController
         $this->logic->validateFwbToken($token);
 
         $result = array(
+            "isWhiteBoard" => true,
             "msg" => $this->logic->getMsg(),
             "token" => htmlspecialchars($token),
         );

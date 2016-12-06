@@ -21,11 +21,12 @@
 				</div>
 			</div>
 			<div class="controllers__load-tools" id="button">
-				<label>save pass: <input type="text" class="controllers__load-pass" id="fwb-pass"></label>
-				<br>
-				<button class="controllers__load-buttons" id="load">読込</button>
-				<button class="controllers__load-buttons" id="save">保存</button>
-				<button class="controllers__load-buttons" id="clear">消去</button>
+				<label class="controllers__load-pass-label">save pass: <input type="text" class="controllers__load-pass" id="fwb-pass"></label>
+				<div class="controllers__load-buttons-div">
+					<button class="controllers__load-buttons" id="load">読込</button>
+					<button class="controllers__load-buttons" id="save">保存</button>
+					<button class="controllers__load-buttons" id="clear">消去</button>
+				</div>
 			</div>
 		</div>
 	</div>
