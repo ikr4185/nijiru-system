@@ -22,7 +22,7 @@ class CliPmForwarding
     
     protected function getLogic()
     {
-        $this->Mail = new Mail("/home/njr-sys/public_html/application/views/mail_templates/test.tpl");
+        $this->Mail = new Mail("/home/njr-sys/public_html/application/views/mail_templates/pm_forwarding.tpl");
     }
     
     protected function getPm($password)
@@ -41,13 +41,14 @@ class CliPmForwarding
         $result = preg_replace('/(<div class="message-actions text-center">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
         $message1 = trim(strip_tags($result));
 
-        if ($result !== "error") {
+        if ($message1 !== "error") {
             // 送信する
-            $this->Mail->send('ikr_4185@njr-sys.net', array(
-                "user" => "育良 啓一郎",
+            $this->Mail->send('ikr.4185@gmail.com', array(
+                "user" => "ikr_4185",
                 "now" => date("Y-m-d H:i:s"),
                 "message1" => $message1
             ));
+            Console::log("MailSend");
         }
 
 //        var_dump($message1);
