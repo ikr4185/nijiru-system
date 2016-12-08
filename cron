@@ -23,4 +23,4 @@
 2 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserActivity
 
 # PM Forwarding
-1,30 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding
+1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding
