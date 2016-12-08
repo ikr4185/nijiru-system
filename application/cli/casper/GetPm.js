@@ -60,6 +60,8 @@ casper.then(function () {
 
 	// 遷移後少し待つ
 	this.wait(5000, function () {
+		// debug ////////////////////////////////////////
+		// casper.capture('/home/njr-sys/public_html/test/casper_test_01.png');
 	});
 });
 
@@ -80,6 +82,8 @@ casper.thenOpen(config.targetPageUrl, function () {
 		}
 
 	}).wait(1000, function () {
+		// debug ////////////////////////////////////////
+		// casper.capture('/home/njr-sys/public_html/test/casper_test_02.png');
 	});
 });
 
@@ -88,6 +92,8 @@ casper.then(function () {
 
 	this.wait(1000, function () {
 		casper.echo(this.getHTML(config.messageSelector));
+		// debug ////////////////////////////////////////
+		// casper.capture('/home/njr-sys/public_html/test/casper_test_03.png');
 	});
 });
 

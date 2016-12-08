@@ -41,7 +41,7 @@ class CliPmForwarding
         $result = preg_replace('/(<div class="message-actions text-center">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
         $message1 = trim(strip_tags($result));
 
-        if ($message1 !== "error") {
+        if (!empty($message1) && $message1 !== "error") {
             // 送信する
             $this->Mail->send('ikr.4185@gmail.com', array(
                 "user" => "ikr_4185",
