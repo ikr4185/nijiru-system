@@ -40,6 +40,18 @@ class CliUserGetterLogic extends AbstractLogic {
 		return $users;
 	}
 
+	public function getPageNumber( $html ) {
+
+		// ページャーの抽出
+		preg_match('@<div class="pager">.*?</a></span></div>@',$html,$matches);
+		unset($html);
+		
+		// ページの最大数を抽出
+		$pager = $matches[0];
+		preg_match_all('@updateMemberList\d*?\((\d*?)\)@',$pager,$matches);
+		return max($matches[1]);
+	}
+
 	public function matchUsers( $users ) {
 
 		// returnするやつの初期化
@@ -84,6 +96,28 @@ class CliUserGetterLogic extends AbstractLogic {
 			$this->SiteMembers->insert($name, $wikidot_id, $since);
 
 		}
+	}
+	
+	public function checkDeletedUser( $allUsers ) {
+		
+		// 最新一覧から名前だけの配列をつくって
+		$allUserNames = array();
+		foreach ($allUsers as $user){
+			$allUserNames[] =  $user["name"];
+		}
+
+		// DBの値(非ソフトデリート)を取ってきて
+		$records = $this->SiteMembers->getAll();
+		
+		// 保存済みユーザーが最新一覧に居なければ、ソフトデリート
+		foreach ($records as $record) {
+			
+			if (!in_array($record["name"],$allUserNames)) {
+				$this->SiteMembers->setSoftDelete( 1, $record["id"] );
+			}
+
+		}
+		
 	}
 
 }

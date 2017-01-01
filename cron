@@ -9,7 +9,7 @@
 # IRCbot「KAHSIMA-EXE」
 1 0 * * *  php /home/njr-sys/public_html/cli/cli_kashima_log_count.php
 1,16,31,46 * * * * sh /home/njr-sys/public_html/cli/sh/kashima_check.sh
-1,31 */1 * * * sh /home/njr-sys/public_html/cli/sh/kashima_memory_check.sh
+#1,31 */1 * * * sh /home/njr-sys/public_html/cli/sh/kashima_memory_check.sh
 
 # SCP-JPスクレイピング「SCP-JP Scraper」
 #1 1 * * * sh /home/njr-sys/public_html/cli/sh/scp_jp_scraping.sh
@@ -21,3 +21,6 @@
 # ユーザー情報抽出
 1 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserGetter
 2 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserActivity
+
+# PM Forwarding
+1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding

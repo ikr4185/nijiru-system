@@ -94,3 +94,13 @@ nijiruフレームワークは、MVC+LIモデルです。
 * /home/njr-sys/public_html/application/composer.json を修正
 * application に移動して
 * php composer.phar install
+
+### cron
+
+* /home/njr-sys/public_html/cron を修正
+* crontab /home/njr-sys/public_html/cron
+
+### Node.js
+
+* cd public_html/ 
+* npm install socket.io -S
