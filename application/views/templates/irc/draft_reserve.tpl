@@ -2,6 +2,12 @@
 
 	<h2 class="sub_title">下書き批評予約 {date( 'Y-m-d (D)', strtotime($result["date"]))}</h2>
 
+	<div class="section__inner text__wrap">
+		{if !empty($result["before_date"])}<a href="/irc/draftreserve/{$result["before_date"]}" class="text__item">&lt; {$result["before_date"]}</a>{/if}
+		<a href="/irc/draftreserve/" class="text__item">一覧へ</a>
+		{if !empty($result["after_date"])}<a href="/irc/draftreserve/{$result["after_date"]}" class="text__item">{$result["after_date"]} &gt;</a>{/if}
+	</div>
+
 	{if !empty($result["msg"])}
 		<div class="section__inner">
 			<div class="notice_text">
@@ -18,8 +24,8 @@
 				<tr>
 					<td class="wrap irc-table__message">{str_replace($result["date"],"",$item[0])}</td>
 					<td class="wrap irc-table__message">{$item[1]}</td>
-					<td class="wrap irc-table__message">{$item[2]}</td>
-					<td class="wrap irc-table__message"><a href="{$item[3]}" target="_blank">{$item[3]}</a></td>
+					<td class="irc-table__message">{$item[2]}</td>
+					<td class="irc-table__message"><a href="{$item[3]}" target="_blank">[link]</a></td>
 				</tr>
 			{/foreach}
 			</tbody>
