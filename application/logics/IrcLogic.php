@@ -82,7 +82,7 @@ class IrcLogic extends AbstractLogic
         
         return $dataArray;
     }
-
+    
     /**
      * @param $logArray
      * @return mixed
@@ -325,19 +325,19 @@ class IrcLogic extends AbstractLogic
     {
         $logs = array();
         $rawLogs = $this->getFileList($this->logsDir . "/irc/draft_reserve/");
-
+        
         foreach ($rawLogs as $filePath) {
-
+            
             if (file_exists($filePath)) {
-                $ret = trim(str_replace($filePath, "",exec('wc -l ' . $filePath)));
-
+                $ret = trim(str_replace($filePath, "", exec('wc -l ' . $filePath)));
+                
                 if (!empty($ret)) {
-                    $fileName = basename($filePath,".log");
-                    $logs[] = array($fileName,$ret);
+                    $fileName = basename($filePath, ".log");
+                    $logs[] = array($fileName, $ret);
                 }
             }
         }
-
+        
         return $logs;
     }
     
@@ -350,6 +350,15 @@ class IrcLogic extends AbstractLogic
     {
         $result = array();
         
+        // 検索クエリ中の全角スペースを半角に変換
+        $str = mb_convert_kana($str, 's', 'UTF-8');
+        
+        // 検索クエリを分割
+        $searchQueries = array($str);
+        if (strpos($str, " ")) {
+            $searchQueries = explode(" ", $str);
+        }
+        
         // ファイル一覧を取得
         $logFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
 //        $oldLogFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
@@ -359,6 +368,7 @@ class IrcLogic extends AbstractLogic
             
             // 検索結果が100件を超えたら終了
             if (count($result) > 100) {
+                $this->setMsg("検索結果が100件を超えました");
                 break;
             }
             
@@ -368,20 +378,36 @@ class IrcLogic extends AbstractLogic
             foreach ($logs as $log) {
                 
                 // 該当行に検索文字列が無ければ次へ
-                
+                foreach ($searchQueries as $str) {
+                    if (strpos($log, $str) === false) {
+                        continue 2;
+                    }
+                }
                 
                 // パース処理
                 // 2016-03-28 00:01:27 - (unReCret) - こいつはカーバンクルのルビー
-//                $pattern = "/\((.*?)\) - ((.*?){$str}(.*?))/";
-//                preg_match( $pattern, $log, $matches);
+                $pattern = '/\((.*?)\) - (.*?)$/';
+                preg_match($pattern, $log, $matches);
                 
                 if (empty($matches)) {
                     continue;
                 }
                 
+                $postDate = str_replace("irc-logs_", "", basename($logFilePath, ".dat"));
+                
+                $result[strtotime($postDate)] = array(
+                    "datetime" => $postDate,
+                    "color" =>$this->getColor($matches[1]),
+                    "nick" => $matches[1],
+                    "message" => $matches[2]
+                );
             }
+            
+            $count = count($result);
+            $this->setMsg("検索結果:{$count}件");
         }
         
+        krsort($result);
         return $result;
     }
     
@@ -409,7 +435,7 @@ class IrcLogic extends AbstractLogic
                     break;
                 }
                 
-                $resultArray[] = array();
+                $resultArray[] = $buffer;
             }
             
             flock($fp, LOCK_UN);

@@ -118,9 +118,12 @@ class IrcController extends AbstractController
         $this->getView("log_81", "IRC-Reader #site8181", $result, $jsPathArray);
     }
     
+    /**
+     * 下書き批評予約
+     * @param $date
+     */
     public function draftReserveAction($date)
     {
-
         if (empty($date)) {
             $this->draftReserveIndex();
             exit;
@@ -167,7 +170,10 @@ class IrcController extends AbstractController
         $this->getView("draft_reserve", "IRC-Reader draft_reserve", $result, $jsPathArray);
         
     }
-
+    
+    /**
+     * 下書き批評予約 -- 一覧
+     */
     public function draftReserveIndex()
     {
         $logs = $this->IrcLogic->getDraftReserveFiles();
@@ -188,7 +194,10 @@ class IrcController extends AbstractController
         $searchStr = $this->input->getRequest("search");
         
         // 全ログ検索
-        $searchResult = $this->IrcLogic->searchIrc($searchStr);
+        $searchResult = array();
+        if (!empty($searchStr)) {
+            $searchResult = $this->IrcLogic->searchIrc($searchStr);
+        }
         
         $result = array(
             "searchStr" => $searchStr,
