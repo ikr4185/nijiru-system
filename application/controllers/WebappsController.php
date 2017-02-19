@@ -85,6 +85,14 @@ class WebAppsController extends AbstractController
         );
         $this->getViewWebApps("foundation_wb", "WebApps", $result, $jsPathArray);
     }
+    
+    public function gohwAction($chapter)
+    {
+        $jsPathArray = array(
+            "http://njr-sys.net/application/views/assets/js/gohw/Chapter_{$chapter}.js",
+        );
+        $this->getViewWebApps("gohw", "WebApps", null, $jsPathArray);
+    }
 
 
 }

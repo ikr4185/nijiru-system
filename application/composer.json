@@ -1,6 +1,7 @@
 {
   "require": {
-    "smarty/smarty": "dev-trunk"
+    "smarty/smarty": "dev-trunk",
+    "abraham/twitteroauth": "^0.2.1"
   },
   "autoload": {
     "psr-4": {

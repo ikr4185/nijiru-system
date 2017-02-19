@@ -17,36 +17,36 @@
 
 	{if !empty($result["items"]) }
 
-		{if isset($result["items"]["error"]) }
-			{$result["items"]["error"]}
-		{else}
-
-			{foreach from=$result["items"] item=item}
-
-				<div class="section__head multi-box multi-box__bg">
-					<div class="title">
-						<a href="{$item['title-link']}">{$item['title']}</a>
-					</div>
-					<div class="b">
-						by {$item['started-by']} / at {$item['started-time']}
-					</div>
-					<div class="multi-box__mini">
-						Summary: {$item['description']}
-					</div>
-					<div class="multi-box__mini">
-						Posts: {$item['posts']}
-					</div>
-					<div class="multi-box__mini">
-						{if isset($item['hot'])}
-							{$item['hot'][0] nofilter}<br>
-							{$item['hot'][2] nofilter} by <span class="b">{$item['last-by']}</span><br>
-							勢い(開始から/レス数): {$item['hot'][1] nofilter}
+						{if isset($result["items"]["error"]) }
+							{$result["items"]["error"]}
 						{else}
-							N/A
-						{/if}
-					</div>
-				</div>
-				<div class="section__inner multi-box multi-box__main">
+
+							{foreach from=$result["items"] item=item}
+
+								<div class="section__head multi-box multi-box__bg">
+									<div class="title">
+										<a href="{$item['title-link']}">{$item['title']}</a>
+									</div>
+									<div class="b">
+										by {$item['started-by']} / at {$item['started-time']}
+									</div>
+									<div class="multi-box__mini">
+										Summary: {$item['description']}
+									</div>
+									<div class="multi-box__mini">
+										Posts: {$item['posts']}
+									</div>
+									<div class="multi-box__mini">
+										{if isset($item['hot'])}
+											{$item['hot'][0] nofilter}<br>
+											{$item['hot'][2] nofilter} by <span class="b">{$item['last-by']}</span><br>
+											勢い(開始から/レス数): {$item['hot'][1] nofilter}
+										{else}
+											N/A
+										{/if}
+									</div>
+								</div>
+								<div class="section__inner multi-box multi-box__main">
 
 				</div>
 

@@ -74,5 +74,5 @@ class Irc81Logic extends IrcLogic {
 
 		return $records;
 	}
-	
+    
 }
