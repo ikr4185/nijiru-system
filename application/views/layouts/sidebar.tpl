@@ -29,6 +29,7 @@
 			<div class="mb10 pl10">
 				<a href="http://{$view["serverName"]}/irc">IRC Reader</a><br>
 				<a href="http://{$view["serverName"]}/irc/logs81">#site8181</a><br>
+				<a href="http://{$view["serverName"]}/irc/draftreserve/" class="side_section__sub">下書き批評予約</a><br>
 			</div>
 
 			<h3 class="mb10">SCP記事データベース</h3>

@@ -40,7 +40,6 @@ class IrcController extends AbstractController
 
     public function indexAction()
     {
-
         // ログの日付リストを生成
         $logArray = $this->IrcLogic->getIrcLogArray();
 
@@ -54,7 +53,6 @@ class IrcController extends AbstractController
 
     public function logAction($date)
     {
-
         // バリデーション
         $this->IrcLogic->validateDate($date);
 
@@ -82,7 +80,6 @@ class IrcController extends AbstractController
 
     public function logs81Action()
     {
-
         // ログの日付リストを生成
         $logArray = $this->Irc81Logic->getIrcLog81Array();
 
@@ -96,7 +93,6 @@ class IrcController extends AbstractController
 
     public function log81Action($date)
     {
-
         // バリデーション
         $this->IrcLogic->validateDate($date);
 
@@ -124,6 +120,12 @@ class IrcController extends AbstractController
     
     public function draftReserveAction($date)
     {
+
+        if (empty($date)) {
+            $this->draftReserveIndex();
+            exit;
+        }
+
         // バリデーション
         $this->IrcLogic->validateDate($date);
 
@@ -147,7 +149,7 @@ class IrcController extends AbstractController
             );
 
             // リダイレクト
-            $this->redirect("irc","draftReserve",$date);
+            $this->redirect("irc", "draftReserve", $date);
         }
         
         // 予約一覧読み込み
@@ -157,13 +159,44 @@ class IrcController extends AbstractController
             "reserve" => $reserve,
             "data" => $data,
             "date" => $date,
+            "before_date" => date("Y-m-d", strtotime($date . '-1 day')),
+            "after_date" => date("Y-m-d", strtotime($date . '+1 day')),
             "msg" => $this->IrcLogic->getMsg(),
         );
-        $jsPathArray = array(
-            //            "http://njr-sys.net/application/views/assets/js/irc_log_search.js",
-        );
+        $jsPathArray = array();
         $this->getView("draft_reserve", "IRC-Reader draft_reserve", $result, $jsPathArray);
         
+    }
+
+    public function draftReserveIndex()
+    {
+        $logs = $this->IrcLogic->getDraftReserveFiles();
+        
+        $result = array(
+            "logs" => $logs,
+            "msg" => $this->IrcLogic->getMsg(),
+        );
+        $this->getView("draft_reserve_index", "IRC-Reader draft_reserve", $result);
+    }
+
+    /**
+     * IRCログ 検索
+     */
+    public function searchAction()
+    {
+        // POST取得
+        $searchStr = $this->input->getRequest("search");
+        
+        // 全ログ検索
+        $searchResult = $this->IrcLogic->searchIrc($searchStr);
+        
+        $result = array(
+            "searchStr" => $searchStr,
+            "searchResult" => $searchResult,
+            "msg" => $this->IrcLogic->getMsg(),
+        );
+        $jsPathArray = array();
+        $this->getView("search", "IRC-Reader Search", $result, $jsPathArray);
     }
     
     

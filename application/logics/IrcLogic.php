@@ -12,6 +12,7 @@ class IrcLogic extends AbstractLogic
 {
     
     protected $cliDir;
+    protected $logsDir;
     
     /**
      * コンストラクタ
@@ -22,6 +23,7 @@ class IrcLogic extends AbstractLogic
         
         // 初期設定
         $this->cliDir = Config::load("dir.cli");
+        $this->logsDir = Config::load("dir.logs");
     }
     
     protected function getModel()
@@ -49,7 +51,6 @@ class IrcLogic extends AbstractLogic
      */
     public function getIrcLogArray()
     {
-        
         // irc-logs_sizes.dat をチェックして配列に格納
         $logArray = $this->getSizes();
         
@@ -71,7 +72,6 @@ class IrcLogic extends AbstractLogic
      */
     protected function getSizes()
     {
-        
         $rawData = file($this->cliDir . "/logs/irc/irc-logs_sizes.dat");
         
         $dataArray = array();
@@ -82,14 +82,13 @@ class IrcLogic extends AbstractLogic
         
         return $dataArray;
     }
-    
+
     /**
      * @param $logArray
      * @return mixed
      */
     protected function renderBar($logArray)
     {
-        
         // 最大発言数
         $max = $this->getMax($logArray);
         
@@ -122,7 +121,6 @@ class IrcLogic extends AbstractLogic
      */
     protected function getMax($logArray)
     {
-        
         $sizes = array();
         foreach ($logArray as $log) {
             $sizes[] = intval(trim($log[1]));
@@ -133,7 +131,6 @@ class IrcLogic extends AbstractLogic
     // ログ内容を出力
     public function getLog($date)
     {
-        
         $html = "";
         
         // 記事読み込み
@@ -155,7 +152,7 @@ class IrcLogic extends AbstractLogic
                 $buffer = htmlspecialchars($buffer);
                 
                 // パース処理
-                $buffer = $this->pearseLog($buffer, $i);
+                $buffer = $this->parseLog($buffer, $i);
                 $i++;
                 
                 // $html 追記
@@ -178,7 +175,7 @@ class IrcLogic extends AbstractLogic
      * @return mixed
      * @TODO 一行ずつこれを回すのでめっちゃ重い → かしまちゃんにやらせる？
      */
-    public function pearseLog($html, $i)
+    public function parseLog($html, $i)
     {
         // 改行を<br>に
         $html = str_replace("\n", "<br>", $html);
@@ -249,17 +246,17 @@ class IrcLogic extends AbstractLogic
      */
     public function getDraftReserve($date)
     {
-        $dirName = "/home/njr-sys/public_html/logs/irc/draft_reserve/";
+        $dirName = $this->logsDir . "/irc/draft_reserve/";
         $fileName = $dirName . $date . ".log";
-
+        
         $logs = array();
         
-        // 記事読み込み
-        touch($fileName);
-        chmod($fileName, 0777);
+        // ファイル読み込み
         $fp = @fopen($fileName, 'r');
+        
+        // ファイルが存在しない場合
         if (!$fp) {
-            die('ファイルが存在しません');
+            return $logs;
         }
         
         if (flock($fp, LOCK_SH)) {
@@ -268,15 +265,15 @@ class IrcLogic extends AbstractLogic
                 
                 // 一行ずつ読み込んで$logsに格納
                 $buffer = fgets($fp);
-
+                
                 if (empty($buffer)) {
                     break;
                 }
-    
-                $this->convertComma($buffer,true);
+                
+                $this->convertComma($buffer, true);
                 $buffer = htmlspecialchars($buffer);
                 
-                $logs[] = explode(",",$buffer);
+                $logs[] = explode(",", $buffer);
             }
             flock($fp, LOCK_UN);
             
@@ -289,6 +286,13 @@ class IrcLogic extends AbstractLogic
         return $logs;
     }
     
+    /**
+     * 下書き批評予約
+     * @param $date
+     * @param $name
+     * @param $title
+     * @param $url
+     */
     public function setDraftReserve($date, $name, $title, $url)
     {
         // 予約時刻
@@ -302,15 +306,139 @@ class IrcLogic extends AbstractLogic
         // 追加行生成
         $data = $reserveTime . "," . $name . "," . $title . "," . $url . "\n";
         
-        $dirName = "/home/njr-sys/public_html/logs/irc/draft_reserve/";
+        $dirName = $this->logsDir . "/irc/draft_reserve/";
         file_put_contents($dirName . $date . ".log", $data, FILE_APPEND | LOCK_EX);
     }
     
-    protected function convertComma($str, $isToComma=false)
+    protected function convertComma($str, $isToComma = false)
     {
         if ($isToComma) {
-            return str_replace("@@,@@",",",$str);
+            return str_replace("@@,@@", ",", $str);
         }
-        return str_replace(",","@@,@@",$str);
+        return str_replace(",", "@@,@@", $str);
+    }
+    
+    /**
+     * 下書き批評予約__ファイル一覧
+     */
+    public function getDraftReserveFiles()
+    {
+        $logs = array();
+        $rawLogs = $this->getFileList($this->logsDir . "/irc/draft_reserve/");
+
+        foreach ($rawLogs as $filePath) {
+
+            if (file_exists($filePath)) {
+                $ret = trim(str_replace($filePath, "",exec('wc -l ' . $filePath)));
+
+                if (!empty($ret)) {
+                    $fileName = basename($filePath,".log");
+                    $logs[] = array($fileName,$ret);
+                }
+            }
+        }
+
+        return $logs;
+    }
+    
+    /**
+     * IRCログ 検索
+     * @param $str
+     * @return array
+     */
+    public function searchIrc($str)
+    {
+        $result = array();
+        
+        // ファイル一覧を取得
+        $logFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
+//        $oldLogFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
+        
+        // ログを検索
+        foreach ($logFilePaths as $logFilePath) {
+            
+            // 検索結果が100件を超えたら終了
+            if (count($result) > 100) {
+                break;
+            }
+            
+            // ログの各行ごとの配列を取得
+            $logs = $this->getLogArray($logFilePath);
+            
+            foreach ($logs as $log) {
+                
+                // 該当行に検索文字列が無ければ次へ
+                
+                
+                // パース処理
+                // 2016-03-28 00:01:27 - (unReCret) - こいつはカーバンクルのルビー
+//                $pattern = "/\((.*?)\) - ((.*?){$str}(.*?))/";
+//                preg_match( $pattern, $log, $matches);
+                
+                if (empty($matches)) {
+                    continue;
+                }
+                
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * IRCログファイルの読み込み
+     * @param $fileName
+     * @return array|bool
+     */
+    protected function getLogArray($fileName)
+    {
+        $resultArray = array();
+        $fp = @fopen($fileName, 'r');
+        
+        if (!$fp) {
+            return false;
+        }
+        
+        if (flock($fp, LOCK_SH)) {
+            
+            while (!feof($fp)) {
+                // 一行ずつ読み込んで$resultArrayに格納
+                $buffer = fgets($fp);
+                
+                if (empty($buffer)) {
+                    break;
+                }
+                
+                $resultArray[] = array();
+            }
+            
+            flock($fp, LOCK_UN);
+        } else {
+            return false;
+        }
+        
+        fclose($fp);
+        return $resultArray;
+    }
+    
+    /**
+     * ファイル一覧の取得
+     * @see http://blog.asial.co.jp/1250
+     * @param $dir
+     * @return array
+     */
+    protected function getFileList($dir)
+    {
+        $iterator = new \RecursiveDirectoryIterator($dir);
+        $iterator = new \RecursiveIteratorIterator($iterator);
+        
+        $list = array();
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isFile()) {
+                $list[] = $fileInfo->getPathname();
+            }
+        }
+        
+        return $list;
     }
 }
