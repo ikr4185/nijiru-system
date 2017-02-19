@@ -10,6 +10,11 @@ use \Cores\Config\Config;
  */
 class IrcLogic extends AbstractLogic
 {
+
+    /**
+     * IRC検索上限数
+     */
+    const SEARCH_LIMIT = 300;
     
     protected $cliDir;
     protected $logsDir;
@@ -61,7 +66,7 @@ class IrcLogic extends AbstractLogic
         $logArray[] = array(
             date('Y-m-d', time()),
             null,
-            "集計中"
+            "集計中",
         );
         
         return array_reverse($logArray);
@@ -200,24 +205,14 @@ class IrcLogic extends AbstractLogic
         }
         
         // botのワードを抽出
-        if (
-            false !== strpos($html, '[SCP-JP]')
-            || false !== strpos($html, '[SCP]')
-            || false !== strpos($html, '[WIKI]')
-            || false !== strpos($html, '[SANDBOX]')
-            || false !== strpos($html, '起動しました')
-            || false !== strpos($html, 'さんが入室しました')
-            || false !== strpos($html, 'さんが退室しました')
-        ) {
+        if (false !== strpos($html, '[SCP-JP]') || false !== strpos($html, '[SCP]') || false !== strpos($html, '[WIKI]') || false !== strpos($html, '[SANDBOX]') || false !== strpos($html, '起動しました') || false !== strpos($html, 'さんが入室しました') || false !== strpos($html, 'さんが退室しました')) {
             $html = "<tr id=\"js_irc_log_{$i}\" class=\"js_irc_log irc-bot\"><td class=\"nowrap\">" . $html . "</td></tr>\n";
         } else {
             $html = "<tr id=\"js_irc_log_{$i}\" class=\"js_irc_log\"><td class=\"nowrap\">" . $html . "</td></tr>\n";
         }
         
         // なまえ
-        $html = preg_replace('/( - \()(.*?)(\) - )/',
-            "<td class=\"nowrap\"><span class=\"b {$color}\">&lt;$2&gt;</span></td><td class=\"wrap irc-table__message\">\t",
-            $html);
+        $html = preg_replace('/( - \()(.*?)(\) - )/', "<td class=\"nowrap\"><span class=\"b {$color}\">&lt;$2&gt;</span></td><td class=\"wrap irc-table__message\">\t", $html);
         
         // URLリンク生成
         $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?/', "<a href=\"$0\">$0</a>", $html);
@@ -348,8 +343,6 @@ class IrcLogic extends AbstractLogic
      */
     public function searchIrc($str)
     {
-        $result = array();
-        
         // 検索クエリ中の全角スペースを半角に変換
         $str = mb_convert_kana($str, 's', 'UTF-8');
         
@@ -361,56 +354,94 @@ class IrcLogic extends AbstractLogic
         
         // ファイル一覧を取得
         $logFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
-//        $oldLogFilePaths = $this->getFileList($this->cliDir . "/logs/irc");
         
         // ログを検索
+        $result = array();
+        $result = $this->searchIrcLog($logFilePaths, $searchQueries, '/\((.*?)\) - (.*?)$/', "irc-logs_", ".dat", $result);
+
+        // 新ログでまだ検索数上限に満たないなら、旧ログも検索
+        if (count($result) < self::SEARCH_LIMIT) {
+            $oldLogFilePaths = $this->getFileList($this->cliDir . "/logs/irc_old");
+            $result = $this->searchIrcLog($oldLogFilePaths, $searchQueries, '/<(.*?)> (.*?)$/', "irc-logs_", ".log", $result);
+        }
+
+        $resultCount = count($result);
+
+        // メッセージ表示
+        $this->setMsg("検索結果:{$resultCount}件");
+        if ($resultCount >= self::SEARCH_LIMIT) {
+            $this->setMsg("検索結果:".self::SEARCH_LIMIT."件までを表示します");
+        }
+
+        krsort($result);
+        return $result;
+    }
+
+    /**
+     * 検索実処理
+     * @param $logFilePaths
+     * @param $searchQueries
+     * @param $pattern
+     * @param string $logPrefix
+     * @param string $logExtension
+     * @param array $result
+     * @return array
+     */
+    protected function searchIrcLog($logFilePaths, $searchQueries, $pattern, $logPrefix = "irc-logs_", $logExtension = ".dat", $result = array())
+    {
+        $resultCount = count($result);
+
+        // ログを検索
         foreach ($logFilePaths as $logFilePath) {
-            
-            // 検索結果が100件を超えたら終了
-            if (count($result) > 100) {
-                $this->setMsg("検索結果が100件を超えました");
-                break;
-            }
-            
+
             // ログの各行ごとの配列を取得
             $logs = $this->getLogArray($logFilePath);
-            
+
             foreach ($logs as $log) {
-                
+
                 // 該当行に検索文字列が無ければ次へ
                 foreach ($searchQueries as $str) {
                     if (strpos($log, $str) === false) {
                         continue 2;
                     }
                 }
-                
+
                 // パース処理
-                // 2016-03-28 00:01:27 - (unReCret) - こいつはカーバンクルのルビー
-                $pattern = '/\((.*?)\) - (.*?)$/';
                 preg_match($pattern, $log, $matches);
-                
                 if (empty($matches)) {
                     continue;
                 }
-                
-                $postDate = str_replace("irc-logs_", "", basename($logFilePath, ".dat"));
-                
-                $result[strtotime($postDate)] = array(
-                    "datetime" => $postDate,
-                    "color" =>$this->getColor($matches[1]),
-                    "nick" => $matches[1],
-                    "message" => $matches[2]
-                );
+                $postDate = str_replace($logPrefix, "", basename($logFilePath, $logExtension));
+                if (!strtotime($postDate)) {
+                    continue;
+                }
+
+                // 検索結果の格納
+                if (!isset($result[strtotime($postDate)])) {
+                    $resultCount++;
+                    $result[strtotime($postDate)] = array(
+                        "datetime" => $postDate,
+                        "color" => $this->getColor($matches[1]),
+                        "nick" => $matches[1],
+                        "message" => $matches[2],
+                    );
+                }
+
+                // 検索結果が検索数上限を超えたら終了
+                if ($resultCount >= self::SEARCH_LIMIT) {
+                    break 2;
+                }
             }
-            
-            $count = count($result);
-            $this->setMsg("検索結果:{$count}件");
         }
-        
-        krsort($result);
+
         return $result;
     }
     
+    public function getSearchLimit()
+    {
+        return self::SEARCH_LIMIT;
+    }
+
     /**
      * IRCログファイルの読み込み
      * @param $fileName

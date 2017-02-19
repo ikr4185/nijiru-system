@@ -2,7 +2,7 @@
 	<h2 class="sub_title">#scp-jp 検索</h2>
 	<p>
 		IRC #scp-jp ログからワード検索します<br>
-		※ 検索結果が多い場合、最新100件までを表示します
+		※ 検索結果が多い場合、最新{$result["searchLimit"]}件までを表示します
 	</p>
 </div>
 
