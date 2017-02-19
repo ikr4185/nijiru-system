@@ -27,9 +27,10 @@
 		<div class="side_section">
 			<h3 class="mb10">IRCbot "KASHIMA-EXE"</h3>
 			<div class="mb10 pl10">
-				<a href="http://{$view["serverName"]}/irc">IRC Reader</a><br>
-				<a href="http://{$view["serverName"]}/irc/logs81">#site8181</a><br>
+				<a href="http://{$view["serverName"]}/irc">IRC Reader #scp-jp</a><br>
+				<a href="http://{$view["serverName"]}/irc/logs81">IRC Reader #site8181</a><br>
 				<a href="http://{$view["serverName"]}/irc/draftreserve/" class="side_section__sub">下書き批評予約</a><br>
+				<a href="http://{$view["serverName"]}/irc/search/" class="side_section__sub">#scp-jp 検索</a><br>
 			</div>
 
 			<h3 class="mb10">SCP記事データベース</h3>
