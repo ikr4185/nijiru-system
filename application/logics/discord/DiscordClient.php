@@ -14,7 +14,8 @@ use Cli\Commons\Console;
 class DiscordClient
 {
     const END_POINT_BASE_URL = "https://discordapp.com/api";
-    
+    const TIMEOUT = 10;
+
     /**
      * @var Api
      */
@@ -39,7 +40,19 @@ class DiscordClient
      * デバッグ判定
      * @var bool
      */
-    protected $isDebugMode = true;
+    protected $isDebugMode = false;
+
+    /**
+     * HeartBeat 最終送信時刻
+     * @var int
+     */
+    protected $lastHeartBeat = 0;
+
+    /**
+     * HeartBeat インターバル
+     * @var int
+     */
+    protected $heartbeatInterval = 0;
 
     /**
      * タイマー設定
@@ -55,7 +68,7 @@ class DiscordClient
 
     public function __destruct()
     {
-        Console::log("Disconnect.", "SYSTEM");
+        Console::log("Disconnect.", "CONNECTION");
         $this->client->close();
     }
     
@@ -93,36 +106,34 @@ class DiscordClient
      */
     public function connectWebSocket($url)
     {
-        Console::log(" Connection Start. ========================================", "SYSTEM");
+        Console::log("Start. ========================================", "CONNECTION");
 
         $url = $url . "?v=5&encoding=json";
 
         // タイムアウト
-        $options = array('timeout' => 30);
+        $options = array('timeout' => self::TIMEOUT);
 
         try {
 
             // 接続開始
-            Console::log("Connecting {$url}", "SYSTEM");
+            Console::log("Connecting {$url}", "CONNECTION");
             $this->client = new ClientWrapper($url, $options);
 
             $json = $this->client->receive();
             $this->parseReceive($json);
 
             // HeartBeat 送信時刻を記録
-            $heartbeatInterval = json_decode($json)->d->heartbeat_interval;
-            $lastHeartBeat = time();
+            $this->heartbeatInterval = json_decode($json)->d->heartbeat_interval / 1000;
+            $this->lastHeartBeat = time();
 
             // WebSocket接続後即時に、OP 1 Heartbeat ペイロードを送信
-            Console::log("Send OP 1 Heartbeat payloads.", "SYSTEM");
             $this->gatewayHeartbeat();
 
             $json = $this->client->receive();
             $this->parseReceive($json);
 
             // OP 2 Identify ペイロードを送信
-            // 'heartbeat_interval' => 41250
-            Console::log("Send OP 2 Identify payloads.", "SYSTEM");
+            // 'heartbeat_interval' => 41250 を想定
             $this->gatewayIdentify();
 
             // [READY] check
@@ -130,13 +141,13 @@ class DiscordClient
             $this->parseReceive($json);
 
             // 接続完了
-            Console::log("Connect Success.", "SYSTEM");
+            Console::log("Success. ========================================", "CONNECTION");
 
         } catch (ConnectionException $e) {
-            Console::log("Connect Failed.", "SYSTEM");
-            die($e->getMessage());
+            Console::log("[FAILED] {$e->getMessage()} ========================================", "CONNECTION");
+            die();
         } catch (\Exception $e) {
-            Console::log("Failed.", "SYSTEM");
+            Console::log("[FAILED] UNKNOWN ERROR. ========================================", "SYSTEM");
             die($e->getMessage());
         }
 
@@ -148,21 +159,15 @@ class DiscordClient
 
             // 受信開始
             $json = $this->client->receive();
-            $isEvent = $this->parseReceive($json);
+            $op = $this->parseReceive($json);
 
-            // イベントパース失敗、またはHeartBeat期限直前だったら
-            if (!$isEvent || time() > $heartbeatInterval + $lastHeartBeat - 10) {
+            // HeartBeat 送信
+            // しきい値は Receiveタイムアウト より parseReceiveの処理分だけ長めに取る
+            if (time() > $this->lastHeartBeat + $this->heartbeatInterval - (self::TIMEOUT + 5)) {
 
                 // OP 1 Heartbeat 送信
-                Console::log("Send OP 1 Heartbeat payloads.", "SYSTEM");
                 $this->gatewayHeartbeat();
 
-                // 受信
-                $json = $this->client->receive();
-                $this->parseReceive($json);
-
-                // HeartBeat 送信時刻を記録
-                $lastHeartBeat = time();
             }
         }
     }
@@ -178,6 +183,7 @@ class DiscordClient
         $payload->d = 251;
         $payload = json_encode($payload);
 
+        Console::log("OP 1 Heartbeat payloads.", "SEND");
         $this->client->send($payload);
     }
 
@@ -206,16 +212,15 @@ class DiscordClient
             'd' => $data,
         );
 
+        Console::log("OP 2 Identify payloads.", "SEND");
         $payload = json_encode($payload);
-//        Console::log($payload,"SYSTEM");
-
         $this->client->send($payload);
     }
 
     /**
      * Receiveペイロード毎の分岐処理
      * @param $json
-     * @return bool
+     * @return mixed
      */
     protected function parseReceive($json)
     {
@@ -224,12 +229,12 @@ class DiscordClient
 
         // ex) Timeout
         if ($receive === null) {
-            Console::log("Receive Null", "RECEIVE");
-            return false;
+            Console::log("[TIMEOUT] Receive Null", "RECEIVE");
+            return 999;
         }
 
         if ($this->isDebugMode) {
-            Console::log("DEBUG DUMP", "SYSTEM");
+            Console::log("[DEBUG] DUMP", "SYSTEM");
             var_dump($receive);
         }
 
@@ -238,34 +243,38 @@ class DiscordClient
 
             // Gateway OP Codes
             if ($receive->op === 1) {
-                Console::log("OP 1 Gateway Heartbeat", "RECEIVE");
+                Console::log("[OPERATION] OP 1 Gateway Heartbeat", "RECEIVE");
             } elseif ($receive->op === 2) {
-                Console::log("OP 2 Identify", "RECEIVE");
+                Console::log("[OPERATION] OP 2 Identify", "RECEIVE");
             } elseif ($receive->op === 3) {
-                Console::log("OP 3 Status Update", "RECEIVE");
+                Console::log("[OPERATION] OP 3 Status Update", "RECEIVE");
             } elseif ($receive->op === 4) {
-                Console::log("OP 4 Voice State Update", "RECEIVE");
+                Console::log("[OPERATION] OP 4 Voice State Update", "RECEIVE");
             } elseif ($receive->op === 5) {
-                Console::log("OP 5 Voice Server Ping", "RECEIVE");
+                Console::log("[OPERATION] OP 5 Voice Server Ping", "RECEIVE");
             } elseif ($receive->op === 6) {
-                Console::log("OP 6 Resume", "RECEIVE");
+                Console::log("[OPERATION] OP 6 Resume", "RECEIVE");
             } elseif ($receive->op === 7) {
-                Console::log("OP 7 Reconnect", "RECEIVE");
+                Console::log("[OPERATION] OP 7 Reconnect", "RECEIVE");
             } elseif ($receive->op === 8) {
-                Console::log("OP 8 Request Guild Members", "RECEIVE");
+                Console::log("[OPERATION] OP 8 Request Guild Members", "RECEIVE");
             } elseif ($receive->op === 9) {
-                Console::log("OP 9 Invalid Session", "RECEIVE");
+                Console::log("[OPERATION] OP 9 Invalid Session", "RECEIVE");
             } elseif ($receive->op === 10) {
-                Console::log("OP 10 Gateway Hello", "RECEIVE");
+                Console::log("[OPERATION] OP 10 Gateway Hello", "RECEIVE");
             } elseif ($receive->op === 11) {
-                Console::log("OP 11 Gateway Heartbeat ACK", "RECEIVE");
+                Console::log("[OPERATION] OP 11 Gateway Heartbeat ACK", "RECEIVE");
+
+                // HeartBeat 送信時刻を記録
+                $this->lastHeartBeat = time();
+                Console::log("Heartbeat time save. " . date("Y-m-d H:i:s", $this->lastHeartBeat + $this->heartbeatInterval), "SYSTEM");
+
             } else {
                 // それ以外の時は詳細を表示
                 var_dump($receive);
-                return false;
             }
 
-            return true;
+            return $receive->op;
         }
 
         // イベント毎の分岐
@@ -339,9 +348,13 @@ class DiscordClient
                 $user_id = $receive->d->author->id;
                 Console::log("[MESSAGE_CREATE] {$nick}: {$content}", "RECEIVE");
 
-                // 問答無用でデレる
-                $this->getCute($channel_id, $user_id, $content);
+                // KASHIMAの発言を除外
+                if ($user_id == Config::load("discord.id")) {
+                    break;
+                }
 
+                $this->getCute($channel_id, $content);
+                $this->getHelp($channel_id, $user_id, $content);
                 $this->getScp($channel_id, $user_id, $content);
                 $this->getScpJp($channel_id, $user_id, $content);
                 $this->getSandbox($channel_id, $user_id, $content);
@@ -357,9 +370,13 @@ class DiscordClient
                     $channel_id = $receive->d->channel_id;
                     $user_id = $receive->d->author->id;
 
-                    // 問答無用でデレる
-                    $this->getCute($channel_id, $user_id, $content);
+                    // KASHIMAの発言を除外
+                    if ($user_id == Config::load("discord.id")) {
+                        break;
+                    }
 
+                    $this->getCute($channel_id, $content);
+                    $this->getHelp($channel_id, $user_id, $content);
                     $this->getScp($channel_id, $user_id, $content);
                     $this->getScpJp($channel_id, $user_id, $content);
                     $this->getSandbox($channel_id, $user_id, $content);
@@ -410,9 +427,9 @@ class DiscordClient
                 break;
             default:
                 var_dump($receive);
-                return false;
         }
-        return true;
+
+        return $receive->op;
     }
 
     /**
@@ -449,8 +466,9 @@ class DiscordClient
      */
     protected function sendMessage($channel_id, $msg)
     {
+        Console::log("post message {$channel_id} '{$msg}'", "SEND");
         if (!is_numeric($channel_id)) {
-            Console::log("sendMessage channel_id error.", "FAILED");
+            Console::log("[FAILED] sendMessage channel_id error.", "SEND");
             return false;
         }
 
@@ -459,6 +477,33 @@ class DiscordClient
         );
         $result = $this->request("/channels/{$channel_id}/messages", true, $data);
         return $result;
+    }
+
+    /**
+     * ヘルプ
+     * @param $channel_id
+     * @param $user_id
+     * @param $content
+     * @return bool
+     */
+    protected function getHelp($channel_id, $user_id, $content)
+    {
+        preg_match('/^(\.help)$/i', $content, $match);
+        if (empty($match)) {
+            return false;
+        }
+
+        $msg = "[HELP] <@{$user_id}> 
+.scp XXX / .scp-XXX \t... SCPを表示
+.scpjp XXX / .scpjp-XXX \t... SCP-JPを表示
+.wiki url-page \t... http://ja.scp-wiki.net/url-page を表示
+.sb ikr_4185 / .sandbox ikr_4185 \t... サンドボックスを表示
+.draft 2017-02-18 \t... 2/18 の批評待ちリストを表示
+.timer 40 \t... 40分後にタイマー通知をセット";
+
+        // 発言
+        $this->sendMessage($channel_id, $msg);
+        return true;
     }
 
     /**
@@ -625,7 +670,7 @@ class DiscordClient
             $draftsStr .= "{$draft[1]} - {$draft[2]} - " . trim($draft[3]) . "\n";
         }
 
-        $msg = "[DraftReserve] <@{$user_id}> {$draftsStr}";
+        $msg = "[DraftReserve] <@{$user_id}> \n{$draftsStr}";
 
         // 発言
         $this->sendMessage($channel_id, $msg);
@@ -661,7 +706,6 @@ class DiscordClient
         }
 
         preg_match('@(<div id="page-title">)([\s|\S]*?)(</div>)@i', $html["body"], $matches);
-        var_dump($matches);
         unset($html); // メモリ節約
 
         $title = $matches[2];
@@ -692,9 +736,9 @@ class DiscordClient
      * @param $content
      * @return bool
      */
-    protected function getCute($channel_id, $user_id, $content)
+    protected function getCute($channel_id, $content)
     {
-        if (strpos($content, "かしまちゃんかわいい") === false || $user_id == Config::load("discord.id")) {
+        if (strpos($content, "かしまちゃんかわいい") === false) {
             return false;
         }
 
@@ -735,14 +779,15 @@ class DiscordClient
         }
         $minutes = $match[2];
 
-        $this->timers[] = array(
+        $timer = array(
             "user_id" => $user_id,
             "channel_id" => $channel_id,
             "time" => time() + ($minutes * 60),
         );
+        $this->timers[] = $timer;
 
         // 発言
-        $this->sendMessage($channel_id, "[TIMER] <@{$user_id}> ".date("m/d H:i:s")." でタイマーセットしました");
+        $this->sendMessage($channel_id, "[TIMER] <@{$user_id}> " . date("m/d H:i:s", $timer["time"]) . " でタイマーセットしました");
         return true;
     }
 
@@ -754,10 +799,11 @@ class DiscordClient
     {
         $now = time();
 
-        foreach ($this->timers as $key=>$timer){
+        foreach ($this->timers as $key => $timer) {
 
             if ($now > $timer["time"]) {
-                $this->sendMessage($timer["channel_id"], "[TIMER] <@{$timer["user_id"]}> ".date("m/d H:i:s")." を過ぎました");
+                $diff = $now - $timer["time"];
+                $this->sendMessage($timer["channel_id"], "[TIMER] <@{$timer["user_id"]}> " . date("m/d H:i:s", $timer["time"]) . " を {$diff} 秒過ぎました");
                 unset($this->timers[$key]);
             }
 
