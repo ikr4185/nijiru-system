@@ -1,7 +1,9 @@
 {
   "require": {
     "smarty/smarty": "dev-trunk",
-    "abraham/twitteroauth": "^0.2.1"
+    "abraham/twitteroauth": "^0.2.1",
+    "cboden/ratchet": "0.2.*",
+    "textalk/websocket": "dev-master"
   },
   "autoload": {
     "psr-4": {
@@ -18,6 +20,7 @@
       "Inputs\\Commons\\"      : "inputs/commons/",
       "Logics\\"      : "logics/",
       "Logics\\Commons\\"      : "logics/commons/",
+      "Logics\\Discord\\"      : "logics/discord/",
       "Cli\\"      : "cli/",
       "Cli\\Commons\\"      : "cli/commons/"
     },

@@ -7,20 +7,25 @@ namespace Cli\Commons;
  * @package Cli\Commons
  */
 class Console {
-	
-	/**
-	 * コンソールログ出力
-	 * @param $msg
-	 * @param string $category
-	 */
-	public static function log( $msg, $category="" ) {
+    
+    /**
+     * コンソールログ出力
+     * @param $msg
+     * @param string $category
+     * @param bool $eol
+     */
+	public static function log( $msg, $category="", $eol=true ) {
 		
 		$preMsg = "[".self::getTime()."]";
 		if (!empty($category)) {
 			$preMsg .= "[{$category}]";
 		}
-		
-		echo $preMsg."\t".$msg."\n";
+        
+        if ($eol) {
+            $msg .= "\n";
+        }
+
+		echo $preMsg." ".$msg;
 	}
 	
 	/**
