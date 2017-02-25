@@ -48,13 +48,11 @@ class DiscordLogic extends AbstractLogic
     public function request($url, $isPost = false, $data = null)
     {
         $url = self::END_POINT_BASE_URL . $url;
-
         $token = Config::load("discord.token");
         
         $header = array(
             'Authorization: Bot ' . $token,
         );
-        
         $ua = "DiscordBot (njr-sys.net, 7.0)";
         
         $response = $this->Api->curl($url, $header, $ua, $isPost, $data);
@@ -73,6 +71,7 @@ class DiscordLogic extends AbstractLogic
     {
         $url = self::END_POINT_BASE_URL . "/gateway/bot";
         $token = Config::load("discord.token");
+        
         $header = array(
             'Authorization: Bot ' . $token,
         );
@@ -86,20 +85,9 @@ class DiscordLogic extends AbstractLogic
         }
 
         // Gateway接続情報のキャッシュ
-        $this->gatewayConnection = json_decode($response["body"]);
         //{"url": "wss://gateway.discord.gg", "shards": 1}"
+        $this->gatewayConnection = json_decode($response["body"]);
         
         return $this->gatewayConnection;
-    }
-
-    public function runBot($host, $port, $path)
-    {
-        try {
-            $loop = Factory::create();
-            $client = new WebSocketClient(new Client, $loop, $host, $port, $path);
-            $loop->run();
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
     }
 }

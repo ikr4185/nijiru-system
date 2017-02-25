@@ -237,7 +237,7 @@ class IrcLogic extends AbstractLogic
     /**
      * 下書き批評予約の読み込み
      * @param $date
-     * @return string
+     * @return array
      */
     public function getDraftReserve($date)
     {

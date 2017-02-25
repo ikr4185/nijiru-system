@@ -12,7 +12,7 @@ class CliDiscordBot
     /**
      * @var DiscordLogic
      */
-    protected $DiscordLogic = null;
+//    protected $DiscordLogic = null;
 
     /**
      * @var DiscordClient
@@ -26,32 +26,17 @@ class CliDiscordBot
 
     protected function getLogic()
     {
-        $this->DiscordLogic = new DiscordLogic();
+//        $this->DiscordLogic = new DiscordLogic();
         $this->DiscordClient = new DiscordClient();
     }
 
     public function testAction()
     {
-        // debug ////////////////////////////////////////
-        // #kashima-test create msg
-        $data = array(
-            'content' => 'hello',
-        );
-
-        // Gateway connect
-        $result = $this->DiscordLogic->connectGateway();
-    
+        // 接続の確立
+        $result = $this->DiscordClient->connectGateway();
+        
+        // WebSocket接続, BOT起動
         $this->DiscordClient->connectWebSocket($result->url);
-
-//        // url整形
-//        $url = parse_url($result->url);
-//        $port = 443;
-//        $path = "/?v=5&encoding=json";
-//        $host = $url["host"];
-//
-//        $result = $this->DiscordLogic->runBot($host, $port, $path);
-
-        var_dump($result);
     }
 
     public function run()
