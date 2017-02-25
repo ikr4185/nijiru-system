@@ -15,6 +15,7 @@ class DiscordClient
 {
     const END_POINT_BASE_URL = "https://discordapp.com/api";
     const TIMEOUT = 10;
+    const IS_DEBUG_MODE = true;
 
     /**
      * @var Api
@@ -35,12 +36,6 @@ class DiscordClient
      * @var array Channel IDs
      */
     protected $channels = array();
-
-    /**
-     * デバッグ判定
-     * @var bool
-     */
-    protected $isDebugMode = false;
 
     /**
      * HeartBeat 最終送信時刻
@@ -233,7 +228,7 @@ class DiscordClient
             return 999;
         }
 
-        if ($this->isDebugMode) {
+        if (self::IS_DEBUG_MODE) {
             Console::log("[DEBUG] DUMP", "SYSTEM");
             var_dump($receive);
         }
@@ -293,9 +288,9 @@ class DiscordClient
                     $this->channels[] = $channel->id;
 
                     // 起動メッセージ
-
-                    if ($this->isDebugMode) {
+                    if (self::IS_DEBUG_MODE) {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
+                        break;
                     }
                     $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
                 }
@@ -348,17 +343,34 @@ class DiscordClient
                 $user_id = $receive->d->author->id;
                 Console::log("[MESSAGE_CREATE] {$nick}: {$content}", "RECEIVE");
 
+                // TODO ログ保存(暫定)
+                $logDir = Config::load("dir.logs") . "/discord/messages/{$channel_id}";
+                if (!file_exists($logDir)) {
+                    if (mkdir($logDir, 0777)) {
+                        chmod($logDir, 0777);
+                    }
+                }
+                $data = array(
+                    $receive->d->timestamp,
+                    $nick,
+                    $user_id,
+                    $content,
+                );
+                file_put_contents($logDir . "/" . date("Y-m-d") . ".log", json_encode($data) . "\n", FILE_APPEND);
+
+
                 // KASHIMAの発言を除外
                 if ($user_id == Config::load("discord.id")) {
                     break;
                 }
 
                 $this->getCute($channel_id, $content);
+                $this->getDraftReserve($channel_id, $user_id, $content);
                 $this->getHelp($channel_id, $user_id, $content);
+                $this->getSandbox($channel_id, $user_id, $content);
                 $this->getScp($channel_id, $user_id, $content);
                 $this->getScpJp($channel_id, $user_id, $content);
-                $this->getSandbox($channel_id, $user_id, $content);
-                $this->getDraftReserve($channel_id, $user_id, $content);
+                $this->getWiki($channel_id, $user_id, $content);
                 $this->setTimer($channel_id, $user_id, $content);
 
                 break;
@@ -376,11 +388,12 @@ class DiscordClient
                     }
 
                     $this->getCute($channel_id, $content);
+                    $this->getDraftReserve($channel_id, $user_id, $content);
                     $this->getHelp($channel_id, $user_id, $content);
+                    $this->getSandbox($channel_id, $user_id, $content);
                     $this->getScp($channel_id, $user_id, $content);
                     $this->getScpJp($channel_id, $user_id, $content);
-                    $this->getSandbox($channel_id, $user_id, $content);
-                    $this->getDraftReserve($channel_id, $user_id, $content);
+                    $this->getWiki($channel_id, $user_id, $content);
                     $this->setTimer($channel_id, $user_id, $content);
                 }
 
