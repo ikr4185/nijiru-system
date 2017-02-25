@@ -35,13 +35,14 @@ class DiscordController extends AbstractController
     public function indexAction()
     {
         // TODO 暫定
-        $channel_id = 282762114962161666;
+        $channelName = "general";
         
         // ログの日付リストを生成
-        $logArray = $this->DiscordLogic->getDiscordLogArray($channel_id);
+        $logArray = $this->DiscordLogic->getDiscordLogArray($channelName);
 
         $result = array(
             "logs" => $logArray,
+            "channelName" => $channelName,
             "msg" => $this->DiscordLogic->getMsg(),
         );
         $this->getView("index", "Discord Log", $result);
@@ -50,9 +51,9 @@ class DiscordController extends AbstractController
     public function logAction($date)
     {
         // TODO 暫定
-        $channel_id = 282762114962161666;
+        $channelName = "general";
 
-        $logDir = Config::load("dir.logs") . "/discord/messages/{$channel_id}";
+        $logDir = Config::load("dir.logs") . "/discord/messages/{$channelName}";
         $jsons = file("{$logDir}/{$date}.log");
 
         // ログ・ファイル中のjson展開
@@ -64,12 +65,16 @@ class DiscordController extends AbstractController
 
         $result = array(
             "datas" => $datas,
+            "channelName" => $channelName,
             "date" => $date,
             "before_date" => $before_date,
             "after_date" => $after_date,
             "logsLink" => "/discord",
             "msg" => $this->DiscordLogic->getMsg(),
         );
-        $this->getView("log", "Discord Log", $result);
+        $jsPathArray = array(
+            "http://njr-sys.net/application/views/assets/js/irc_log_search.js",
+        );
+        $this->getView("log", "Discord Log", $result, $jsPathArray);
     }
 }

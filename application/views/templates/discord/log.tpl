@@ -1,6 +1,6 @@
 <div class="section">
 
-	<h2 class="sub_title">Discord {date( 'Y-m-d (D)', strtotime($result["date"]))}</h2>
+	<h2 class="sub_title">Discord {date( 'Y-m-d (D)', strtotime($result["date"]))} #{$result["channelName"]} </h2>
 
 	<div class="section__inner">
 		<div class="flat_form--search">
@@ -11,10 +11,10 @@
 
 
 	<div class="section__inner text__wrap">
-		{if !empty($result["before_date"])}<a href="/irc/log81/{$result["before_date"]}" class="text__item">
+		{if !empty($result["before_date"])}<a href="/discord/log/{$result["before_date"]}" class="text__item">
 			&lt; {$result["before_date"]}</a>{/if}
 		<a href="{$result["logsLink"]}/" class="text__item">一覧へ</a>
-		{if !empty($result["after_date"])}<a href="/irc/log81/{$result["after_date"]}"
+		{if !empty($result["after_date"])}<a href="/discord/log/{$result["after_date"]}"
 											 class="text__item">{$result["after_date"]} &gt;</a>{/if}
 	</div>
 
@@ -40,10 +40,10 @@
 	</div>
 
 	<div class="section__inner text__wrap">
-		{if !empty($result["before_date"])}<a href="/irc/log81/{$result["before_date"]}" class="text__item">
+		{if !empty($result["before_date"])}<a href="/discord/log/{$result["before_date"]}" class="text__item">
 			&lt; {$result["before_date"]}</a>{/if}
 		<a href="{$result["logsLink"]}/" class="text__item">一覧へ</a>
-		{if !empty($result["after_date"])}<a href="/irc/log81/{$result["after_date"]}"
+		{if !empty($result["after_date"])}<a href="/discord/log/{$result["after_date"]}"
 											 class="text__item">{$result["after_date"]} &gt;</a>{/if}
 	</div>
 

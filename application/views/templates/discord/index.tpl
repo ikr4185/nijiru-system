@@ -1,6 +1,6 @@
 <div class="section">
 
-	<h2 class="sub_title">Discord Log</h2>
+	<h2 class="sub_title">Discord Logs #{$result["channelName"]}</h2>
 
 	<div class="section__inner">
 

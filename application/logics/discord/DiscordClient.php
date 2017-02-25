@@ -15,7 +15,7 @@ class DiscordClient
 {
     const END_POINT_BASE_URL = "https://discordapp.com/api";
     const TIMEOUT = 10;
-    const IS_DEBUG_MODE = false;
+    const IS_DEBUG_MODE = true;
 
     /**
      * @var Api
@@ -33,7 +33,7 @@ class DiscordClient
     protected $client = null;
 
     /**
-     * @var array Channel IDs
+     * @var array Channels Data
      */
     protected $channels = array();
 
@@ -285,14 +285,19 @@ class DiscordClient
 
                 // Get Channels
                 foreach ($receive->d->channels as $channel) {
-                    $this->channels[] = $channel->id;
+
+                    $this->channels[] = array(
+                        "id" => $channel->id,
+                        "name" => $channel->name,
+                    );
 
                     // 起動メッセージ
                     if (self::IS_DEBUG_MODE) {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
-                        break;
+                    }else{
+                        $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
                     }
-                    $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
+
                 }
 
                 break;
@@ -340,11 +345,20 @@ class DiscordClient
                 $nick = $receive->d->author->username;
                 $content = $receive->d->content;
                 $channel_id = $receive->d->channel_id;
+
+                $channnel_name = "default";
+                foreach ($this->channels as $channel) {
+                    if ($channel["id"] == $channel_id) {
+                        $channnel_name = $channel["name"];
+                        break;
+                    }
+                }
+
                 $user_id = $receive->d->author->id;
                 Console::log("[MESSAGE_CREATE] {$nick}: {$content}", "RECEIVE");
 
                 // TODO ログ保存(暫定)
-                $logDir = Config::load("dir.logs") . "/discord/messages/{$channel_id}";
+                $logDir = Config::load("dir.logs") . "/discord/messages/{$channnel_name}";
                 if (!file_exists($logDir)) {
                     if (mkdir($logDir, 0777)) {
                         chmod($logDir, 0777);
@@ -410,13 +424,13 @@ class DiscordClient
                 $user_id = $receive->d->user->id;
                 $status = $receive->d->status;
                 if ($status == "dnd") {
-                    $status = "[Do Not Disturb]";
+                    $status = "Do Not Disturb]";
                 } else {
-                    $status = "[" . ucfirst($status) . "]";
+                    $status = ucfirst($status);
                 }
 
-                foreach ($this->channels as $channel_id) {
-                    $this->sendMessage($channel_id, "[SYSTEM] <@{$user_id}> {$status}");
+                foreach ($this->channels as $channel) {
+                    $this->sendMessage($channel["id"], "[SYSTEM] <@{$user_id}> -> {$status}");
                 }
 
                 break;
