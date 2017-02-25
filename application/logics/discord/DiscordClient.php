@@ -7,6 +7,7 @@ use WebSocket\ConnectionException;
 
 use Logics\Commons\Api;
 use Logics\IrcLogic;
+use Logics\ScpreaderLogic;
 
 use Cores\Config\Config;
 use Cli\Commons\Console;
@@ -15,7 +16,7 @@ class DiscordClient
 {
     const END_POINT_BASE_URL = "https://discordapp.com/api";
     const TIMEOUT = 10;
-    const IS_DEBUG_MODE = true;
+    const IS_DEBUG_MODE = false;
 
     /**
      * @var Api
@@ -26,6 +27,11 @@ class DiscordClient
      * @var IrcLogic
      */
     protected $Irc = null;
+
+    /**
+     * @var ScpreaderLogic
+     */
+    protected $Scpreader = null;
 
     /**
      * @var ClientWrapper
@@ -59,6 +65,7 @@ class DiscordClient
     {
         $this->Api = new Api();
         $this->Irc = new IrcLogic();
+        $this->Scpreader = new ScpreaderLogic();
     }
 
     public function __destruct()
@@ -294,7 +301,7 @@ class DiscordClient
                     // 起動メッセージ
                     if (self::IS_DEBUG_MODE) {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
-                    }else{
+                    } else {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
                     }
 
@@ -385,6 +392,7 @@ class DiscordClient
                 $this->getScp($channel_id, $user_id, $content);
                 $this->getScpJp($channel_id, $user_id, $content);
                 $this->getWiki($channel_id, $user_id, $content);
+                $this->searchScpJP($channel_id, $user_id, $content);
                 $this->setTimer($channel_id, $user_id, $content);
 
                 break;
@@ -409,6 +417,7 @@ class DiscordClient
                     $this->getScpJp($channel_id, $user_id, $content);
                     $this->getWiki($channel_id, $user_id, $content);
                     $this->setTimer($channel_id, $user_id, $content);
+                    $this->searchScpJP($channel_id, $user_id, $content);
                 }
 
                 break;
@@ -424,7 +433,7 @@ class DiscordClient
                 $user_id = $receive->d->user->id;
                 $status = $receive->d->status;
                 if ($status == "dnd") {
-                    $status = "Do Not Disturb]";
+                    $status = "Do Not Disturb";
                 } else {
                     $status = ucfirst($status);
                 }
@@ -621,6 +630,57 @@ class DiscordClient
 
         // 発言
         $this->sendMessage($channel_id, $msg);
+        return true;
+    }
+
+    /**
+     * SCP-JPあいまい検索
+     * @param $channel_id
+     * @param $user_id
+     * @param $content
+     * @return bool
+     */
+    protected function searchScpJP($channel_id, $user_id, $content)
+    {
+        preg_match('/^(\.SEARCH-SCPJP )(.*)$/i', $content, $match);
+        if (empty($match)) {
+            return false;
+        }
+
+        $query = $match[2];
+
+        // 検索実行
+        $records = $this->Scpreader->searchScpJp($query);
+
+        $msg = "";
+        $findItems = array();
+        $i = 0;
+        foreach ($records as $key => $record) {
+
+            foreach ($record as $item) {
+
+                // 既に検索済みは排除
+                if (in_array($item["item_number"], $findItems)) {
+                    continue;
+                }
+
+                // 検索済み配列に格納
+                $findItems[] = $item["item_number"];
+
+                $msg .= "{$item["item_number"]} - {$item["title"]} - http://ja.scp-wiki.net/scp-" . sprintf('%03d', $item["scp_num"]) . "-jp\n";
+                $i++;
+
+                // 送信できないのである程度で省略
+                if ($i >= 10) {
+                    $msg .= "(以下省略)";
+                    break 2;
+                }
+
+            }
+        }
+
+        // 発言
+        $this->sendMessage($channel_id, "[SEARCH-SCPJP] <@{$user_id}> " . count($findItems) . " 件が見つかりました\n" . $msg);
         return true;
     }
 
