@@ -28,6 +28,19 @@ class DiscordLogic extends IrcLogic
     protected function getModel()
     {
     }
+
+    public function getDiscordLogArray($channel_id)
+    {
+        $logDir = $this->logsDir."/discord/messages/{$channel_id}";
+        $extension = "log";
+
+        $logs = $this->getLogList($logDir,$extension);
+    
+        // 発言数バーを格納
+        $logs = $this->renderBar($logs);
+        
+        return array_reverse($logs);
+    }
     
     public function parseLogJsons($jsons)
     {

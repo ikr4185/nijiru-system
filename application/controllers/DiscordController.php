@@ -34,15 +34,17 @@ class DiscordController extends AbstractController
     
     public function indexAction()
     {
-//        // ログの日付リストを生成
-//        $logArray = $this->IrcLogic->getIrcLogArray();
-//
-//        $result = array(
-//            "logs" => $logArray,
-//            "msg" => $this->IrcLogic->getMsg(),
-//        );
-//        $this->getView("index", "IRC-Reader", $result);
+        // TODO 暫定
+        $channel_id = 282762114962161666;
         
+        // ログの日付リストを生成
+        $logArray = $this->DiscordLogic->getDiscordLogArray($channel_id);
+
+        $result = array(
+            "logs" => $logArray,
+            "msg" => $this->DiscordLogic->getMsg(),
+        );
+        $this->getView("index", "Discord Log", $result);
     }
     
     public function logAction($date)

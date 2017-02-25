@@ -25,7 +25,7 @@ class IrcLogic extends AbstractLogic
     public function __construct()
     {
         parent::__construct();
-        
+
         // 初期設定
         $this->cliDir = Config::load("dir.cli");
         $this->logsDir = Config::load("dir.logs");
@@ -284,6 +284,7 @@ class IrcLogic extends AbstractLogic
     
     /**
      * 下書き批評予約
+     * ※雑
      * @param $date
      * @param $name
      * @param $title
@@ -305,7 +306,13 @@ class IrcLogic extends AbstractLogic
         $dirName = $this->logsDir . "/irc/draft_reserve/";
         file_put_contents($dirName . $date . ".log", $data, FILE_APPEND | LOCK_EX);
     }
-    
+
+    /**
+     * 下書き批評予約__@@,@@と,の変換
+     * @param $str
+     * @param bool $isToComma
+     * @return mixed
+     */
     protected function convertComma($str, $isToComma = false)
     {
         if ($isToComma) {
@@ -319,21 +326,35 @@ class IrcLogic extends AbstractLogic
      */
     public function getDraftReserveFiles()
     {
-        $logs = array();
-        $rawLogs = $this->getFileList($this->logsDir . "/irc/draft_reserve/");
+        $logDir = $this->logsDir . "/irc/draft_reserve/";
+        $extension = "log";
         
+        return $this->getLogList($logDir,$extension);
+    }
+
+    /**
+     * ログファイル名と行数の配列を取得
+     * @param String $logDir ex) $this->logsDir."/irc/draft_reserve/"
+     * @param String $extension ex) dat, log
+     * @return array
+     */
+    protected function getLogList($logDir,$extension)
+    {
+        $logs = array();
+        $rawLogs = $this->getFileList($logDir);
+
         foreach ($rawLogs as $filePath) {
-            
+
             if (file_exists($filePath)) {
                 $ret = trim(str_replace($filePath, "", exec('wc -l ' . $filePath)));
-                
+
                 if (!empty($ret)) {
-                    $fileName = basename($filePath, ".log");
+                    $fileName = basename($filePath, ".{$extension}");
                     $logs[] = array($fileName, $ret);
                 }
             }
         }
-        
+
         return $logs;
     }
     
