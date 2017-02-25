@@ -2,17 +2,11 @@
 namespace Cli;
 
 use Cli\Commons\Console;
-use Logics\DiscordLogic;
-
-
 use Logics\Discord\DiscordClient;
 
 class CliDiscordBot
 {
-    /**
-     * @var DiscordLogic
-     */
-//    protected $DiscordLogic = null;
+
 
     /**
      * @var DiscordClient
@@ -26,7 +20,6 @@ class CliDiscordBot
 
     protected function getLogic()
     {
-//        $this->DiscordLogic = new DiscordLogic();
         $this->DiscordClient = new DiscordClient();
     }
 

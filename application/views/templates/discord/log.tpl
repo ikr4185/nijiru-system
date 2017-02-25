@@ -23,12 +23,13 @@
 		<table class="irc-table zebra-table">
 			<tbody>
 			{foreach from=$result["datas"] item=item key=key}
-				<tr id="js_irc_log_{$key}" class="js_irc_log">
+				<tr id="js_irc_log_{$key}" class="js_irc_log {($item["isBot"])?$item["color"]:""}">
+				{*<tr id="js_irc_log_{$key}" class="js_irc_log">*}
 					<td class="nowrap">
 						{$item["datetime"]}
 					</td>
 					<td class="nowrap">
-						<span class="b">&lt;{$item["nick"]}&gt;</span>
+						<span class="b {$item["color"]}">&lt;{$item["nick"]}&gt;</span>
 					</td>
 					<td class="wrap irc-table__message">{$item["message"]|nl2br nofilter}<br>
 					</td>

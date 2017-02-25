@@ -2,8 +2,8 @@
 namespace Controllers;
 
 use Controllers\Commons\AbstractController;
+use Logics\DiscordLogic;
 use Inputs\BasicInput;
-
 use Cores\Config\Config;
 
 /**
@@ -12,15 +12,11 @@ use Cores\Config\Config;
  */
 class DiscordController extends AbstractController
 {
+    /**
+     * @var DiscordLogic
+     */
+    protected $DiscordLogic = null;
 
-//    /**
-//     * @var IrcLogic
-//     */
-//    protected $IrcLogic;
-//    /**
-//     * @var Irc81Logic
-//     */
-//    protected $Irc81Logic;
     /**
      * @var BasicInput
      */
@@ -28,8 +24,7 @@ class DiscordController extends AbstractController
     
     protected function getLogic()
     {
-//        $this->IrcLogic = new IrcLogic();
-//        $this->Irc81Logic = new Irc81Logic();
+        $this->DiscordLogic = new DiscordLogic();
     }
     
     protected function getInput()
@@ -52,43 +47,14 @@ class DiscordController extends AbstractController
     
     public function logAction($date)
     {
+        // TODO 暫定
         $channel_id = 282762114962161666;
+
         $logDir = Config::load("dir.logs") . "/discord/messages/{$channel_id}";
         $jsons = file("{$logDir}/{$date}.log");
 
-        $datas = array();
-        $users = array();
-        foreach ($jsons as $json) {
-
-            $data = json_decode($json);
-
-            // ユーザIDとニックネームの紐付け配列
-            if (!isset($users[$data[2]])) {
-                $users[$data[2]] = $data[1];
-            }
-
-            // データ格納
-            $datas[] = array(
-                "datetime" => date("H:i:s", strtotime($data[0])),
-                "nick" => $data[1],
-                "message" => htmlspecialchars($data[3]),
-            );
-        }
-
-        $userIds = array_keys($users);
-
-        foreach ($userIds as $userId) {
-
-            // ＠付き返信の変換
-            foreach ($datas as &$data) {
-
-                if (strpos($data["message"], (string)$userId) !== false) {
-                    $data["message"] = str_replace("@{$userId}", "<span style=\"color:blue;\">@{$users[$userId]}</span>", $data["message"]);
-                }
-            }
-            unset($data);
-
-        }
+        // ログ・ファイル中のjson展開
+        $datas = $this->DiscordLogic->parseLogJsons($jsons);
 
         $timestamp = strtotime($date);
         $before_date = ("2017-02-25" == $date) ? null : date('Y-m-d', strtotime('-1 day', $timestamp));
@@ -100,8 +66,7 @@ class DiscordController extends AbstractController
             "before_date" => $before_date,
             "after_date" => $after_date,
             "logsLink" => "/discord",
-//            "msg" => $this->IrcLogic->getMsg(),
-            "msg" => "",
+            "msg" => $this->DiscordLogic->getMsg(),
         );
         $this->getView("log", "Discord Log", $result);
     }

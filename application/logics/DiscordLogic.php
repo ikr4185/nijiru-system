@@ -1,93 +1,92 @@
 <?php
 namespace Logics;
 
-use Cores\Config\Config;
-use Cli\Commons\Console;
-use Logics\Commons\AbstractLogic;
-use Logics\Commons\Api;
+use Logics\IrcLogic;
+use \Cores\Config\Config;
 
-use Ratchet\Wamp\Exception;
-use React\EventLoop\Factory;
-use Logics\Discord\Client;
-use Logics\Discord\WebSocketClient;
-
-class DiscordLogic extends AbstractLogic
+/**
+ * ログ閲覧に関するロジック
+ * Class DiscordLogic
+ * @package Logics
+ */
+class DiscordLogic extends IrcLogic
 {
-    const END_POINT_BASE_URL = "https://discordapp.com/api";
+    
+    protected $logsDir;
     
     /**
-     * @var Api
+     * コンストラクタ
      */
-    protected $Api = null;
-
-    protected $client = null;
-
-    /**
-     * @var Object
-     */
-    protected $gatewayConnection = array();
-
-    public function __destruct()
+    public function __construct()
     {
-        Console::log("Closing.");
+        parent::__construct();
+        
+        // 初期設定
+        $this->logsDir = Config::load("dir.logs");
     }
     
     protected function getModel()
     {
-        $this->Api = new Api();
     }
-
-    /**
-     * リクエスト送信
-     * ※デフォルトはGETメソッドを想定
-     * @param $url
-     * @param bool $isPost
-     * @param null $data
-     * @return mixed
-     */
-    public function request($url, $isPost = false, $data = null)
+    
+    public function parseLogJsons($jsons)
     {
-        $url = self::END_POINT_BASE_URL . $url;
-        $token = Config::load("discord.token");
+        // 配列の生成
+        $datas = array();
+        $users = array();
+        foreach ($jsons as $json) {
         
-        $header = array(
-            'Authorization: Bot ' . $token,
-        );
-        $ua = "DiscordBot (njr-sys.net, 7.0)";
+            $data = json_decode($json);
         
-        $response = $this->Api->curl($url, $header, $ua, $isPost, $data);
-
-        if ($response["errNo"] !== 0) {
-            return $response["error"];
+            // ユーザIDとニックネームの紐付け配列
+            if (!isset($users[$data[2]])) {
+                $users[$data[2]] = $data[1];
+            }
+        
+            // 色設定
+            $color = $this->getColor($data[1]);
+            $isBot = false;
+            if (strpos($data[1], "KASHIMA") !== false) {
+                $color = "KASHIMA-EXE";
+                $isBot = true;
+            }
+            $operators = array("Holy_nova", "kasyu-maki", "unReGret", "jet0620");
+            if (in_array($data[1], $operators)) {
+                $color = "irc-color-op";
+            }
+        
+            // データ格納
+            $datas[] = array(
+                "datetime" => date("H:i:s", strtotime($data[0])),
+                "nick" => $data[1],
+                "color" => $color,
+                "isBot" => $isBot,
+                "message" => htmlspecialchars($data[3]),
+            );
         }
-        return $response["body"];
+    
+        $userIds = array_keys($users);
+    
+        // 生成された配列の調整
+        foreach ($datas as &$data) {
+        
+            // URLリンク生成
+            $data["message"] = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=:;|#,]*)?/', "<a href=\"$0\">$0</a>", $data["message"]);
+        
+            // ＠付き返信の変換
+            foreach ($userIds as $userId) {
+            
+                if (strpos($data["message"], (string)$userId) !== false) {
+                    $data["message"] = str_replace("@{$userId}", "<span class=\"" . $this->getColor($users[$userId]) . "\">@{$users[$userId]}</span>", $data["message"]);
+                }
+            
+            }
+        
+        }
+        unset($data);
+        
+        // 結果を返す
+        return $datas;
     }
 
-    /**
-     * WebSocket接続確立
-     * @return mixed
-     */
-    public function connectGateway()
-    {
-        $url = self::END_POINT_BASE_URL . "/gateway/bot";
-        $token = Config::load("discord.token");
-        
-        $header = array(
-            'Authorization: Bot ' . $token,
-        );
-        $ua = "DiscordBot (njr-sys.net, 7.0)";
-
-        $response = $this->Api->curl($url, $header, $ua);
-
-        // curl接続失敗時の処理
-        if ($response["errNo"] !== 0) {
-            return $response["error"];
-        }
-
-        // Gateway接続情報のキャッシュ
-        //{"url": "wss://gateway.discord.gg", "shards": 1}"
-        $this->gatewayConnection = json_decode($response["body"]);
-        
-        return $this->gatewayConnection;
-    }
 }

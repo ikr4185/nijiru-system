@@ -199,7 +199,8 @@ class IrcLogic extends AbstractLogic
             }
             
             // オペレータ
-            if ("Holy_nova" == $matches[2] || "kasyu-maki" == $matches[2]) {
+            $operators = array("Holy_nova", "kasyu-maki", "unReGret", "jet0620");
+            if (in_array($matches[2], $operators)) {
                 $color = "irc-color-op";
             }
         }
@@ -215,7 +216,7 @@ class IrcLogic extends AbstractLogic
         $html = preg_replace('/( - \()(.*?)(\) - )/', "<td class=\"nowrap\"><span class=\"b {$color}\">&lt;$2&gt;</span></td><td class=\"wrap irc-table__message\">\t", $html);
         
         // URLリンク生成
-        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?/', "<a href=\"$0\">$0</a>", $html);
+        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=:;|#,]*)?/', "<a href=\"$0\">$0</a>", $html);
         
         // 年月日を削除
         $html = preg_replace('/(\d{4})-(\d{2})-(\d{2}) /', "", $html);
@@ -228,7 +229,7 @@ class IrcLogic extends AbstractLogic
      * @param $name
      * @return string
      */
-    protected function getColor($name)
+    public function getColor($name)
     {
         $head = mb_strtolower(substr($name, 0, 1));
         return "irc-color-{$head}";
@@ -370,7 +371,7 @@ class IrcLogic extends AbstractLogic
         // メッセージ表示
         $this->setMsg("検索結果:{$resultCount}件");
         if ($resultCount >= self::SEARCH_LIMIT) {
-            $this->setMsg("検索結果:".self::SEARCH_LIMIT."件までを表示します");
+            $this->setMsg("検索結果:" . self::SEARCH_LIMIT . "件までを表示します");
         }
 
         krsort($result);
