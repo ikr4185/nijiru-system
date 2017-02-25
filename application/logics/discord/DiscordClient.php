@@ -15,7 +15,7 @@ class DiscordClient
 {
     const END_POINT_BASE_URL = "https://discordapp.com/api";
     const TIMEOUT = 10;
-    const IS_DEBUG_MODE = true;
+    const IS_DEBUG_MODE = false;
 
     /**
      * @var Api
