@@ -27,12 +27,6 @@ class DiscordClient
      * @var IrcLogic
      */
     protected $Irc = null;
-
-    /**
-     * @var ScpreaderLogic
-     */
-    protected $Scpreader = null;
-
     /**
      * @var ClientWrapper
      */
@@ -65,7 +59,9 @@ class DiscordClient
     {
         $this->Api = new Api();
         $this->Irc = new IrcLogic();
-        $this->Scpreader = new ScpreaderLogic();
+
+        // ここでMySQLに接続するとタイムアウトが発生する
+//        $this->Scpreader = new ScpreaderLogic();
     }
 
     public function __destruct()
@@ -650,12 +646,19 @@ class DiscordClient
         $query = $match[2];
 
         // 検索実行
-        $records = $this->Scpreader->searchScpJp($query);
-
+        $ScpReader = new ScpreaderLogic();
+        $records = $ScpReader->searchScpJp($query);
+        // modelを即破棄する('SQLSTATE[HY000]: General error: 2006 MySQL server has gone away' 対策)
+        unset($ScpReader);
+        
         $msg = "";
         $findItems = array();
         $i = 0;
         foreach ($records as $key => $record) {
+
+            if (empty($record)) {
+                continue;
+            }
 
             foreach ($record as $item) {
 
@@ -672,15 +675,20 @@ class DiscordClient
 
                 // 送信できないのである程度で省略
                 if ($i >= 10) {
-                    $msg .= "(以下省略)";
+                    $msg .= "(10件以上は省略されます)";
                     break 2;
                 }
 
             }
         }
 
+        if (empty($msg)) {
+            $this->sendMessage($channel_id, "[SEARCH-SCPJP] <@{$user_id}> 該当記事が見つかりませんでした");
+            return false;
+        }
+
         // 発言
-        $this->sendMessage($channel_id, "[SEARCH-SCPJP] <@{$user_id}> " . count($findItems) . " 件が見つかりました\n" . $msg);
+        $this->sendMessage($channel_id, "[SEARCH-SCPJP] <@{$user_id}> \n" . $msg);
         return true;
     }
 
@@ -721,6 +729,7 @@ class DiscordClient
     }
 
     /**
+     * 下書き批評予約表示
      * @param $channel_id
      * @param $user_id
      * @param $content
