@@ -18,6 +18,9 @@
 1 2 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1001
 31 2 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1501
 
+# ForumPost Check
+1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliRssReader
+
 # ユーザー情報抽出
 1 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserGetter
 2 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserActivity

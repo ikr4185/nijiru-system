@@ -6,8 +6,6 @@ use Logics\Discord\DiscordClient;
 
 class CliDiscordBot
 {
-
-
     /**
      * @var DiscordClient
      */
