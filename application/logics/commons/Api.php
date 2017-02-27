@@ -43,9 +43,10 @@ class Api
      * @param bool $isPost
      * @param array $data
      * @param string $ua
+     * @param bool $isJsonData
      * @return array
      */
-    public function curl($url, $header = array(), $ua = "njr-sys", $isPost = false, $data = array())
+    public function curl($url, $header = array(), $ua = "njr-sys", $isPost = false, $data = array(), $isJsonData = true)
     {
         // エンドポイント
         $ch = curl_init($url);
@@ -53,7 +54,12 @@ class Api
         // メソッド
         if ($isPost) {
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // jsonデータを送信
+            if ($isJsonData) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // jsonデータを送信
+            }else{
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // HTTP Queryデータを送信
+            }
+
 //            curl_setopt($ch, CURLOPT_HEADER, true);
         } else {
             curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -69,7 +75,7 @@ class Api
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 //        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 証明書の検証を行わない
 //        curl_setopt($ch, CURLOPT_SSLVERSION, '6');
-    
+
         $body = curl_exec($ch);
 
         $errNo = curl_errno($ch);
