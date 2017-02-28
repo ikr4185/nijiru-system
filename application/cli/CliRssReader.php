@@ -46,7 +46,7 @@ class CliRssReader
         $newPosts = array();
 
         // getRss
-        $rss = simplexml_load_file($rssUrl);
+        $rss = simplexml_load_file($rssUrl, 'SimpleXMLElement', LIBXML_NOCDATA);
 
         // parseRss
         $posts = array();
@@ -56,6 +56,8 @@ class CliRssReader
                 "category" => (String)$rss->channel->title,
                 "title" => (String)$item->title,
                 "link" => (String)$item->link,
+                "content" => trim(strip_tags((String)$item->children('content', true)->encoded)),
+                "authorName" => (String)$item->children('wikidot', true)->authorName,
             );
         }
         $posts = array_reverse($posts);
@@ -95,17 +97,20 @@ class CliRssReader
         if (!empty($newPosts)) {
             
             $msg = "";
-            foreach ($newPosts as $newPost){
-                $msg .= implode("\t", $newPost)."\n";
-            }
+            foreach ($newPosts as $newPost) {
+                $pubDate = date("Y-m-d H:i:s", strtotime($newPost["pubDate"]));
+                $title = $newPost["title"];
+                $link = $newPost["link"];
+                $authorName = $newPost["authorName"];
+                $content = $newPost["content"];
 
-            var_dump($msg);
+                $msg .= "[info][title]{$pubDate} / <{$authorName}> {$title}[/title]{$content}\n\n{$link}[/info]\n";
+            }
 
             $roomId = Config::load("chatwork.room_id_myroom");
             $responseBody = $this->chatWorkApi->rooms($roomId, "messages", array("body" => $msg));
 
             var_dump($responseBody);
-
         }
         
         Console::log("Done.");
