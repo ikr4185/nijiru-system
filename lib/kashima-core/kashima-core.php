@@ -749,7 +749,7 @@ class Kashima_Core extends Kashima_MessageHandler
 					$hmsg = $handlerinfo['message'];
 					$regex = ($hmsg{0} == $hmsg{strlen($hmsg) - 1})
 						? $hmsg
-						: '/' . $hmsg . '/';
+						: '/' . $hmsg . '/iu'; // fix 2017-03-02
 
 					if (($handlerinfo['type'] & $ircdata->type)
 						&& preg_match($regex, $ircdata->message)
