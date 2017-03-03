@@ -276,7 +276,7 @@ class KashimaExe
         }
 
         $title = strip_tags($matches[2]);
-        $msg = "{$data->nick}: [SCP-JP] SCP-{$num}-JP \"{$title}\" http://ja.scp-wiki.net/scp-{$num}-jp";
+        $msg = "{$data->nick}: [SCP] SCP-{$num} \"{$title}\" http://ja.scp-wiki.net/scp-{$num}";
 
         // 発言
         $this->botMsg($irc, $data, $msg);
@@ -292,7 +292,7 @@ class KashimaExe
         // めざせ
         // haruharu: http://scpjapan.wiki.fc2.com/wiki/SCP-173/ - 彫刻 - オリジナル
 
-        preg_match('/^(\.scojp-)(\d*)$/i', $data->message, $match);
+        preg_match('/^(\.scpjp-)(\d*)$/i', $data->message, $match);
         // 再試行
         if (empty($match)) {
             preg_match('/^(\.scpjp )(\d*)$/i', $data->message, $match);
