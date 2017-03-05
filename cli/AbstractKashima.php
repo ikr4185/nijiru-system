@@ -51,7 +51,7 @@ abstract class AbstractKashima
      * @param $msg
      * @return bool
      */
-    private function sendMsg($irc, $data, $msg)
+    protected function sendMsg($irc, $data, $msg)
     {
         $irc->message(SMARTIRC_TYPE_NOTICE, $data->channel, $msg);
         $this->saveLog(IRC_NAME, $msg);
