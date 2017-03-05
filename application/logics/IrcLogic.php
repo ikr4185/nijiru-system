@@ -216,7 +216,7 @@ class IrcLogic extends AbstractLogic
         $html = preg_replace('/( - \()(.*?)(\) - )/', "<td class=\"nowrap\"><span class=\"b {$color}\">&lt;$2&gt;</span></td><td class=\"wrap irc-table__message\">\t", $html);
         
         // URLリンク生成
-        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=:;|#,]*)?/', "<a href=\"$0\">$0</a>", $html);
+        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=:;|#,]*)?/iu', "<a href=\"$0\">$0</a>", $html);
         
         // 年月日を削除
         $html = preg_replace('/(\d{4})-(\d{2})-(\d{2}) /', "", $html);
