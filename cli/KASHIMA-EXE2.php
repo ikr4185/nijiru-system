@@ -21,7 +21,7 @@ define("IS_TEST", 0);
 
 require_once('/home/njr-sys/public_html/lib/kashima-core/kashima-core.php');
 require_once('/home/njr-sys/public_html/cli/AbstractKashima.php');
-require_once('/home/njr-sys/public_html/cli/Markov.php');
+//require_once('/home/njr-sys/public_html/cli/Markov.php');
 
 define("IRC_HOST", "irc.synirc.net"); //ホスト名
 define("IRC_PORT", "6667"); //ポート番号
@@ -61,12 +61,12 @@ class KashimaExe extends AbstractKashima
         return $isSuccess;
     }
     
-    function markov($irc, $data)
-    {
-        $Markov = new Markov;
-        $msg = $Markov->run();
-        $this->sendMsg($irc, $data, $msg);
-    }
+//    function markov($irc, $data)
+//    {
+//        $Markov = new Markov;
+//        $msg = $Markov->run();
+//        $this->sendMsg($irc, $data, $msg);
+//    }
 
 }
 
@@ -98,7 +98,7 @@ $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox')
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.quit .*$', $bot, 'quit');
 
-$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.hey$', $bot, 'markov'); // マルコフ連鎖のテスト
+//$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.hey$', $bot, 'markov'); // マルコフ連鎖のテスト
 
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.wiki .*$', $bot, 'wiki');
 
