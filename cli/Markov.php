@@ -1,8 +1,8 @@
 <?php
 /**
  * @see https://gist.github.com/ryomatsu/f67938a8af76377b2888f79fca592253
+ * @see https://amimilab.com/2016/07/21/post-95/
  */
-// ログ内容を取得する
 
 class Markov
 {
@@ -13,7 +13,11 @@ class Markov
         $date = date("Y-m-d", strtotime('-1 year + 1 month'));
         $logs = file("/home/njr-sys/public_html/cli/logs/irc/irc-logs_{$date}.dat");
         
-        foreach ($logs as $log) {
+        foreach ($logs as $key => $log) {
+
+            if ($key > 1000) {
+                break;
+            }
 
             // カシマの発言は除外
             if (strpos($log, "(KASHIMA-EXE)") !== false) {
@@ -30,7 +34,7 @@ class Markov
 
             preg_match("/^(.*?) - (.*?) - (.*?)$/", $log, $matches);
             if (isset($matches[3])) {
-                
+
                 $string .= $matches[3];
                 if (mb_strpos($string, -1) !== "。") {
                     $string .= "。";
@@ -58,12 +62,18 @@ class Markov
             
             // 名詞句の抽出(不正確なため、二文字以上のもの)
             if (isset($array[3])) {
+
+                // 半角英数字のみの単語は外す
+                if (preg_match("/^[a-zA-Z0-9]+$/", $array[0])) {
+                    continue;
+                }
+
                 if (mb_strpos($array[3], "名詞") !== false && mb_strlen($array[0]) > 3) {
                     $nouns[$array[0]] = $array[0];
                 }
             }
         }
-        
+
         // マルコフ連鎖テーブルの生成
         $markov = null;
         if (count($rawTexts) > 2) {
