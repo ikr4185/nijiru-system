@@ -93,6 +93,14 @@ class WebAppsController extends AbstractController
         );
         $this->getViewWebApps("gohw", "WebApps", null, $jsPathArray);
     }
-
+    
+    public function documentAction($page)
+    {
+        if ($page !== "001") {
+            $this->redirectTo("http://ja.scp-wiki.net");
+            exit;
+        }
+        $this->getViewDev("document_".$page, "WebApps", null);
+    }
 
 }
