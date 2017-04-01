@@ -356,12 +356,12 @@ class DiscordClient
                         break;
                     }
                 }
-
+                
                 $user_id = $receive->d->author->id;
                 Console::log("[MESSAGE_CREATE] {$nick}: {$content}", "RECEIVE");
 
                 // TODO ログ保存(暫定)
-                $logDir = Config::load("dir.logs") . "/discord/messages/{$channnel_name}";
+                $logDir = Config::load("dir.logs") . "/discord/messages/{$channel_id}_{$channnel_name}";
                 if (!file_exists($logDir)) {
                     if (mkdir($logDir, 0777)) {
                         chmod($logDir, 0777);
@@ -426,17 +426,17 @@ class DiscordClient
             case "PRESENCE_UPDATE":
                 Console::log("[PRESENCE_UPDATE]", "RECEIVE");
 
-                $user_id = $receive->d->user->id;
-                $status = $receive->d->status;
-                if ($status == "dnd") {
-                    $status = "Do Not Disturb";
-                } else {
-                    $status = ucfirst($status);
-                }
-
-                foreach ($this->channels as $channel) {
-                    $this->sendMessage($channel["id"], "[SYSTEM] <@{$user_id}> -> {$status}");
-                }
+//                $user_id = $receive->d->user->id;
+//                $status = $receive->d->status;
+//                if ($status == "dnd") {
+//                    $status = "Do Not Disturb";
+//                } else {
+//                    $status = ucfirst($status);
+//                }
+//
+//                foreach ($this->channels as $channel) {
+//                    $this->sendMessage($channel["id"], "[SYSTEM] <@{$user_id}> -> {$status}");
+//                }
 
                 break;
             case "GAME_OBJECT":

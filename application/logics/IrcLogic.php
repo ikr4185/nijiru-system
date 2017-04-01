@@ -101,7 +101,7 @@ class IrcLogic extends AbstractLogic
         $unit = floor($max / 100);
         
         // ゼロ除算阻止
-        if ($unit === 0) {
+        if ($unit == 0) {
             $unit = 1;
         }
         

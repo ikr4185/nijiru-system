@@ -4,6 +4,13 @@ namespace Cli;
 use Cli\Commons\Console;
 use Logics\Discord\DiscordClient;
 
+/**
+ * Class CliDiscordBot
+ *
+ * php /home/njr-sys/public_html/application/cli/commons/cli_load.php CliDiscordBot test
+ *
+ * @package Cli
+ */
 class CliDiscordBot
 {
     /**
