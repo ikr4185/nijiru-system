@@ -1,36 +1,41 @@
 <div class="section">
 
-	<h2 class="sub_title">Discord Logs #{$result["channelName"]}</h2>
+	<h2 class="sub_title">Discord Logs</h2>
 
-	<div class="section__inner">
 
-		<table class="flat_table zebra-table">
+	{if !empty($result["channels"]) }
 
-			<thead>
-			<tr style="background:#f9f9f9;;">
-				<th>日付</th>
-				<th>発言数</th>
-			</tr>
-			</thead>
+		{foreach from=$result["channels"] item=item key=channelName}
+			<div class="section__inner">
 
-			<tbody>
-			{if !empty($result["logs"]) }
+				<h2 class="subhead">#{$channelName}</h2>
 
-				{foreach from=$result["logs"] item=item}
-					<tr style="height:30px;">
-						<td><a href="http://njr-sys.net/discord/log/{$item[0]}">{$item[0]}</a></td>
-						<td>{$item[2] nofilter}</td>
-					</tr>
+				{foreach from=$item item=logs}
+					<table class="flat_table zebra-table">
+
+						<thead>
+						<tr style="background:#f9f9f9;;">
+							<th>日付</th>
+							<th>発言数</th>
+						</tr>
+						</thead>
+
+						<tbody>
+
+
+						<tr style="height:30px;">
+							<td><a href="http://njr-sys.net/discord/log/{$channelName}/?date={$logs[0]}">{$logs[0]}</a></td>
+							<td>{$logs[2] nofilter}</td>
+						</tr>
+
+						</tbody>
+					</table>
 				{/foreach}
 
-			{else}
-				<tr style="height:30px;">
-					<td>Unknown Error</td>
-				</tr>
-			{/if}
-			</tbody>
+			</div>
+		{/foreach}
 
-		</table>
-
-	</div>
+	{else}
+		Unknown Error
+	{/if}
 </div>
