@@ -298,7 +298,11 @@ class DiscordClient
                     if (self::IS_DEBUG_MODE) {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
                     } else {
-                        $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
+
+                        if ($channel->name == "general") {
+                            $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
+                        }
+                        
                     }
 
                 }
