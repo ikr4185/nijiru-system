@@ -7,7 +7,8 @@
 
 // module 呼び出し
 var casper = require('casper').create({
-	verbose: false
+	verbose: true,
+	logLevel: "info"
 });
 
 //コマンドライン引数を受け取る
