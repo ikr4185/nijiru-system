@@ -30,11 +30,25 @@ class CliDiscordBot
 
     public function testAction()
     {
-        // 接続の確立
-        $result = $this->DiscordClient->connectGateway();
-        
-        // WebSocket接続, BOT起動
-        $this->DiscordClient->connectWebSocket($result->url);
+        while (true) {
+
+            try {
+
+                // 接続の確立
+                $result = $this->DiscordClient->connectGateway();
+
+                // WebSocket接続, BOT起動
+                $this->DiscordClient->connectWebSocket($result->url);
+
+            } catch (\Exception $e) {
+
+                Console::log("{$e->getMessage()} / {$e->getFile()} / {$e->getLine()}");
+
+                sleep(10);
+                continue;
+
+            }
+        }
     }
 
     public function run()

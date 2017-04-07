@@ -216,6 +216,21 @@ class DiscordClient
     }
 
     /**
+     * OP 7 Reconnect 送信
+     * @throws \WebSocket\BadOpcodeException
+     */
+    protected function gatewayReconnect()
+    {
+        $payload = new \stdClass();
+        $payload->op = 7;
+        $payload->d = 251;
+        $payload = json_encode($payload);
+
+        Console::log("OP 7 Reconnect");
+        $this->client->send($payload);
+    }
+
+    /**
      * Receiveペイロード毎の分岐処理
      * @param $json
      * @return mixed
@@ -299,10 +314,10 @@ class DiscordClient
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
                     } else {
 
-                        if ($channel->name == "general") {
-                            $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
-                        }
-                        
+//                        if ($channel->name == "general") {
+//                            $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
+//                        }
+
                     }
 
                 }

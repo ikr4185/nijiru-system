@@ -10,7 +10,7 @@
 
 				<h2 class="subhead">#{$channelName}</h2>
 
-				{foreach from=$item item=logs}
+
 					<table class="flat_table zebra-table">
 
 						<thead>
@@ -22,15 +22,15 @@
 
 						<tbody>
 
-
+						{foreach from=$item item=logs}
 						<tr style="height:30px;">
 							<td><a href="http://njr-sys.net/discord/log/{$channelName}/?date={$logs[0]}">{$logs[0]}</a></td>
 							<td>{$logs[2] nofilter}</td>
 						</tr>
+						{/foreach}
 
 						</tbody>
 					</table>
-				{/foreach}
 
 			</div>
 		{/foreach}
