@@ -298,6 +298,49 @@ class DiscordClient
             case "RESUMED":
                 Console::log("[RESUMED]", "RECEIVE");
                 break;
+            case "CHANNEL_CREATE":
+
+                // チャンネル追加
+                $this->channels[] = array(
+                    "id" => $receive->d->id,
+                    "name" => $receive->d->name,
+                );
+
+                Console::log("[CHANNEL_CREATE] {$receive->d->name}", "RECEIVE");
+                break;
+            case "CHANNEL_UPDATE":
+
+                //チャンネル更新
+                $oldName = "UNKNOWN";
+                foreach ($this->channels as &$channel) {
+                    if ($channel["id"] == $receive->d->id) {
+                        $oldName = $channel["name"];
+                        $channel = array(
+                            "id" => $receive->d->id,
+                            "name" => $receive->d->name,
+                        );
+                        break;
+                    }
+                }
+                unset($channel);
+
+                Console::log("[CHANNEL_UPDATE] {$oldName} -> {$receive->d->name}", "RECEIVE");
+                break;
+            case "CHANNEL_DELETE":
+
+                // チャンネル削除
+                $oldName = "UNKNOWN";
+                foreach ($this->channels as $key => &$channel) {
+                    if ($channel["id"] == $receive->d->id) {
+                        $oldName = $channel["name"];
+                        unset($this->channels[$key]);
+                        $this->channels = array_values($this->channels);
+                    }
+                }
+                unset($channel);
+
+                Console::log("[CHANNEL_DELETE] {$oldName}", "RECEIVE");
+                break;
             case "GUILD_CREATE":
                 Console::log("[GUILD_CREATE]", "RECEIVE");
 
@@ -313,13 +356,10 @@ class DiscordClient
                     if (self::IS_DEBUG_MODE) {
                         $this->sendMessage($channel->id, "[SYSTEM] KASHIMA DEBUG MODE");
                     } else {
-
 //                        if ($channel->name == "general") {
 //                            $this->sendMessage($channel->id, "[SYSTEM] KASHIMA 起動しました");
 //                        }
-
                     }
-
                 }
 
                 break;
@@ -409,6 +449,7 @@ class DiscordClient
                 $this->getWiki($channel_id, $user_id, $content);
                 $this->searchScpJP($channel_id, $user_id, $content);
                 $this->setTimer($channel_id, $user_id, $content);
+                $this->getServerStatus($channel_id, $user_id, $content);
 
                 break;
             case "MESSAGE_UPDATE":
@@ -433,6 +474,7 @@ class DiscordClient
                     $this->getWiki($channel_id, $user_id, $content);
                     $this->setTimer($channel_id, $user_id, $content);
                     $this->searchScpJP($channel_id, $user_id, $content);
+                    $this->getServerStatus($channel_id, $user_id, $content);
                 }
 
                 break;
@@ -477,6 +519,7 @@ class DiscordClient
                 Console::log("[VOICE_SERVER_UPDATE]", "RECEIVE");
                 break;
             default:
+                Console::log("[{$receive->t}]", "RECEIVE");
                 var_dump($receive);
         }
 
@@ -925,6 +968,33 @@ class DiscordClient
         };
         $this->timers = array_values($this->timers);
 
+        return true;
+    }
+
+    /**
+     * サーバステータスチェック
+     * @param $channel_id
+     * @param $user_id
+     * @param $content
+     * @return bool
+     */
+    protected function getServerStatus($channel_id, $user_id, $content)
+    {
+        preg_match('/^(\.uptime)$/i', $content, $match);
+        if (empty($match)) {
+            return false;
+        }
+    
+        if ($user_id != Config::load("discord.ikr_id")) {
+            $this->sendMessage($channel_id, "Err. not allowed except for developers.");
+            return true;
+        }
+
+        exec("uptime", $output);
+        $msg = implode(",",$output);
+
+        // 発言
+        $this->sendMessage($channel_id, $msg);
         return true;
     }
 }
