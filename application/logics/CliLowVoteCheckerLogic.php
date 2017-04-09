@@ -29,7 +29,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 		$html = Scraping::run( 'http://ja.scp-wiki.net/lowest-rated-pages');
 
 		// curlのrangeオプションが死んでるっぽいので暫定対応
-		$html = substr( $html, 22826, 4000 );
+		$html = substr( $html, 23326, 4761 );
 		return $html;
 	}
 
@@ -41,7 +41,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic {
 	public function parseLowVotes( $html ) {
 
 		// 記事始まり～記事終わりまでを取得
-		$contents = mb_strstr($html, '<div id="page-content">', false);
+		$contents = mb_strstr($html, '<div class="list-pages-box">', false);
 		$contents = mb_strstr($contents, '<div class="page-tags">', true);
 
 		// <a href="/scp-395-jp">Scp 395 Jp　望遠眼鏡</a> <span style="color: #777">(評価: -35, コメント: 3)</span>

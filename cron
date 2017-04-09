@@ -1,9 +1,4 @@
-# old
-#0 9,15,21 * * * php /home/njr-sys/public_html/cli/models/low_vote_checker_model.php
-#0 9,15,21 * * * php /home/njr-sys/public_html/cli/cli_low_vote_checker.php
-
 # 低評価記事チェッカー「消す奴」
-#0,15,30,45 * * * * php /home/njr-sys/public_html/cli/cli_low_vote_checker.php
 0,15,30,45 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliLowVoteChecker
 
 # IRCbot「KAHSIMA-EXE」
@@ -12,7 +7,6 @@
 #1,31 */1 * * * sh /home/njr-sys/public_html/cli/sh/kashima_memory_check.sh
 
 # SCP-JPスクレイピング「SCP-JP Scraper」
-#1 1 * * * sh /home/njr-sys/public_html/cli/sh/scp_jp_scraping.sh
 1 1 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1
 31 1 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 501
 1 2 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1001
@@ -26,4 +20,4 @@
 2 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserActivity
 
 # PM Forwarding
-1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding
+#1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding
