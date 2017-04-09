@@ -80,16 +80,17 @@
 				<tbody>
 				{foreach $result["siteMembers"] as $member }
 					<tr>
-						<td>{$member["id"]}</td>
-						<td>{$member["name"]}</td>
-						<td>{$member["articleCount"]}</td>
+						<td>{$member["site_members_id"]}</td>
+						<td>{$member["site_members_name"]}</td>
+						<td>{$member["article_count"]}</td>
 						<td>
-							<a href="http://ja.scp-wiki.net/{$member["maxVoteArticle"]}">
-								{$member["maxVoteArticle"]}
+							<a href="http://ja.scp-wiki.net/{$member["item_number"]}">
+								{$member["item_number"]}<br>
+								{$member["title"]}
 							</a><br>
-							({$member["maxVote"]})
+							({$member["vote"]})
 						</td>
-						<td>{$member["averageVote"]}</td>
+						<td>{$member["average_vote"]}</td>
 					</tr>
 				{/foreach}
 				</tbody>
