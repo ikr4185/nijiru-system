@@ -55,7 +55,7 @@
 
 			<h3 class="mb10">サイト統計</h3>
 			<div class="mb10 pl10">
-				{*<a href="http://{$view["serverName"]}/sitemembers/">サイトメンバー一覧</a> <span class="red">new</span><br>*}
+				<a href="http://{$view["serverName"]}/sitemembers/">サイトメンバー一覧</a> <span class="red">new</span><br>
 				<a href="http://{$view["serverName"]}/sitemembers/memberHistory" class="side_section__sub">SiteMember History</a> <span class="red">new</span><br>
 				<a href="http://{$view["serverName"]}/sitemembers/voteHistory" class="side_section__sub">Vote History</a> <span class="red">new</span><br>
 			</div>

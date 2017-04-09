@@ -18,6 +18,7 @@
 # ユーザー情報抽出
 1 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserGetter
 2 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserActivity
+10 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliSitMemberStatistics
 
 # PM Forwarding
 #1,16,31,46 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliPmForwarding
