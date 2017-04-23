@@ -104,6 +104,7 @@ class DiscordController extends AbstractController
         }
 
         if (empty($dir)) {
+            $this->attackRecord();
             die("bad request.");
         }
         
@@ -141,6 +142,7 @@ class DiscordController extends AbstractController
     public function authAction()
     {
         if (!$this->auth()) {
+            $this->attackRecord();
             die("bad request.");
         }
         $this->redirect("discord");
@@ -185,21 +187,27 @@ class DiscordController extends AbstractController
     protected static function isPublicDir($subDir)
     {
         $public = array(
+            "297652880943349770_event",
             "297638542346158081_general",
-//            "297640858646347777_community",
             "297641545358901251_guidelines",
-//            "297641900222185472_membership",
-//            "297648958078058499_site_technical",
-//            "297649290417930240_extracurricular",
             "297649519510945794_propsal",
             "297652209481547777_small_talk",
-            "297652880943349770_event",
-//            "300327749313101825_singly--integrate-site",
-//            "302108347359035392_emergency",
         );
         if (in_array($subDir, $public)) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * アクセス記録
+     */
+    private function attackRecord()
+    {
+        $data['REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+        $data['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+        $data['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
+        $fileName = Config::load("dir.logs") . "/discord/system/attack.log";
+        file_put_contents($fileName, json_encode($data) . "\n", FILE_APPEND);
     }
 }
