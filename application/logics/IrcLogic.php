@@ -347,13 +347,16 @@ class IrcLogic extends AbstractLogic
             
             if (file_exists($filePath)) {
                 $ret = trim(str_replace($filePath, "", exec('wc -l ' . $filePath)));
-                
+
                 if (!empty($ret)) {
                     $fileName = basename($filePath, ".{$extension}");
-                    $logs[] = array($fileName, $ret);
+                    $timestamp = strtotime($fileName);
+                    $logs[] = array($fileName, $ret, "timestamp" => $timestamp);
                 }
             }
         }
+        
+        usort($logs, function ($a, $b) { return $a["timestamp"] - $b["timestamp"]; });
         
         return $logs;
     }
@@ -533,12 +536,16 @@ class IrcLogic extends AbstractLogic
         $list = array();
         foreach ($objects as $name => $object) {
             if ($object->isDir()) {
-                $subDir = str_replace("..", "", str_replace("/..", "", str_replace("$dir", "", $name)));
-                if (!empty($subDir)){
+                $subDir = str_replace("/.", "", str_replace("..", "", str_replace("/..", "", str_replace("$dir", "", $name))));
+                if (!empty($subDir)) {
                     $list[] = $subDir;
                 }
             }
         }
+
+        // 重複削除
+        $list = array_unique($list);
+        $list = array_values($list);
         
         return $list;
     }

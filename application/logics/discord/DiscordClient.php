@@ -242,7 +242,7 @@ class DiscordClient
 
         // ex) Timeout
         if ($receive === null) {
-            Console::log("[TIMEOUT] Receive Null", "RECEIVE");
+//            Console::log("[TIMEOUT] Receive Null", "RECEIVE");
             return 999;
         }
 

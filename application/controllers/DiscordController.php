@@ -35,7 +35,8 @@ class DiscordController extends AbstractController
     public function indexAction()
     {
         $subDirs = $this->DiscordLogic->getSubDirList(Config::load("dir.logs") . "/discord/messages/");
-    
+
+
         // 認証チェック
         $isStaff = $this->auth();
         
@@ -61,8 +62,9 @@ class DiscordController extends AbstractController
                 "isPrivate" => $isPrivate,
             );
         }
-
         
+        ksort($channels);
+
         $result = array(
             "channels" => $channels,
             "msg" => $this->DiscordLogic->getMsg(),
@@ -100,16 +102,23 @@ class DiscordController extends AbstractController
                 break;
             }
         }
+
+        if (empty($dir)) {
+            die("bad request.");
+        }
         
         $logDir = Config::load("dir.logs") . "/discord/messages/{$dir}";
+
+        
+        // 該当日のログファイルの取得
         $jsons = file("{$logDir}/{$date}.log");
         
-        // ログ・ファイル中のjson展開
+        // ログファイル中のjson展開
         $datas = $this->DiscordLogic->parseLogJsons($jsons);
         
-        $timestamp = strtotime($date);
-        $before_date = ("2017-02-25" == $date) ? null : date('Y-m-d', strtotime('-1 day', $timestamp));
-        $after_date = (date('Y-m-d') == $date) ? null : date('Y-m-d', strtotime('+1 day', $timestamp));
+        // 前後のログを取得
+        $before_date = ("2017-02-25" == $date) ? null : $this->DiscordLogic->getRecentLog($logDir, $date, true);
+        $after_date = (date('Y-m-d') == $date) ? null : $this->DiscordLogic->getRecentLog($logDir, $date, false);
         
         $result = array(
             "datas" => $datas,
@@ -178,14 +187,15 @@ class DiscordController extends AbstractController
         $public = array(
             "297638542346158081_general",
 //            "297640858646347777_community",
-//            "297641545358901251_guidelines",
+            "297641545358901251_guidelines",
 //            "297641900222185472_membership",
 //            "297648958078058499_site_technical",
 //            "297649290417930240_extracurricular",
-//            "297649519510945794_propsal",
-//            "297652209481547777_small_talk",
-//            "297652880943349770_event",
+            "297649519510945794_propsal",
+            "297652209481547777_small_talk",
+            "297652880943349770_event",
 //            "300327749313101825_singly--integrate-site",
+//            "302108347359035392_emergency",
         );
         if (in_array($subDir, $public)) {
             return true;

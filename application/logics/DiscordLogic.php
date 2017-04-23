@@ -39,7 +39,7 @@ class DiscordLogic extends IrcLogic
         // 発言数バーを格納
         $logs = $this->renderBar($logs);
         
-        return array_reverse($logs);
+        return $logs;
     }
     
     public function parseLogJsons($jsons)
@@ -101,5 +101,39 @@ class DiscordLogic extends IrcLogic
         // 結果を返す
         return $datas;
     }
-
+    
+    /**
+     * @param string $logDir
+     * @param string $date
+     * @param bool $isPre
+     * @return mixed
+     */
+    public function getRecentLog($logDir, $date, $isPre)
+    {
+        $extension = "log";
+        $logs = $this->getLogList($logDir,$extension);
+    
+        foreach ($logs as $key=>$log) {
+            if ($log["timestamp"] === strtotime($date)) {
+    
+                if ($isPre) {
+    
+                    if ($key===0) {
+                        return $date;
+                    }
+                    return $logs[$key-1][0];
+                    
+                }
+    
+                if (isset($logs[$key+1])) {
+                    return $logs[$key+1][0];
+                }
+                return $date;
+                
+                break;
+            }
+        }
+        return $date;
+    }
+    
 }
