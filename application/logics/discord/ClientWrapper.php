@@ -24,6 +24,12 @@ class ClientWrapper extends Client
         while (is_null($response)) {
             $response = $this->receive_fragment();
         }
+    
+        // if op close
+        if (!$this->is_connected) {
+//            return json_encode(false);
+            Console::log("is NOT connected", "CLOSE");
+        }
         
         return $response;
     }
@@ -103,7 +109,7 @@ class ClientWrapper extends Client
         
         if ($opcode === 'close') {
             
-            Console::log("opcode close", "[CLOSE]");
+            Console::log("opcode close", "CLOSE");
             
             // Get the close status.
             if ($payload_length >= 2) {

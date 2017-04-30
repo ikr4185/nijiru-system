@@ -55,6 +55,18 @@ class DiscordClient
      */
     protected $timers = array();
 
+    /**
+     * Readyイベント時に渡される session id
+     * @var string
+     */
+    protected $sessionId = "";
+
+    /**
+     * 最新のシーケンス番号
+     * @var string
+     */
+    protected $seq = "";
+
     public function __construct()
     {
         $this->Api = new Api();
@@ -159,6 +171,13 @@ class DiscordClient
             $json = $this->client->receive();
             $op = $this->parseReceive($json);
 
+            // send "OP 1 Gateway Heartbeat" -> if "OP Closed" received -> "OP 10 Gateway Hello"
+            if ($op === 10) {
+                // OP 6 Resume 送信
+                $this->gatewayResume();
+                continue;
+            }
+
             // HeartBeat 送信
             // しきい値は Receiveタイムアウト より parseReceiveの処理分だけ長めに取る
             if (time() > $this->lastHeartBeat + $this->heartbeatInterval - (self::TIMEOUT + 5)) {
@@ -216,17 +235,24 @@ class DiscordClient
     }
 
     /**
-     * OP 7 Reconnect 送信
+     * OP 6 Resume 送信
      * @throws \WebSocket\BadOpcodeException
      */
-    protected function gatewayReconnect()
+    protected function gatewayResume()
     {
-        $payload = new \stdClass();
-        $payload->op = 7;
-        $payload->d = 251;
+        $data = (object)array(
+            'token' => Config::load("discord.token"),
+            'session_id' => $this->sessionId,
+            'seq' => $this->seq,
+        );
+
+        $payload = (object)array(
+            'op' => 6,
+            'd' => $data,
+        );
         $payload = json_encode($payload);
 
-        Console::log("OP 7 Reconnect");
+        Console::log("OP 6 Resume payloads.", "SEND");
         $this->client->send($payload);
     }
 
@@ -249,6 +275,11 @@ class DiscordClient
         if (self::IS_DEBUG_MODE) {
             Console::log("[DEBUG] DUMP", "SYSTEM");
             var_dump($receive);
+        }
+
+        // シーケンス番号の保持
+        if (!isset($receive->s)) {
+            $this->seq = $receive->s;
         }
 
         // 非イベント時の動作(!OP 0 Dispatch)
@@ -276,12 +307,9 @@ class DiscordClient
             } elseif ($receive->op === 10) {
                 Console::log("[OPERATION] OP 10 Gateway Hello", "RECEIVE");
             } elseif ($receive->op === 11) {
-                Console::log("[OPERATION] OP 11 Gateway Heartbeat ACK", "RECEIVE");
-
                 // HeartBeat 送信時刻を記録
                 $this->lastHeartBeat = time();
-                Console::log("Heartbeat time save. " . date("Y-m-d H:i:s", $this->lastHeartBeat + $this->heartbeatInterval), "SYSTEM");
-
+                Console::log("[OPERATION] OP 11 Gateway Heartbeat ACK (" . date("Y-m-d H:i:s", $this->lastHeartBeat + $this->heartbeatInterval) . ")", "RECEIVE");
             } else {
                 // それ以外の時は詳細を表示
                 var_dump($receive);
@@ -293,7 +321,10 @@ class DiscordClient
         // イベント毎の分岐
         switch ($receive->t) {
             case "READY":
-                Console::log("[READY]", "RECEIVE");
+                // セッションIDの保持
+                $this->sessionId = $receive->d->session_id;
+                Console::log("[READY] session_id: {$this->sessionId}", "RECEIVE");
+
                 break;
             case "RESUMED":
                 Console::log("[RESUMED]", "RECEIVE");
@@ -984,14 +1015,14 @@ class DiscordClient
         if (empty($match)) {
             return false;
         }
-    
+
         if ($user_id != Config::load("discord.ikr_id")) {
             $this->sendMessage($channel_id, "Err. not allowed except for developers.");
             return true;
         }
 
         exec("uptime", $output);
-        $msg = implode(",",$output);
+        $msg = implode(",", $output);
 
         // 発言
         $this->sendMessage($channel_id, $msg);
