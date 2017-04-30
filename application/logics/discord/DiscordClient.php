@@ -465,7 +465,6 @@ class DiscordClient
                 );
                 file_put_contents($logDir . "/" . date("Y-m-d") . ".log", json_encode($data) . "\n", FILE_APPEND);
 
-
                 // KASHIMAの発言を除外
                 if ($user_id == Config::load("discord.id")) {
                     break;
@@ -516,19 +515,20 @@ class DiscordClient
                 Console::log("[MESSAGE_DELETE_BULK]", "RECEIVE");
                 break;
             case "PRESENCE_UPDATE":
-                Console::log("[PRESENCE_UPDATE]", "RECEIVE");
 
-//                $user_id = $receive->d->user->id;
-//                $status = $receive->d->status;
-//                if ($status == "dnd") {
-//                    $status = "Do Not Disturb";
-//                } else {
-//                    $status = ucfirst($status);
-//                }
-//
-//                foreach ($this->channels as $channel) {
+                $user_id = $receive->d->user->id;
+                $status = $receive->d->status;
+                if ($status == "dnd") {
+                    $status = "Do Not Disturb";
+                } else {
+                    $status = ucfirst($status);
+                }
+
+                foreach ($this->channels as $channel) {
 //                    $this->sendMessage($channel["id"], "[SYSTEM] <@{$user_id}> -> {$status}");
-//                }
+                    Console::log("[PRESENCE_UPDATE] {$user_id} -> {$status}", "RECEIVE");
+                    break;
+                }
 
                 break;
             case "GAME_OBJECT":
