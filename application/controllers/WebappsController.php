@@ -13,7 +13,7 @@ use Inputs\BasicInput;
  */
 class WebAppsController extends AbstractController
 {
-
+    
     /**
      * @var WebAppsLogic
      */
@@ -22,24 +22,24 @@ class WebAppsController extends AbstractController
      * @var BasicInput
      */
     protected $input;
-
+    
     protected function getLogic()
     {
         $this->logic = new WebAppsLogic();
     }
-
+    
     protected function getInput()
     {
         $this->input = new BasicInput();
     }
-
+    
     public function indexAction()
     {
         // 国へ帰るんだな
         $this->redirect("index");
-
+        
     }
-
+    
     /**
      * SCP-Search
      */
@@ -47,15 +47,15 @@ class WebAppsController extends AbstractController
     {
         // ポストされたらリダイレクト
         if ($this->input->isPost()) {
-
+            
             $inputNumber = $this->input->getRequest("scp_search");
-
+            
             if ($this->logic->validateScpSearch($inputNumber)) {
                 $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-" . $inputNumber;
                 $this->redirectTo($url);
             }
         }
-
+        
         $result = array(
             "msg" => $this->logic->getMsg(),
         );
@@ -63,7 +63,7 @@ class WebAppsController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/webapps/scp_search.js",
         );
         $this->getViewWebApps("scp_search", "WebApps", $result, $jsPathArray);
-
+        
     }
     
     /**
@@ -74,7 +74,7 @@ class WebAppsController extends AbstractController
     {
         // id バリデーション
         $this->logic->validateFwbToken($token);
-
+        
         $result = array(
             "isWhiteBoard" => true,
             "msg" => $this->logic->getMsg(),
@@ -100,7 +100,14 @@ class WebAppsController extends AbstractController
             $this->redirectTo("http://ja.scp-wiki.net");
             exit;
         }
-        $this->getViewDev("document_".$page, "WebApps", null);
+        $this->getViewDev("document_" . $page, "WebApps", null);
     }
-
+    
+    public function fc2Action()
+    {
+        $logs = file_get_contents("/home/njr-sys/public_html/logs/fc2wiki/updates.log");
+        $result = array("logs" => $logs);
+        $this->getViewDev("fc2", "WebApps", $result);
+    }
+    
 }
