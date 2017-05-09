@@ -66,6 +66,11 @@ class DevelopController extends AbstractController {
 				
 	}
 
+    public function randAction(){
+        $rand = mt_rand(0, 100);
+        echo (string)$rand;
+    }
+
 //	public function apiAction() {
 //
 //		$result = $this->logic->getApi();
