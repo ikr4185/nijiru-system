@@ -63,9 +63,10 @@ class KashimaExe extends AbstractKashima
     
     function markov($irc, $data)
     {
-        $Markov = new Markov;
-        $msg = $Markov->run();
-        $this->sendMsg($irc, $data, $msg);
+//        $Markov = new Markov;
+//        $msg = $Markov->run();
+//        $this->sendMsg($irc, $data, $msg);
+	  $this->sendMsg($irc, $data, "YO");
     }
 
 }
