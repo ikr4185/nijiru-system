@@ -33,25 +33,33 @@ class CliPmForwarding
     
     public function indexAction()
     {
+        exit;
+
         Console::log("Start.");
 
         $result = $this->getPm(Config::load("wikidot.pass"));
 
-        $result = preg_replace('/(<div class="btn-group">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
-        $result = preg_replace('/(<div class="message-actions text-center">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
-        $message1 = trim(strip_tags($result));
+        var_dump($result);
 
-        if (!empty($message1) && $message1 !== "error") {
-            // 送信する
-            $this->Mail->send('ikr.4185@gmail.com', array(
-                "user" => "ikr_4185",
-                "now" => date("Y-m-d H:i:s"),
-                "message1" => $message1
-            ));
-            Console::log("MailSend");
+        if ($result) {
+
+            Console::log("ok.");
+
+            $result = preg_replace('/(<div class="btn-group">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
+            $result = preg_replace('/(<div class="message-actions text-center">)(.*?)(<\/div>)(.*?)$/s', "$4", $result);
+            $message1 = trim(strip_tags($result));
+
+            if (!empty($message1) && $message1 !== "error") {
+                // 送信する
+                $this->Mail->send('ikr.4185@gmail.com', array(
+                    "user" => "ikr_4185",
+                    "now" => date("Y-m-d H:i:s"),
+                    "message1" => $message1,
+                ));
+                Console::log("MailSend");
+            }
+
         }
-
-//        var_dump($message1);
         
         Console::log("Done.");
     }

@@ -10,7 +10,7 @@ use \Cores\Config\Config;
  */
 class IrcLogic extends AbstractLogic
 {
-
+    
     /**
      * IRC検索上限数
      */
@@ -101,7 +101,7 @@ class IrcLogic extends AbstractLogic
         $unit = floor($max / 100);
         
         // ゼロ除算阻止
-        if ($unit === 0) {
+        if ($unit == 0) {
             $unit = 1;
         }
         
@@ -199,7 +199,8 @@ class IrcLogic extends AbstractLogic
             }
             
             // オペレータ
-            if ("Holy_nova" == $matches[2] || "kasyu-maki" == $matches[2]) {
+            $operators = array("Holy_nova", "kasyu-maki", "unReGret", "jet0620");
+            if (in_array($matches[2], $operators)) {
                 $color = "irc-color-op";
             }
         }
@@ -215,7 +216,7 @@ class IrcLogic extends AbstractLogic
         $html = preg_replace('/( - \()(.*?)(\) - )/', "<td class=\"nowrap\"><span class=\"b {$color}\">&lt;$2&gt;</span></td><td class=\"wrap irc-table__message\">\t", $html);
         
         // URLリンク生成
-        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?/', "<a href=\"$0\">$0</a>", $html);
+        $html = preg_replace('/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=:;|#,]*)?/iu', "<a href=\"$0\">$0</a>", $html);
         
         // 年月日を削除
         $html = preg_replace('/(\d{4})-(\d{2})-(\d{2}) /', "", $html);
@@ -228,7 +229,7 @@ class IrcLogic extends AbstractLogic
      * @param $name
      * @return string
      */
-    protected function getColor($name)
+    public function getColor($name)
     {
         $head = mb_strtolower(substr($name, 0, 1));
         return "irc-color-{$head}";
@@ -237,7 +238,7 @@ class IrcLogic extends AbstractLogic
     /**
      * 下書き批評予約の読み込み
      * @param $date
-     * @return string
+     * @return array
      */
     public function getDraftReserve($date)
     {
@@ -283,6 +284,7 @@ class IrcLogic extends AbstractLogic
     
     /**
      * 下書き批評予約
+     * ※雑
      * @param $date
      * @param $name
      * @param $title
@@ -305,6 +307,12 @@ class IrcLogic extends AbstractLogic
         file_put_contents($dirName . $date . ".log", $data, FILE_APPEND | LOCK_EX);
     }
     
+    /**
+     * 下書き批評予約__@@,@@と,の変換
+     * @param $str
+     * @param bool $isToComma
+     * @return mixed
+     */
     protected function convertComma($str, $isToComma = false)
     {
         if ($isToComma) {
@@ -318,20 +326,37 @@ class IrcLogic extends AbstractLogic
      */
     public function getDraftReserveFiles()
     {
+        $logDir = $this->logsDir . "/irc/draft_reserve/";
+        $extension = "log";
+        
+        return $this->getLogList($logDir, $extension);
+    }
+    
+    /**
+     * ログファイル名と行数の配列を取得
+     * @param String $logDir ex) $this->logsDir."/irc/draft_reserve/"
+     * @param String $extension ex) dat, log
+     * @return array
+     */
+    protected function getLogList($logDir, $extension)
+    {
         $logs = array();
-        $rawLogs = $this->getFileList($this->logsDir . "/irc/draft_reserve/");
+        $rawLogs = $this->getFileList($logDir);
         
         foreach ($rawLogs as $filePath) {
             
             if (file_exists($filePath)) {
                 $ret = trim(str_replace($filePath, "", exec('wc -l ' . $filePath)));
-                
+
                 if (!empty($ret)) {
-                    $fileName = basename($filePath, ".log");
-                    $logs[] = array($fileName, $ret);
+                    $fileName = basename($filePath, ".{$extension}");
+                    $timestamp = strtotime($fileName);
+                    $logs[] = array($fileName, $ret, "timestamp" => $timestamp);
                 }
             }
         }
+        
+        usort($logs, function ($a, $b) { return $a["timestamp"] - $b["timestamp"]; });
         
         return $logs;
     }
@@ -358,25 +383,25 @@ class IrcLogic extends AbstractLogic
         // ログを検索
         $result = array();
         $result = $this->searchIrcLog($logFilePaths, $searchQueries, '/\((.*?)\) - (.*?)$/', "irc-logs_", ".dat", $result);
-
+        
         // 新ログでまだ検索数上限に満たないなら、旧ログも検索
         if (count($result) < self::SEARCH_LIMIT) {
             $oldLogFilePaths = $this->getFileList($this->cliDir . "/logs/irc_old");
             $result = $this->searchIrcLog($oldLogFilePaths, $searchQueries, '/<(.*?)> (.*?)$/', "irc-logs_", ".log", $result);
         }
-
+        
         $resultCount = count($result);
-
+        
         // メッセージ表示
         $this->setMsg("検索結果:{$resultCount}件");
         if ($resultCount >= self::SEARCH_LIMIT) {
-            $this->setMsg("検索結果:".self::SEARCH_LIMIT."件までを表示します");
+            $this->setMsg("検索結果:" . self::SEARCH_LIMIT . "件までを表示します");
         }
-
+        
         krsort($result);
         return $result;
     }
-
+    
     /**
      * 検索実処理
      * @param $logFilePaths
@@ -390,22 +415,22 @@ class IrcLogic extends AbstractLogic
     protected function searchIrcLog($logFilePaths, $searchQueries, $pattern, $logPrefix = "irc-logs_", $logExtension = ".dat", $result = array())
     {
         $resultCount = count($result);
-
+        
         // ログを検索
         foreach ($logFilePaths as $logFilePath) {
-
+            
             // ログの各行ごとの配列を取得
             $logs = $this->getLogArray($logFilePath);
-
+            
             foreach ($logs as $log) {
-
+                
                 // 該当行に検索文字列が無ければ次へ
                 foreach ($searchQueries as $str) {
                     if (strpos($log, $str) === false) {
                         continue 2;
                     }
                 }
-
+                
                 // パース処理
                 preg_match($pattern, $log, $matches);
                 if (empty($matches)) {
@@ -415,7 +440,7 @@ class IrcLogic extends AbstractLogic
                 if (!strtotime($postDate)) {
                     continue;
                 }
-
+                
                 // 検索結果の格納
                 if (!isset($result[strtotime($postDate)])) {
                     $resultCount++;
@@ -426,14 +451,14 @@ class IrcLogic extends AbstractLogic
                         "message" => $matches[2],
                     );
                 }
-
+                
                 // 検索結果が検索数上限を超えたら終了
                 if ($resultCount >= self::SEARCH_LIMIT) {
                     break 2;
                 }
             }
         }
-
+        
         return $result;
     }
     
@@ -441,7 +466,7 @@ class IrcLogic extends AbstractLogic
     {
         return self::SEARCH_LIMIT;
     }
-
+    
     /**
      * IRCログファイルの読み込み
      * @param $fileName
@@ -495,6 +520,32 @@ class IrcLogic extends AbstractLogic
                 $list[] = $fileInfo->getPathname();
             }
         }
+        
+        return $list;
+    }
+    
+    /**
+     * ディレクトリ内の全てのサブディレクトリの取得
+     * @param $dir
+     * @return array
+     */
+    public function getSubDirList($dir)
+    {
+        $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
+        
+        $list = array();
+        foreach ($objects as $name => $object) {
+            if ($object->isDir()) {
+                $subDir = str_replace("/.", "", str_replace("..", "", str_replace("/..", "", str_replace("$dir", "", $name))));
+                if (!empty($subDir)) {
+                    $list[] = $subDir;
+                }
+            }
+        }
+
+        // 重複削除
+        $list = array_unique($list);
+        $list = array_values($list);
         
         return $list;
     }

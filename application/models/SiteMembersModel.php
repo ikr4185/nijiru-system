@@ -67,6 +67,21 @@ class SiteMembersModel extends AbstractModel
 		return $this->execSql( 'SELECT * FROM site_members WHERE 1 AND del_flg = 0', array(), true );
 	}
 
+
+	/**
+	 * 情報の全取得
+	 * @return array|string
+	 */
+	public function getAllJoinStatistics() {
+		return $this->execSql( 'SELECT a.id AS site_members_id, a.name AS site_members_name, a.* , b.*, c.*
+FROM site_members AS a
+LEFT JOIN site_members_statistics AS b ON a.id = b.site_members_id
+LEFT JOIN scp_jp AS c ON b.max_vote_scpjp_id = c.id
+LEFT JOIN site_activity AS d ON b.recent_site_activity_id = d.id
+WHERE 1 
+AND a.del_flg =0', array(), true );
+	}
+
 	/**
 	 * ソフトデリート操作
 	 * @param $del_flg  int

@@ -31,17 +31,7 @@ class ContactLogic extends AbstractLogic {
 		$contact_id = file_get_contents("/home/njr-sys/public_html/log/Contact/contact_id.log");
 		
 		// 送信する
-		$this->mail->send('ikr_4185@njr-sys.net', array(
-			"user" => "育良 啓一郎",
-			"now" => $now,
-			"contactid" => $contact_id,
-			"name"  =>  $contact["name"],
-			"email"  =>  $contact["email"],
-			"subject"  =>  $contact["subject"],
-			"text"  =>  $contact["text"],
-		));
-
-//		$this->mail->send('ikr.4185@gmail.com', array(
+//		$this->mail->send('ikr_4185@njr-sys.net', array(
 //			"user" => "育良 啓一郎",
 //			"now" => $now,
 //			"contactid" => $contact_id,
@@ -50,6 +40,16 @@ class ContactLogic extends AbstractLogic {
 //			"subject"  =>  $contact["subject"],
 //			"text"  =>  $contact["text"],
 //		));
+
+		$this->mail->send('ikr.4185@gmail.com', array(
+			"user" => "育良 啓一郎",
+			"now" => $now,
+			"contactid" => $contact_id,
+			"name"  =>  $contact["name"],
+			"email"  =>  $contact["email"],
+			"subject"  =>  $contact["subject"],
+			"text"  =>  $contact["text"],
+		));
 		
 		// お問い合わせ番号更新
 		$new_contact_id = (int)$contact_id + 1;

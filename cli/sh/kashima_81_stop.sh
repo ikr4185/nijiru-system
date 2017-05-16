@@ -15,4 +15,4 @@ kill -9 ${pid_now}
 last=`sed -n '$!p' ${logfile}`
 echo ${last} > ${logfile}
 
-exit
+exit 0

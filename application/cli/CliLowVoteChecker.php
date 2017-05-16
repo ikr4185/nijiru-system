@@ -57,7 +57,7 @@ class CliLowVoteChecker extends CliAbstract{
 		// 評価の低い記事一覧をスクレイピング・パースする
 		Console::log("scraping");
 		$lowVotes = $this->logic->parseLowVotes($this->logic->scraping());
-
+        
 		// 削除基準以下の記事に、削除対象フラグを付与
 		Console::log("checkVote");
 		$lowVotes = $this->logic->checkVote( $lowVotes );
@@ -109,7 +109,7 @@ class CliLowVoteChecker extends CliAbstract{
 		// SendMail
 		if ($sendMail) {
 			Console::log("semdMail");
-			$this->logic->sendMail( $saveInfoArray, $recovered_lvcArray, $lvcArray, $lvcStatus, $redAndYellow["yellow"], $this->is_debug );
+//			$this->logic->sendMail( $saveInfoArray, $recovered_lvcArray, $lvcArray, $lvcStatus, $redAndYellow["yellow"], $this->is_debug );
 		}
 		
 		Console::log("Done.");
