@@ -69,10 +69,28 @@ class Irc81Logic extends IrcLogic {
 			if ( "Holy_nova" == $record["nick"] || "kasyu-maki" == $record["nick"] ) $color = "irc-color-op";
 			$record["color"] = $color;
 
+            if (strpos($record["message"], "&#x")!==false) {
+                $record["message"]  = $this->utf8mb4_decode_numericentity($record["message"]) . " [system: 特殊文字が含まれています]";
+            }
+
 		}
 		unset($record);
 
 		return $records;
 	}
+
+    /**
+     * 4バイト文字エスケープを元に戻す
+     * @see http://qiita.com/masakielastic/items/ec483b00ff6337a02878
+     * @param $str
+     * @return mixed
+     */
+    protected function utf8mb4_decode_numericentity($str)
+    {
+        $re = '/&#(x[0-9a-fA-F]{5,6}|\d{5,7});/';
+        return preg_replace_callback($re, function ($m) {
+            return html_entity_decode($m[0]);
+        }, $str);
+    }
     
 }
