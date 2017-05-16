@@ -59,12 +59,35 @@ class KashimaExe_81 extends AbstractKashima
         unset($this->pdo);
         $pdo = new PDO(\Cores\Config\Config::load("db.dsn"), \Cores\Config\Config::load("db.user"), \Cores\Config\Config::load("db.pass"));
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $msg = $this->utf8mb4_encode_numericentity($msg);
         
         $sql = 'insert into irc_log_81( nick, message, date) values ( ?, ?, now() )';
         $stmt = $pdo->prepare($sql);
         
         return $stmt->execute(array($nick, $msg));
     }
+
+    /**
+     * 4バイト文字をエスケープさせる
+     * @see http://qiita.com/masakielastic/items/ec483b00ff6337a02878
+     * @param $str
+     * @return mixed
+     */
+    protected function utf8mb4_encode_numericentity($str)
+    {
+        $re = '/[^\x{0}-\x{FFFF}]/u';
+        return preg_replace_callback($re, function ($m) {
+            $char = $m[0];
+            $x = ord($char[0]);
+            $y = ord($char[1]);
+            $z = ord($char[2]);
+            $w = ord($char[3]);
+            $cp = (($x & 0x7) << 18) | (($y & 0x3F) << 12) | (($z & 0x3F) << 6) | ($w & 0x3F);
+            return sprintf("&#x%X;", $cp);
+        }, $str);
+    }
+
 }
 
 $bot = &new KashimaExe_81();
