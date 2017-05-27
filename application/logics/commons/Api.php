@@ -17,7 +17,7 @@ class Api
      */
     public function xml_rpc($option, $arg)
     {
-        $request = xmlrpc_encode_request($option, $arg);
+        $request = xmlrpc_encode_request($option, $arg, array('escaping'=> "markup", 'encoding' => "utf-8"));
         $context = stream_context_create(array(
             'http' => array(
                 'method' => "POST",
