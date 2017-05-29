@@ -12,8 +12,11 @@
 1 2 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1001
 31 2 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliScpJpScraping index 1501
 
+# SCP-EN top-rated-pages 翻訳版自動更新
+1 0 * * 6 sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliEnTopRateChecker >> /home/njr-sys/public_html/logs/top-rated-pages/top-rated-pages.log
+
 # ForumPost Check
-1,31 0-2/1,7-23/1 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliRssReader
+#1,31 0-2/1,7-23/1 * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliRssReader
 
 # ユーザー情報抽出
 1 * * * * sh /home/njr-sys/public_html/application/cli/commons/cron_cli_load.sh CliUserGetter
