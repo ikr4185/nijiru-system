@@ -167,7 +167,7 @@ class CliEnTopRateCheckerLogic extends AbstractLogic
         $newTitle = $pageMeta[$url]["title"];
 
         // Wiki構文のエスケープ
-        $newTitle = str_replace(array("[","]"),"",$newTitle);
+        $newTitle = str_replace(array("[", "]"), "", $newTitle);
 
         // debug ////////////////////////////////////////
         echo "translate {$title} / {$newTitle}\n";
@@ -193,19 +193,20 @@ class CliEnTopRateCheckerLogic extends AbstractLogic
         return $this->setList($this->getList() . $rows);
     }
     
-
+    
     /**
-     * 投稿
+     * 投稿"
+     * @param string $title
+     * @param string $revision_comment
      * @return $this
      */
-    public function posting()
+    public function posting($title = "評価の高い記事-EN", $revision_comment = "[njr-sys]automated update")
     {
-        $site = "sugoi-chirimenjako-pain";
-        $page = "test-2017-05-27-en-top-rate";
+        $site = "scp-jp";
+        $page = "top-rated-pages-en";
         $content = $this->getRendered() . $this->getList();
-        $title = "評価が高いページ-EN";
-        $tags = array("njr-sys", "test");
-        $revision_comment = "[njr-sys]automated update";
+        $tags = array("njr-sys","ハブ");
+
 
         $this->api->pagesSaveOne($site, $page, $title, $content, $tags, $revision_comment);
         return $this;

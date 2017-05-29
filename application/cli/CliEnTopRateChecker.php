@@ -36,12 +36,15 @@ class CliEnTopRateChecker extends CliAbstract
         // 序文を生成して、テーブルを組み合わせて投稿
         Console::log("Posting.");
 
-        $text = "ここではサイトで最も好まれているSCP記事,Tale記事を見ることができます。組織票や多重投票を避けるため、投票はサイトメンバーに限定されます。
-今月作成された中で最も支持されたページを見るには[[[Top Rated Pages This Month|評価の高い記事(今月)]]]を参照してください。\n\n
-それぞれのタグで評価の高い記事を確認したい際は[[[top-rated-scp|評価の高いSCP]]]、[[[Top Rated Tale|評価の高いTale]]]、
-[[[Top Rated Other|その他の評価の高い記事]]]を参照してください。\n";
+        $text = "> [http://www.scp-wiki.net SCP-EN]で最も好まれているSCP記事,Tale記事を見ることができます。投票数はSCP-ENの物です。
+> このページは [[*user ikr_4185]] 作成の Nijiru-System Bot により、毎週土曜0:00頃、自動で更新されます(システム都合上、履歴には [[*user holy_nova]]さんが表示されます)。
+> 
+> SCP-JPで、最も支持されたページを見るには[[[top-rated-pages|評価の高い記事]]]を参照してください。
 
-        $this->logic->createHeadText($text)->posting();
+------
+";
+
+        $this->logic->createHeadText($text)->posting("評価の高い記事-EN", "[njr-sys]test");
 
         Console::log("Done.");
     }

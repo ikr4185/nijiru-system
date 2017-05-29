@@ -26,6 +26,13 @@ class Api
             ),
         ));
         $file = file_get_contents('https://njr-sys:' . Config::load("api.key") . '@www.wikidot.com/xml-rpc-api.php', false, $context);
+
+        if (!$file) {
+            // 接続失敗時は 5 秒まって再実行
+            sleep(5);
+            $file = file_get_contents('https://njr-sys:' . Config::load("api.key") . '@www.wikidot.com/xml-rpc-api.php', false, $context);
+        }
+
         $response = xmlrpc_decode($file);
 
         if ($response && xmlrpc_is_fault($response)) {
