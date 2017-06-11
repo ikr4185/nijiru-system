@@ -75,7 +75,7 @@ class DevelopController extends AbstractController
     public function randAction()
     {
 
-        // 5秒スリープ
+        // スリープ
         sleep(5);
 
         $rand = mt_rand(0, 100);
