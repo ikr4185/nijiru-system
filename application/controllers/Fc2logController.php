@@ -50,7 +50,7 @@ class Fc2logController extends AbstractController {
     public function authAction()
     {
         if (!$this->auth()) {
-            die("bad request.");
+            die("WARNING: INCORRECT AUTHENTICATION: YOU HAVE SIXTY SECONDS TO ENTER THE CORRECT USER AUTHENTICATION, OR SECURITY PERSONNEL WILL BE SUMMONED TO YOUR LOCATION.");
         }
         $this->redirect("fc2log");
     }
