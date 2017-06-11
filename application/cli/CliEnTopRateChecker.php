@@ -44,7 +44,7 @@ class CliEnTopRateChecker extends CliAbstract
 ------
 ";
 
-        $this->logic->createHeadText($text)->posting("評価の高い記事-EN", "[njr-sys]test");
+        $this->logic->createHeadText($text)->posting("評価の高い記事-EN", "[njr-sys]automatic update.");
 
         Console::log("Done.");
     }
