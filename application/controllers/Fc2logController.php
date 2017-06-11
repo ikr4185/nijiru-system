@@ -31,6 +31,9 @@ class Fc2logController extends AbstractController {
 
         // 認証チェック
         $isStaff = $this->auth();
+        if (!$isStaff) {
+            die("WARNING: INCORRECT AUTHENTICATION: YOU HAVE SIXTY SECONDS TO ENTER THE CORRECT USER AUTHENTICATION, OR SECURITY PERSONNEL WILL BE SUMMONED TO YOUR LOCATION.");
+        }
 
         $logName = Config::load("dir.logs") . "/fc2wiki/pages/".str_replace("-","_",$logName).".html";
         $log = "not found";
@@ -64,6 +67,27 @@ class Fc2logController extends AbstractController {
             return true;
         }
         return false;
+    }
+    
+    public function csvAction()
+    {
+        // 認証チェック
+        $isStaff = $this->auth();
+        if (!$isStaff) {
+            die("WARNING: INCORRECT AUTHENTICATION: YOU HAVE SIXTY SECONDS TO ENTER THE CORRECT USER AUTHENTICATION, OR SECURITY PERSONNEL WILL BE SUMMONED TO YOUR LOCATION.");
+        }
+
+        $fileName = Config::load("dir.logs") . "/fc2wiki/run_pages_20170611_224251.log";
+
+        // ダウンロード開始
+        header('Content-Type: application/octet-stream');
+
+        // ここで渡されるファイルがダウンロード時のファイル名になる
+        header('Content-Disposition: attachment; filename=run_pages_20170611_224251.csv');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . filesize($fileName));
+        readfile($fileName);
+        exit;
     }
 
 }

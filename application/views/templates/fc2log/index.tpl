@@ -1,8 +1,14 @@
 {if $result["isStaff"] }
 <div class="section">
-	<p>welcome personal.</p>
+	<p style="font-weight: bold">AUTHENTICATION ACCEPTED.</p>
+</div>
+<div class="section">
 	<p>if you want to view page logs, access the url directly as shown below.</p>
 	<p>ex) http://njr-sys.net/fc2log/view/20170611_230657</p>
+</div>
+<div class="section">
+	<p>csv file</p>
+	<p><a href="/fc2log/csv/">download</a></p>
 </div>
 {/if}
 
