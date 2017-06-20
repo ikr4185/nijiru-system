@@ -21,6 +21,7 @@ RewriteCond %{REQUEST_URI} !^/php_my_admin/
 
 # test
 #RewriteCond %{REQUEST_URI} !^/test/fc2/
+RewriteCond %{REQUEST_URI} !^/test/test2\.html
 
 # Node系アプリケーションも分岐
 RewriteCond %{REQUEST_URI} !^/node_application/
