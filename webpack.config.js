@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = [{
@@ -7,15 +8,23 @@ module.exports = [{
 		path: path.join(__dirname, '/application/views/assets/js/bandle'),
 		filename: 'bundle.js'
 	},
+	plugins: [
+		new webpack.ProvidePlugin({ riot: 'riot' })
+	],
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
+				test: /\.js$|\.tag$/,
 				exclude: /node_modules/,
 				loader: 'babel-loader',
 				query: {
 					presets: ['babel-preset-es2015']
 				}
+			},
+			{
+				test: /\.tag$/,
+				exclude: /node_modules/,
+				loader: 'riotjs-loader'
 			}
 		]
 	}
@@ -25,7 +34,7 @@ module.exports = [{
 	},
 	output: {
 		path: path.join(__dirname, '/application/views/assets/css'),
-		filename: 'bandle.css'
+		filename: 'style.css'
 	},
 	module: {
 		loaders: [
