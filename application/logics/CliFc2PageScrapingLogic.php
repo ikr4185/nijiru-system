@@ -8,6 +8,7 @@ use Logics\Commons\Scraping;
 //use Logics\Commons\Mail;
 use Cli\Commons\Console;
 use \Cores\Config\Config;
+use Logics\Commons\WikidotApi;
 
 /**
  * Class CliFc2PageScrapingLogic
@@ -90,6 +91,7 @@ class CliFc2PageScrapingLogic extends AbstractLogic
     {
         // 実行開始日時の取得
         $this->runDate = date("Ymd_His");
+        $this->api = new WikidotApi();
     }
     
     /**
@@ -200,7 +202,27 @@ class CliFc2PageScrapingLogic extends AbstractLogic
                 // SCP-JPの該当記事のHTTPステータスをチェックしに行く
                 $status = Scraping::getStatusCode('ja.scp-wiki.net/' . $originalUrl);
 
-                $jpTransferStatus[] = array($originalUrl, $status);
+                sleep(3);
+
+                // SCP-JPの該当記事メタ情報を取得する
+                $pageMeta = $this->api->pagesGetMeta("scp-jp", array($originalUrl));
+
+                var_dump($pageMeta);
+
+                if (!empty($pageMeta[$originalUrl])) {
+
+                    $jpTransferStatus[] = array(
+                        $originalUrl,
+                        $status,
+                        $pageMeta[$originalUrl]["created_at"],
+                        $pageMeta[$originalUrl]["created_by"],
+                        $pageMeta[$originalUrl]["updated_at"],
+                        $pageMeta[$originalUrl]["updated_by"],
+                        $pageMeta[$originalUrl]["title"],
+                    );
+                } else {
+                    $jpTransferStatus[] = array($originalUrl, $status);
+                }
                 
                 sleep(3);
             }
@@ -220,9 +242,21 @@ class CliFc2PageScrapingLogic extends AbstractLogic
         // 実行ログの保存
         $jpTransferStatuses = "";
         $jpTransferStatusArray = $this->getJpTransferStatus();
+
+        // ページメタの取得成功時の処理
         if (!empty($jpTransferStatusArray)) {
             foreach ($jpTransferStatusArray as $jpTransferStatus) {
-                $jpTransferStatuses .= "\"{$jpTransferStatus[0]}\",\"{$jpTransferStatus[1]}\",";
+
+                // 最初のカラムを追加
+                $jpTransferStatuses .= "\"{$jpTransferStatus[0]}\"";
+                foreach ($jpTransferStatus as $key => $val) {
+
+                    // 最初のカラムは飛ばす
+                    if ($key === 0) {
+                        continue;
+                    }
+                    $jpTransferStatuses .= ",\"{$val}\"";
+                }
             }
             $jpTransferStatuses = trim($jpTransferStatuses, ",");
         }
