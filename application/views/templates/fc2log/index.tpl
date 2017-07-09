@@ -3,8 +3,8 @@
 	<p style="font-weight: bold">AUTHENTICATION ACCEPTED.</p>
 </div>
 <div class="section">
-	<p>if you want to view page logs, access the url directly as shown below.</p>
-	<p>ex) http://njr-sys.net/fc2log/view/20170611_230657</p>
+	<p>backup logs index</p>
+	<p><a href="/fc2log/links/">Access</a></p>
 </div>
 <div class="section">
 	<p>csv file</p>

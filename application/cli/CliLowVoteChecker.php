@@ -109,7 +109,7 @@ class CliLowVoteChecker extends CliAbstract{
 		// SendMail
 		if ($sendMail) {
 			Console::log("semdMail");
-//			$this->logic->sendMail( $saveInfoArray, $recovered_lvcArray, $lvcArray, $lvcStatus, $redAndYellow["yellow"], $this->is_debug );
+			$this->logic->sendMail( $saveInfoArray, $recovered_lvcArray, $lvcArray, $lvcStatus, $redAndYellow["yellow"], $this->is_debug );
 		}
 		
 		Console::log("Done.");

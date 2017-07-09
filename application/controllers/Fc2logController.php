@@ -16,6 +16,7 @@ class Fc2logController extends AbstractController {
     {
         $this->input = new BasicInput();
     }
+    
     public function indexAction(){
         
         // 認証チェック
@@ -25,6 +26,17 @@ class Fc2logController extends AbstractController {
             "isStaff" => $isStaff,
         );
         $this->getView("index", "FC2 Log", $result);
+    }
+    
+    public function linksAction(){
+        
+        // 認証チェック
+        $isStaff = $this->auth();
+        
+        $result = array(
+            "isStaff" => $isStaff,
+        );
+        $this->getView("links", "FC2 Log", $result);
     }
 
     public function viewAction($logName){
@@ -40,6 +52,10 @@ class Fc2logController extends AbstractController {
         if ($isStaff && file_exists($logName)) {
             $log = file_get_contents($logName);
         }
+
+        // 折りたたみ構文の強制表示
+        $log = str_replace("display:none;","",$log);
+        echo '<style> .tree_title { color: #901; text-decoration: none; } .tree_title:hover { color: #601; } .tree_title:before {content:"+ "} </style>';
 
         echo $log;
     }
