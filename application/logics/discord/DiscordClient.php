@@ -649,26 +649,32 @@ class DiscordClient
             return false;
         }
 
-        $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-{$match[2]}/";
+        $num = $match[2];
+        if ($num >= 3000) {
+            $url = "http://ja.scp-wiki.net/scp-series-4";
+        } elseif ($num >= 2000 && $num < 3000) {
+            $url = "http://ja.scp-wiki.net/scp-series-3";
+        } elseif ($num >= 1000 && $num < 2000) {
+            $url = "http://ja.scp-wiki.net/scp-series-2";
+        } else {
+            $url = "http://ja.scp-wiki.net/scp-series";
+        }
         $html = $this->Api->curl($url);
         if (!$html) {
             $this->sendMessage($channel_id, "[ERROR] <@{$user_id}> 取得に失敗しました");
             return false;
         }
 
-        preg_match('@(<div><span style="font-weight: bold;">)(.*?)(</span></div>)@i', $html["body"], $matches);
+        preg_match("@(<li><a href=\"/scp-{$num}\">SCP-{$num}</a> - )(.*?)(</li>)@i", $html["body"], $matches);
         unset($html); // メモリ節約
-        if (!isset($matches[2])) {
+        if (!isset($matches[2]) && $num != 242) {
             $this->sendMessage($channel_id, "[ERROR] <@{$user_id}> 記事が見つかりませんでした");
             return false;
         }
 
-        $title = str_replace('<span style="font-style: italic;">', '', $matches[2]);
-        $title = str_replace('<span style="font-weight: bold;">', '', $title);
-        $title = str_replace('</span>', '', $title);
-        $title = htmlspecialchars_decode($title);
+        $title = htmlspecialchars_decode($matches[2]);
 
-        $msg = "[SCP] <@{$user_id}> {$title} {$url}";
+        $msg = "[SCP] <@{$user_id}> SCP-{$num} \"{$title}\" http://ja.scp-wiki.net/scp-{$num}";
 
         // 発言
         $this->sendMessage($channel_id, $msg);

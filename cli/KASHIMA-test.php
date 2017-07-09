@@ -10,7 +10,7 @@
  * sh /home/njr-sys/public_html/cli/sh/kashima_reboot.sh
  *
  * （手動起動）
- * nohup php /home/njr-sys/public_html/cli/ELKE-EXE2.php &
+ * nohup php /home/njr-sys/public_html/cli/KASHIMA-test.php &
  *
  */
 

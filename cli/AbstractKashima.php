@@ -238,14 +238,17 @@ abstract class AbstractKashima
             }
             return $url;
         }
-
-        if ($num >= 2000) {
+        
+        if ($num >= 3000) {
+            $url = "http://ja.scp-wiki.net/scp-series-4";
+        } elseif ($num >= 2000 && $num < 3000) {
             $url = "http://ja.scp-wiki.net/scp-series-3";
-        } elseif ($num >= 1000) {
+        } elseif ($num >= 1000 && $num < 2000) {
             $url = "http://ja.scp-wiki.net/scp-series-2";
         } else {
             $url = "http://ja.scp-wiki.net/scp-series";
         }
+
         return $url;
     }
     
@@ -255,10 +258,9 @@ abstract class AbstractKashima
      * @param $title
      * @param $num
      * @param string $branchPrefix
-     * @param bool $isFc
      * @return string
      */
-    protected function createMsgByScp($nick, $title, $num, $branchPrefix = "", $isFc = false)
+    protected function createMsgByScp($nick, $title, $num, $branchPrefix = "")
     {
         $category = "SCP";
         $itemName = "SCP-{$num}";
@@ -270,11 +272,7 @@ abstract class AbstractKashima
             $itemName .= "-" . strtoupper($branchPrefix);
             $url .= "-" . strtolower($branchPrefix);
         }
-        
-        if ($isFc) {
-            $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-{$num}";
-        }
-        
+
         return $this->createMsg($nick, $category, "{$itemName} \"{$title}\"", $url);
     }
 
@@ -334,34 +332,7 @@ abstract class AbstractKashima
         unset($match); // メモリ節約
 
         // SCP記事一覧スクレイピング
-        $result = $this->sendMsgByScp($irc, $data, $num);
-
-        // 失敗時は非公式翻訳wikiを利用する
-        if (!$result) {
-
-            $msg = $this->createMsg($data->nick, "RETRY", '非公式翻訳Wikiを参照します', "");
-            $this->sendMsg($irc, $data, $msg);
-            
-            // 非公式翻訳Wikiスクレイピング
-            $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-{$num}/";
-            $html = $this->curl($url, "0-3200");
-            if (!$html) {
-                $this->sendError($irc, $data, 1);
-                return;
-            }
-            
-            // 該当行のマッチ
-            preg_match('@(<div><span style="font-weight: bold;">)(.*?)(</span></div>)@i', $html, $matches);
-            unset($html); // メモリ節約
-            
-            if (!isset($matches[2])) {
-                // それでも駄目なら
-                $this->sendError($irc, $data, 2);
-            }
-
-            $msg = $this->createMsg($data->nick, "SCP", $matches[2], $url);
-            $this->sendMsg($irc, $data, $msg);
-        }
+        $this->sendMsgByScp($irc, $data, $num);
     }
     
     /**
