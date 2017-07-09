@@ -36,7 +36,6 @@ class DevelopController extends AbstractController
 
     public function indexAction()
     {
-
         $result = array(
             "msg" => $this->logic->getMsg(),
         );
@@ -50,7 +49,6 @@ class DevelopController extends AbstractController
 
     public function scpSearchAction()
     {
-
         // ポストされたらリダイレクト
         if ($this->input->isPost()) {
 
