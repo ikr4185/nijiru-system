@@ -43,8 +43,8 @@
 
 			<h3 class="mb10">ランダムSCP</h3>
 			<div class="mb10 pl10">
-				<a href="http://{$view["serverName"]}/randScp" target="_blank">翻訳Wiki ランダムSCP (別窓)</a><br>
-				<a href="http://{$view["serverName"]}/randScp/jp" target="_blank">日本支部 ランダムSCP (別窓)</a><br>
+				<a href="http://{$view["serverName"]}/randScp" target="_blank">EN記事 ランダムSCP (別窓)</a><br>
+				<a href="http://{$view["serverName"]}/randScp/jp" target="_blank">JP記事 ランダムSCP (別窓)</a><br>
 			</div>
 
 			<h3 class="mb10">投稿者名を除外した新着記事一覧</h3>
