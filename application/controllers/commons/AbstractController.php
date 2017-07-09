@@ -100,8 +100,9 @@ abstract class AbstractController {
 	 * @param $page_title string    ページタイトル
 	 * @param $resultArray array    Controller内の処理結果
 	 * @param $jsPathArray array    JSファイルのパス
+	 * @param $noJquery bool    Jquery無効化
 	 */
-	protected function getViewWebApps($tpl, $page_title="", $resultArray=array(), $jsPathArray=array()) {
+	protected function getViewWebApps($tpl, $page_title="", $resultArray=array(), $jsPathArray=array(), $noJquery=false) {
 		
 		// 読み込み先ディレクトリの設定
 		$directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
@@ -113,6 +114,7 @@ abstract class AbstractController {
 		// View変数の書き換え・追加
 		$view["css"] = "application/views/assets/css/web_apps.css";
 		$view["appClass"] = $tpl;
+		$view["noJquery"] = $noJquery;
 		
 		// サニタイズ
 		$this->smarty->default_modifiers = array("escape:'html'");

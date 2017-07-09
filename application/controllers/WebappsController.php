@@ -110,6 +110,22 @@ class WebAppsController extends AbstractController
         $this->getViewDev("fc2", "WebApps", $result);
     }
     
+    /**
+     * IkrScpEditor
+     */
+    public function ikrScpEditorAction() {
+        
+        $result = array(
+            "msg"   => null,
+        );
+        $jsPathArray = array(
+            "https://cdnjs.cloudflare.com/ajax/libs/riot/3.6.1/riot+compiler.min.js",
+            "http://njr-sys.net/application/views/assets/js/webapps/scp_editor.js",
+        );
+        $this->getViewWebApps( "ikr_scp_editor", "WebApps", $result, $jsPathArray, true );
+        
+    }
+    
     public function ipAction()
     {
         header('Content-type: image/jpeg');

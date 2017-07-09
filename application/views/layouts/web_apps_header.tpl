@@ -11,7 +11,9 @@
 
 	<link rel="stylesheet" type="text/css" href="http://{$view["serverName"]}/{$view["css"]}">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	{if !$view["noJquery"]}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	{/if}
 
 	{if isset($result["isWhiteBoard"])}
 		<meta name="viewport" content="width=510,initial-scale=1">
