@@ -51,7 +51,7 @@ class WebAppsController extends AbstractController
             $inputNumber = $this->input->getRequest("scp_search");
             
             if ($this->logic->validateScpSearch($inputNumber)) {
-                $url = "http://scpjapan.wiki.fc2.com/wiki/SCP-" . $inputNumber;
+                $url = "http://ja.scp-wiki.net/scp-" . $inputNumber;
                 $this->redirectTo($url);
             }
         }
