@@ -1,9 +1,10 @@
 <?php
 namespace Controllers;
+
 use Controllers\Commons\AbstractController;
 use Logics\WebAppsLogic;
+use Logics\AuthLogic;
 use Inputs\BasicInput;
-
 
 /**
  * Class ApiController
@@ -11,28 +12,42 @@ use Inputs\BasicInput;
  */
 class ApiController extends AbstractController
 {
-
     /**
      * @var WebAppsLogic
      */
     protected $logic;
+
+    /**
+     * @var AuthLogic
+     */
+    protected $auth;
+
     /**
      * @var BasicInput
      */
     protected $input;
 
-    protected function getLogic() {
-        $this->logic = new WebAppsLogic();
+    public function __construct()
+    {
+        parent::__construct();
     }
 
-    protected function getInput() {
+
+    protected function getLogic()
+    {
+        $this->logic = new WebAppsLogic();
+        $this->auth = new AuthLogic();
+    }
+
+    protected function getInput()
+    {
         $this->input = new BasicInput();
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         echo json_encode("error");
     }
-    
     
     /**
      * 財団絵チャ: 保存
@@ -65,10 +80,10 @@ class ApiController extends AbstractController
         
         // DBに保存
         $result = $this->logic->saveFwbImage($token, $data, $pass);
-    
+
         if ($result) {
             echo json_encode("ok");
-        } else{
+        } else {
             echo json_encode("error");
         }
     }
@@ -81,6 +96,16 @@ class ApiController extends AbstractController
     {
         $record = $this->logic->loadFwbImage($token);
         echo json_encode($record);
+    }
+
+    public function testAction()
+    {
+        $hash = $this->input->getRequest("hash");
+        if ($this->auth->checkHash($hash)) {
+            echo json_encode("ok");
+        } else {
+            echo json_encode("failed");
+        }
     }
 
 }
