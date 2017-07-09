@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 {include 'file:/home/njr-sys/public_html/application/views/layouts/header.tpl'}
 <body>
 

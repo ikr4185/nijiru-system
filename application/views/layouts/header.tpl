@@ -1,4 +1,4 @@
-<head lang="jp">
+<head>
 	<meta charset="utf-8">
 	{if !empty($view["page_title"])}
 		<title>{$view["page_title"]} | Nijiru System</title>
