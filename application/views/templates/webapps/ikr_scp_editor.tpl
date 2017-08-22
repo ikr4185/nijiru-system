@@ -1,16 +1,16 @@
-<div class="scp_editor__wrapper">
+<div class="scp_editor__wrapper" id="page-content">
 
 	<h1 class="scp_editor__title--1">IKR_SCP_EDITOR_WEB(BETA)</h1>
 
 	<div class="scp_editor__main">
 
-		<h2 class="scp_editor__title--2">Preview</h2>
-		<div id="preview" class="scp_editor__preview"></div>
+		<div class="grid">
 
-		<h2 class="scp_editor__title--2">Edit</h2>
+			<div class="grid__left">
+				<h2 class="scp_editor__title--2">Edit</h2>
 
-		{*<div id="textarea" class="scp_editor__textarea" contenteditable="true">{literal}</div>*}
-		<textarea id="textarea" class="scp_editor__textarea">{literal}[[>]]
+				{*<div id="textarea" class="scp_editor__textarea" contenteditable="true">{literal}</div>*}
+				<textarea id="textarea" class="scp_editor__textarea">{literal}[[>]]
 [[module Rate]]
 [[/>]]
 
@@ -30,10 +30,10 @@ __test__
 * child-test
 * test
 
-			{{等幅フォントです}}
-			{{おそらくは等幅！}}
+{{等幅フォントです}}
+{{おそらくは等幅！}}
 
-			m^^2^^
+m^^2^^
 H,,2,,O
 
 @@test@@
@@ -63,6 +63,13 @@ testtest
 
 ##blue|事前定義##あるいは##44FF88|カスタムコード##
 ※事前定義は未実装{/literal}</textarea>
+			</div>
+
+			<div class="grid__right">
+				<h2 class="scp_editor__title--2">Preview</h2>
+				<div id="preview" class="scp_editor__preview"></div>
+			</div>
+		</div>
 
 		{*<div id="textarea" class="scp_editor__textarea" contenteditable="true">[[>]]*}
 		{*[[module Rate]]*}
