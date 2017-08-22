@@ -62,9 +62,11 @@ class PointController extends AbstractController
         $allUsers = $this->logic->getAllUsers();
 
         // セッションに格納していたメッセージを取得
-        $msg = $this->input->getSession("msg");
+        $msg = $this->input->getFlash("msg");
         if (empty($msg)) {
             $msg = $this->logic->getMsg();
+        }else{
+
         }
 
         $result = array(
@@ -89,8 +91,8 @@ class PointController extends AbstractController
         }
 
         // 送るポイント額と比較、マイナスを防止
-        if ($point >= $userPoint) {
-            $point = $userPoint;
+        if (!$this->logic->checkRemainPoint($point, $userPoint)) {
+            return;
         }
 
         // ポイントの移譲
@@ -114,7 +116,7 @@ class PointController extends AbstractController
         $this->input->setSession("msg", $this->logic->getMsg());
 
         // POST終了、リダイレクト
-        $this->redirect("point","give");
+        $this->redirect("point", "give");
     }
 
 }
