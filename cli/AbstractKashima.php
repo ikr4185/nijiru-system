@@ -142,7 +142,7 @@ abstract class AbstractKashima
             "葉加瀬博士",
             "ハンス=ウルリッヒ=ルーデル博士",
         );
-        $rand = mt_rand(0, count($names));
+        $rand = mt_rand(0, count($names) - 1);
         return $names[$rand];
     }
     
