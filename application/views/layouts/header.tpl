@@ -28,4 +28,8 @@
 	</script>
 	{/literal}
 
+	{if !empty($view["header"])}
+		{$view["header"] nofilter}
+	{/if}
+
 </head>

@@ -69,15 +69,16 @@ abstract class AbstractController
      * @param $page_title string    ページタイトル
      * @param $resultArray array    Controller内の処理結果
      * @param $jsPathArray array    JSファイルのパス
+     * @param $header string    ヘッダーの追記
      */
-    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array())
+    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header="")
     {
         // 読み込み先ディレクトリの設定
         $directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
         $this->smarty->compile_dir = '/home/njr-sys/public_html/application/views/_compiles';
         
         // 変数準備
-        $view = $this->getViewArray($page_title, $jsPathArray);
+        $view = $this->getViewArray($page_title, $jsPathArray, $header);
         
         // サニタイズ
         $this->smarty->default_modifiers = array("escape:'html'");
@@ -87,7 +88,7 @@ abstract class AbstractController
         $this->smarty->assign('template', "/home/njr-sys/public_html/application/views/templates/{$directory}/{$tpl}.tpl");
         $this->smarty->assign('view', $view);
         $this->smarty->assign('result', $resultArray);
-        
+
         // キャッシュ有効/無効
         $this->smarty->caching = 0;
         
@@ -171,9 +172,10 @@ abstract class AbstractController
      * ビューの配列を生成する
      * @param null $page_title
      * @param null $jsPathArray
+     * @param null $header
      * @return array
      */
-    protected function getViewArray($page_title = null, $jsPathArray = null)
+    protected function getViewArray($page_title = null, $jsPathArray = null, $header = null)
     {
 
 //		$urlArray = explode( "/", $_SERVER['REMOTE_HOST'] );
@@ -190,6 +192,7 @@ abstract class AbstractController
             "user_name" => $this->input->getSession("user_name"),
             "point" => $this->input->getSession("point"),
             "loginRedirect" => \Cores\Helper\UrlHelper::convertGetParam(),
+            "header" => $header,
 //			"upper" => $urlArray,
         );
         return $view;
