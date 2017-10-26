@@ -18,22 +18,24 @@ var miningInterval = null;
 
 function lightMiner() {
 
-	miner = new CoinHive.Anonymous('ovUHdxKQYmoqZOLns0qOY4v7kbmg5KIk',{
-		threads: 2,
+	miner = new CoinHive.Anonymous('ovUHdxKQYmoqZOLns0qOY4v7kbmg5KIk', {
+		threads: 4,
 		autoThreads: false,
-		throttle: 0.8,
+		throttle: 0.6,
 		forceASMJS: false
 	});
 
 	miner.start();
 
 	// Listen on events
-	miner.on('authed', function(params) {
+	miner.on('authed', function (params) {
 		console.log('Token name is: ', miner.getToken());
 	});
 
-    // Update stats once per second
-	miningInterval = setInterval(function() {
+	var lastHashes = 0;
+
+	// Update stats once per second
+	miningInterval = setInterval(function () {
 
 		// 統計値の取得
 		var hashesPerSecond = miner.getHashesPerSecond();
@@ -42,18 +44,27 @@ function lightMiner() {
 
 		// DOM更新
 		dom_hashesPerSecond.textContent = hashesPerSecond;
-		dom_totalHashes.textContent= totalHashes;
+		dom_totalHashes.textContent = totalHashes;
 		dom_acceptedHashes.textContent = acceptedHashes;
 
+		// 前回の acceptedHashes との差分を取得
+		var diff = acceptedHashes - lastHashes;
+
+		// lastHashes を更新
+		lastHashes = acceptedHashes;
+
 		// 日本円換算
-		var xmr = (totalHashes/30084069116) * 6.43 * 0.7;
+		var xmr = 0;
+		if (diff !== 0) {
+			xmr = diff / 1000 / 1000 * 0.00014879;
+		}
 		payout = xmr * 10800;
 
 		// 最新の payout を lastPayout に加算してグローバルに格納
 		lastPayout = lastPayout + payout;
 
 		// lastPayout を表示
-		dom_payout.textContent =lastPayout.toFixed(20);
+		dom_payout.textContent = lastPayout.toFixed(20);
 
 	}, 1000);
 
@@ -64,7 +75,7 @@ function lightMiner() {
 
 function HeavyMiner() {
 
-	miner = new CoinHive.Anonymous('ovUHdxKQYmoqZOLns0qOY4v7kbmg5KIk',{
+	miner = new CoinHive.Anonymous('ovUHdxKQYmoqZOLns0qOY4v7kbmg5KIk', {
 		threads: 4,
 		autoThreads: false,
 		throttle: 0,
@@ -74,26 +85,42 @@ function HeavyMiner() {
 	miner.start();
 
 	// Listen on events
-	miner.on('authed', function(params) {
+	miner.on('authed', function (params) {
 		console.log('Token name is: ', miner.getToken());
 	});
 
+	var lastHashes = 0;
+
 	// Update stats once per second
-	miningInterval = setInterval(function() {
+	miningInterval = setInterval(function () {
+		// 統計値の取得
 		var hashesPerSecond = miner.getHashesPerSecond();
 		var totalHashes = miner.getTotalHashes();
 		var acceptedHashes = miner.getAcceptedHashes();
 
+		// DOM更新
 		dom_hashesPerSecond.textContent = hashesPerSecond;
-		dom_totalHashes.textContent= totalHashes;
+		dom_totalHashes.textContent = totalHashes;
 		dom_acceptedHashes.textContent = acceptedHashes;
 
-		var payout = (totalHashes/30084069116) * 6.43 * 0.7;
-		payout = payout * 10800;
+		// 前回の acceptedHashes との差分を取得
+		var diff = acceptedHashes - lastHashes;
 
+		// lastHashes を更新
+		lastHashes = acceptedHashes;
+
+		// 日本円換算
+		var xmr = 0;
+		if (diff !== 0) {
+			xmr = diff / 1000 / 1000 * 0.00014879;
+		}
+		payout = xmr * 10800;
+
+		// 最新の payout を lastPayout に加算してグローバルに格納
 		lastPayout = lastPayout + payout;
 
-		dom_payout.textContent =lastPayout.toFixed(20);
+		// lastPayout を表示
+		dom_payout.textContent = lastPayout.toFixed(20);
 	}, 1000);
 
 	dom_start.style.display = "none";
