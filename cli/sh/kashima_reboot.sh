@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# rootで実行する事
 # sh /home/njr-sys/public_html/cli/sh/kashima_reboot.sh
 
 logfile="/home/njr-sys/public_html/cli/logs/KASHIMA_run.log"

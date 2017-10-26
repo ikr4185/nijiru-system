@@ -10,7 +10,7 @@
  * sh /home/njr-sys/public_html/cli/sh/kashima_reboot.sh
  *
  * （手動起動）
- * nohup php /home/njr-sys/public_html/cli/ELKE-EXE2.php &
+ * nohup php /home/njr-sys/public_html/cli/KASHIMA-EXE2.php &
  *
  */
 
@@ -66,9 +66,9 @@ class KashimaExe extends AbstractKashima
 //        $Markov = new Markov;
 //        $msg = $Markov->run();
 //        $this->sendMsg($irc, $data, $msg);
-	  $this->sendMsg($irc, $data, "YO");
+        $this->sendMsg($irc, $data, "YO");
     }
-
+    
 }
 
 $bot = new KashimaExe();
@@ -98,6 +98,11 @@ $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.talejp (.*)$', $bot, 'tal
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.quit .*$', $bot, 'quit');
+
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft (.*)$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status$', $bot, 'draftstatus');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status (.*)$', $bot, 'draftstatus');
 
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.hey$', $bot, 'markov'); // マルコフ連鎖のテスト
 
