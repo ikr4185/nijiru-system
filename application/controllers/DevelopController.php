@@ -70,6 +70,9 @@ class DevelopController extends AbstractController
 
     }
 
+    /**
+     * 1から100までの乱数を表示
+     */
     public function randAction()
     {
         // スリープ
@@ -77,6 +80,22 @@ class DevelopController extends AbstractController
 
         $rand = mt_rand(0, 100);
         echo (string)$rand;
+    }
+
+    /**
+     * IPの表示
+     */
+    public function ipAction()
+    {
+        echo $_SERVER["REMOTE_ADDR"];
+    }
+
+
+    // 汎用テスト
+    public function ikrtestAction()
+    {
+        $users_number = 15;
+        $this->logic->njrAssetTest($users_number);
     }
 
 //	public function apiAction() {

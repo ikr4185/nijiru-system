@@ -55,7 +55,7 @@
 								--{$item['user_name']}
 							</td>
 							<td>
-								NJP: {$item['point']}
+								NJP: {number_format($item['point'])}
 							</td>
 						</tr>
 					{/foreach}

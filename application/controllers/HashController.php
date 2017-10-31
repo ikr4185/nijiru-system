@@ -35,6 +35,7 @@ class HashController extends AbstractController
     public function indexAction()
     {
         // TODO 未使用
+        var_dump(PHP_INT_MAX);
     }
     
     /**
