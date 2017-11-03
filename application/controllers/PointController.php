@@ -1,22 +1,21 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\PointLogic;
 use Inputs\BasicInput;
-
 
 /**
  * Class PointController
  * @package Controllers
  */
-class PointController extends AbstractController
+class PointController extends WebController
 {
-
     /**
      * @var PointLogic
      */
     protected $logic;
+    
     /**
      * @var BasicInput
      */
@@ -24,17 +23,8 @@ class PointController extends AbstractController
 
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new PointLogic();
-    }
-
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
-    }
-
-    public function indexAction()
-    {
-        // TODO 未使用
     }
 
     /**
@@ -65,8 +55,6 @@ class PointController extends AbstractController
         $msg = $this->input->getFlash("msg");
         if (empty($msg)) {
             $msg = $this->logic->getMsg();
-        }else{
-
         }
 
         $result = array(
@@ -74,9 +62,13 @@ class PointController extends AbstractController
             "msg" => $msg,
         );
         $this->getView("give", "ニジポ喜捨", $result);
-
     }
-
+    
+    /**
+     * @param $userId
+     * @param $toId
+     * @param $point
+     */
     protected function sendPoint($userId, $toId, $point)
     {
         // 自分に対してポイント付与はできなくする
@@ -84,25 +76,14 @@ class PointController extends AbstractController
             return;
         }
 
-        // 送り手ユーザーの既存ポイントを取得
-        $userPoint = $this->logic->getPoint($userId);
-        if (is_null($userPoint)) {
-            return;
-        }
-
-        // 送るポイント額と比較、マイナスを防止
-        if (!$this->logic->checkRemainPoint($point, $userPoint)) {
-            return;
-        }
-
         // ポイントの移譲
         if ($this->logic->sendPoint($userId, $toId, $point)) {
 
-            // ワケマエ付与実行
-            $wakemae = $point / 2;
-            if (!$this->logic->add_point($userId, $wakemae)) {
-                return;
-            }
+//            // ワケマエ付与実行
+//            $wakemae = $point / 2;
+//            if (!$this->logic->add_point($userId, $wakemae)) {
+//                return;
+//            }
 
             // ポイント移動ログの書き込み
             if (!$this->logic->setPointLog($userId, $toId, $point)) {
@@ -111,8 +92,9 @@ class PointController extends AbstractController
         }
 
         // セッションの更新
-        $userPoint = $this->logic->getPoint($userId);
-        $this->input->setSession("point", $userPoint);
+        $assets = $this->logic->getAssets($userId);
+        $this->input->setSession("point", $assets["point"]);
+        $this->input->setSession("tera_point", $assets["tera_point"]);
         $this->input->setSession("msg", $this->logic->getMsg());
 
         // POST終了、リダイレクト

@@ -1,3 +1,9 @@
+<div class="index_title">
+	お知らせ 2017-11-03<br>
+	現在、ニジポ関連の処理を改修中です。<br>
+	テスト環境もないので、本番環境でダイレクト作業してます。<br>
+	今々だと不具合だらけだと思いますが、何卒ご理解いただければ幸いです。
+</div>
 {*<div class="index_title">*}
 	{*お知らせ 2016-12-10<br>*}
 	{*<a href="http://ja.scp-wiki.net/forum/t-2026404/tvfish#post-2706396">TVfishのホワイトボードチャレンジ！</a><br>*}

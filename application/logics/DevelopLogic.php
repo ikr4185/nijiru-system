@@ -56,53 +56,53 @@ class DevelopLogic extends AbstractLogic
         echo '</pre>';
         echo "<hr>";
         echo "<hr>";
+//        echo '<pre>';
+//
+//        $this->model->addPoint($add, $users_number);
+//        $test = $this->model->getAssets($users_number);
+//        var_dump($test);
+//
+//        echo '</pre>';
+//        echo "<hr>";
+//        echo '<pre>';
+//
+//        $this->model->addPoint($add, $users_number);
+//        $test = $this->model->getAssets($users_number);
+//        var_dump($test);
+//
+//        echo '</pre>';
+//        echo "<hr>";
         echo '<pre>';
 
-        $this->model->addPoint($add, $users_number);
+        $result = $this->model->delPoint($add, $users_number);
         $test = $this->model->getAssets($users_number);
-        var_dump($test);
+        var_dump($result, $test);
 
         echo '</pre>';
         echo "<hr>";
         echo '<pre>';
 
-        $this->model->addPoint($add, $users_number);
+        $result = $this->model->delPoint($add, $users_number);
         $test = $this->model->getAssets($users_number);
-        var_dump($test);
+        var_dump($result, $test);
 
         echo '</pre>';
-        echo "<hr>";
-        echo '<pre>';
-
-        $this->model->delPoint($add, $users_number);
-        $test = $this->model->getAssets($users_number);
-        var_dump($test);
-
-        echo '</pre>';
-        echo "<hr>";
-        echo '<pre>';
-
-        $this->model->delPoint($add, $users_number);
-        $test = $this->model->getAssets($users_number);
-        var_dump($test);
-
-        echo '</pre>';
-        echo "<hr>";
-        echo '<pre>';
-
-        $this->model->addPoint($add, $users_number);
-        $test = $this->model->getAssets($users_number);
-        var_dump($test);
-
-        echo '</pre>';
-        echo "<hr>";
-        echo '<pre>';
-
-        $this->model->addPoint($add, $users_number);
-        $test = $this->model->getAssets($users_number);
-        var_dump($test);
-
-        echo '</pre>';
+//        echo "<hr>";
+//        echo '<pre>';
+//
+//        $this->model->addPoint($add, $users_number);
+//        $test = $this->model->getAssets($users_number);
+//        var_dump($test);
+//
+//        echo '</pre>';
+//        echo "<hr>";
+//        echo '<pre>';
+//
+//        $this->model->addPoint($add, $users_number);
+//        $test = $this->model->getAssets($users_number);
+//        var_dump($test);
+//
+//        echo '</pre>';
 
         exit;
     }

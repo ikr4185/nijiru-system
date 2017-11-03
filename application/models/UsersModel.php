@@ -5,26 +5,33 @@ use Models\Commons\AbstractModel;
 
 class UsersModel extends AbstractModel
 {
-
     // /////////////////////////////////////////////////////////////////
     // ▼ユーザ情報関連処理 ////////////////////////////////////////////
     // /////////////////////////////////////////////////////////////////
 
-    // 注意 ややこしい
-    // id : login_name
+    // 注意 ややこしい名前にした自分を殴りたい
     // number : users_id
+    // id : login_name
     // user_name : nickname
+    const NUMBER = "number";
+    const ID = "id";
+    const PASSWORD = "password ";
+    const USER_NAME = "user_name ";
+    const POINT = "point ";
+    const PUBLICATION = "publication ";
+    const ADD_DATE = "add_date ";
+    const LAST_LOGIN = "last_login";
+    const LAST_OGAMI = "last_ogami ";
 
-    //      1,000,000,000,000,000;
-    const TERA = 1000000000000000;
+    const TABLE = "users";
 
     /**
-     * 公開設定のユーザー一覧を取得
+     * 公開設定のユーザー一覧を取得 + njr_assets をJOIN
      * @return array|string
      */
     public function getAllUsers()
     {
-        return $this->execSql('SELECT id, user_name, point FROM users WHERE publication = 2;', array(), true);
+        return $this->execSql('SELECT a.id, a.user_name, b.point, b.tera_point FROM users as a LEFT JOIN ' . NjrAssetModel::TABLE . ' as b ON  a.number = b.users_number WHERE a.publication = 2', array(), true);
     }
 
     /**
@@ -34,7 +41,6 @@ class UsersModel extends AbstractModel
      */
     public function getIdFromName($name)
     {
-
         $id = $this->execSql('SELECT id FROM users WHERE user_name = ?', array($name));
 
         if (!$id) {
@@ -83,7 +89,6 @@ class UsersModel extends AbstractModel
      */
     public function setLastLogin($id)
     {
-
         $date = date("Y-m-d H:i:s");
         return $this->execUpdate('UPDATE users SET last_login = ? WHERE id = ?', array($date, $id));
     }
@@ -150,48 +155,5 @@ class UsersModel extends AbstractModel
     {
         return $this->execUpdate('UPDATE users SET publication = ? WHERE id = ?', array($flag, $id));
     }
-
-    // /////////////////////////////////////////////////////////////////
-    // ▼ニジポ関連処理 ////////////////////////////////////////////////
-    // /////////////////////////////////////////////////////////////////
-
-    /**
-     * ニジルポイント加算
-     * @param $point
-     * @param $id
-     * @return array|string
-     */
-    public function addPoint($point, $id)
-    {
-        return $this->execUpdate('UPDATE users SET point = point+? WHERE id = ?', array($point, $id));
-    }
-
-    /**
-     * ニジルポイント減算
-     * @param $point
-     * @param $id
-     * @return array|string
-     */
-    public function delPoint($point, $id)
-    {
-        return $this->execUpdate('UPDATE users SET point = point-? WHERE id = ?', array((int)$point, $id));
-    }
-
-    /**
-     * 現在のニジルポイントを取得
-     * @param $id
-     * @return mixed|string
-     */
-    public function getPoint($id)
-    {
-        $result = $this->execSql('SELECT point FROM users WHERE id = ?', array($id));
-
-        if (!$result) {
-            return null;
-        }
-
-        return $result["point"];
-    }
-
 
 }

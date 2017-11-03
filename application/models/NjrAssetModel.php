@@ -22,8 +22,8 @@ class NjrAssetModel extends AbstractModel
     const CREATED_AT = "created_at";
     const UPDATED_AT = "updated_at";
 
-    //      1,000,000,000,000,000;
-    const TERA = 1000000000000000;
+    //      1,000,000,000,000;
+    const TERA = 1000000000000;
 
     /**
      * 現在の総ニジポを取得
@@ -139,6 +139,7 @@ class NjrAssetModel extends AbstractModel
         // 現在の量
         $teraPoint = $assets[self::TERA_POINT];
         $point = $assets[self::POINT];
+        $deletedPoint = $point - 0;
 
         // 減算後のニジポが0を下回る場合
         if (($point - $del) < 0) {
@@ -151,7 +152,7 @@ class NjrAssetModel extends AbstractModel
                 // 1テラニジポずつ借りてきて、引ける様になったらbreak
                 for ($i = 1; $i <= $teraLimit; $i++) {
                     if ((self::TERA * $i) + $point >= $del) {
-                        $del -= (self::TERA * $i);
+                        $deletedPoint = self::TERA + $point - $del;
                         $delTera = $i;
                         break;
                     }
@@ -162,11 +163,11 @@ class NjrAssetModel extends AbstractModel
                     return false;
                 }
 
-                // TODO 現在の減算対象レコードに、減算後のニジポ/テラニジポを追加
-                return $this->execUpdate('UPDATE ' . self::TABLE . ' SET point = point - ?, tera_point = tera_point - ? WHERE users_number = ? and is_full = 0', array(
-                    $del,
+                // 現在の減算対象レコードに、減算後のニジポ/テラニジポを追加
+                return $this->execUpdate('UPDATE ' . self::TABLE . ' SET point = ?, tera_point = tera_point - ? WHERE users_number = ? and is_full = 0', array(
+                    $deletedPoint,
                     $delTera,
-                    $users_number,
+                    (int) $users_number,
                 ));
 
             }else{
@@ -174,7 +175,7 @@ class NjrAssetModel extends AbstractModel
                 // ロック済みテラテラニジポレコードの存在チェック
                 $fullAssets = $this->execSql('SELECT * FROM ' . self::TABLE . ' WHERE users_number = ? and is_full = 1', array($users_number));
 
-                // TODO もしロック済みテラテラニジポレコードがある場合、そちらを試してみる
+                // もしロック済みテラテラニジポレコードがある場合、そちらを試してみる
                 if (!empty($fullAssets)) {
                     $teraPoint = $fullAssets[self::TERA_POINT];
                     $fullAssetsId = $fullAssets[self::ID];
@@ -182,7 +183,7 @@ class NjrAssetModel extends AbstractModel
                     // 1テラニジポずつ借りてきて、引ける様になったらbreak
                     for ($i = 1; $i <= $teraLimit; $i++) {
                         if ((self::TERA * $i) + $point >= $del) {
-                            $del -= (self::TERA * $i);
+                            $deletedPoint = self::TERA + $point - $del;
                             $delTera = $i;
                             break;
                         }
@@ -198,10 +199,10 @@ class NjrAssetModel extends AbstractModel
 
                     // 現在の減算対象レコードからニジポを減算 + 減算後ののテラニジポを追加
                     $newTeraPoint = $teraPoint - $delTera;
-                    return $this->execUpdate('UPDATE ' . self::TABLE . ' SET point = point - ?, tera_point = ? WHERE users_number = ? and is_full = 0', array(
-                        $del,
+                    return $this->execUpdate('UPDATE ' . self::TABLE . ' SET point = ?, tera_point = ? WHERE users_number = ? and is_full = 0', array(
+                        $deletedPoint,
                         $newTeraPoint,
-                        $users_number,
+                        (int) $users_number,
                     ));
                 }
 
@@ -213,7 +214,7 @@ class NjrAssetModel extends AbstractModel
         // 通常のニジポ減算
         return $this->execUpdate('UPDATE ' . self::TABLE . ' SET point = point - ? WHERE users_number = ? and is_full = 0', array(
             $del,
-            $users_number,
+            (int) $users_number,
         ));
     }
 
