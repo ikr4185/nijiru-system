@@ -4,7 +4,7 @@ namespace Controllers;
 use Controllers\Commons\WebController;
 use Logics\WebAppsLogic;
 use Logics\AuthLogic;
-use Inputs\BasicInput;
+use Logics\PointLogic;
 
 /**
  * Class ApiController
@@ -21,12 +21,18 @@ class ApiController extends WebController
      * @var AuthLogic
      */
     protected $auth;
-    
+
+    /**
+     * @var PointLogic
+     */
+    protected $PointLogic;
+
     protected function getLogic()
     {
         parent::getLogic();
         $this->logic = new WebAppsLogic();
         $this->auth = new AuthLogic();
+        $this->PointLogic = new PointLogic();
     }
     
     /**
@@ -77,7 +83,46 @@ class ApiController extends WebController
         $record = $this->logic->loadFwbImage($token);
         echo json_encode($record);
     }
-    
+
+    /**
+     * トークン生成
+     */
+    public function gettokenAction()
+    {
+        echo json_encode($this->auth->createHash());
+    }
+
+    /**
+     * ニジポふやすAPI
+     */
+    public function addNjpAction()
+    {
+        $hash = $this->input->getRequest("hash");
+        $njp = $this->input->getRequest("njp");
+        $userNum = $this->input->getRequest("un");
+
+        if (empty($hash) || empty($njp) || empty($userNum)) {
+            echo json_encode(array("request error."));
+            exit;
+        }
+
+        if ($this->auth->checkHash($hash)) {
+
+            $id = $this->UsersLogic->getIdByNumber($userNum);
+
+            if (!empty($id)) {
+                $this->PointLogic->add_point($id, $njp);
+                echo json_encode(array("200 ok.", $id, $njp));
+                exit;
+            }
+
+            echo json_encode(array("user not found.", $id, $njp));
+            exit;
+        }
+        
+        echo json_encode(array("token error."));
+    }
+
     public function testAction()
     {
         $hash = $this->input->getRequest("hash");

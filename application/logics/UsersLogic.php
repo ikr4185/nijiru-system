@@ -41,6 +41,16 @@ class UsersLogic extends AbstractLogic
     }
     
     /**
+     * ユニークナンバーからIDを取得
+     * @param $number
+     * @return array|string
+     */
+    public function getIdByNumber($number)
+    {
+        return $this->Users->getIdByNumber($number);
+    }
+
+    /**
      * IDからユニークナンバーを取得
      * @param $id
      * @return array|string
@@ -48,6 +58,5 @@ class UsersLogic extends AbstractLogic
     public function getNumberById($id)
     {
         return $this->Users->getNumberById($id);
-        
     }
 }
