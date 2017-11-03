@@ -73,11 +73,11 @@ class PointController extends WebController
         // ポイントの移譲
         if ($this->logic->sendPoint($userId, $toId, $point)) {
 
-//            // ワケマエ付与実行
-//            $wakemae = $point / 2;
-//            if (!$this->logic->add_point($userId, $wakemae)) {
-//                return;
-//            }
+            // ワケマエ付与実行
+            $wakemae = $point / 2;
+            if (!$this->logic->add_point($userId, $wakemae)) {
+                return;
+            }
 
             // ポイント移動ログの書き込み
             if (!$this->logic->setPointLog($userId, $toId, $point)) {
