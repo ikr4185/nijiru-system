@@ -63,9 +63,10 @@ class KashimaExe extends AbstractKashima
 
     function markov($irc, $data)
     {
-        $Markov = new Markov;
-        $msg = $Markov->run();
-        $this->sendMsg($irc, $data, $msg);
+//        $Markov = new Markov;
+//        $msg = $Markov->run();
+//        $this->sendMsg($irc, $data, $msg);
+        $this->sendMsg($irc, $data, "YO");
     }
 
 }
@@ -97,6 +98,11 @@ $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.talejp (.*)$', $bot, 'tal
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.quit .*$', $bot, 'quit');
+
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft (.*)$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status$', $bot, 'draftstatus');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status (.*)$', $bot, 'draftstatus');
 
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.hey$', $bot, 'markov'); // マルコフ連鎖のテスト
 

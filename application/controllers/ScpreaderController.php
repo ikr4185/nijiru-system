@@ -1,35 +1,25 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\ScpreaderLogic;
-use Inputs\BasicInput;
 
 
 /**
  * Class ScpreaderController
  * @package Controllers
  */
-class ScpreaderController extends AbstractController
+class ScpreaderController extends WebController
 {
-    
     /**
      * @var ScpreaderLogic
      */
     protected $logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
     
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new ScpreaderLogic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     // お気に入りデータ
@@ -43,7 +33,6 @@ class ScpreaderController extends AbstractController
     
     public function indexAction()
     {
-        
         // 記事読み込み
         $ArticleArray = $this->logic->getViewTemplate();
         
@@ -55,7 +44,6 @@ class ScpreaderController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/scp_reader_search.js",
         );
         $this->getView("index", "SCP-JP-Reader", $result, $jsPathArray);
-        
     }
     
     /**
@@ -64,7 +52,6 @@ class ScpreaderController extends AbstractController
      */
     public function ScpAction($itemNumber)
     {
-        
         // 不正値対策
         if (!is_numeric($itemNumber)) {
             echo "<h1>Error: invalid value</h1>\n\n<hr>\nnjr-sys.net";
@@ -81,11 +68,7 @@ class ScpreaderController extends AbstractController
             // お気に入り登録処理
             if ($this->input->checkRequest("submit_favorite-scp")) {
                 
-                $this->logic->setFavoriteScp(
-                    $user_id,
-                    $this->input->getRequest("favorite-scp"),
-                    $itemNumber
-                );
+                $this->logic->setFavoriteScp($user_id, $this->input->getRequest("favorite-scp"), $itemNumber);
             }
             
             // お気に入り済み記事かのチェック
@@ -93,7 +76,6 @@ class ScpreaderController extends AbstractController
             
             // 閲覧ログ保存
             $this->logic->saveReaderLog($user_id, $itemNumber);
-            
         }
         
         // 記事読み込み
@@ -102,18 +84,7 @@ class ScpreaderController extends AbstractController
         // 読み込んだ記事をDBに保存しておく
         if (is_numeric($scpArray["vote"])) {
             
-            $this->logic->saveScpArray(
-                $scpArray["scp_num"],
-                $scpArray["title"],
-                $scpArray["item_number"],
-                $scpArray["class"],
-                $scpArray["protocol"],
-                $scpArray["description"],
-                $scpArray["vote"],
-                $scpArray["created_by"],
-                serialize($scpArray["tags"]),
-                $scpArray["created_at"]
-            );
+            $this->logic->saveScpArray($scpArray["scp_num"], $scpArray["title"], $scpArray["item_number"], $scpArray["class"], $scpArray["protocol"], $scpArray["description"], $scpArray["vote"], $scpArray["created_by"], serialize($scpArray["tags"]), $scpArray["created_at"]);
             
             // ソフトデリート解除
             $this->logic->setSoftDelete(0, $itemNumber);
@@ -155,7 +126,6 @@ class ScpreaderController extends AbstractController
             
             // ログ読み込み
             $records = $this->logic->getReaderLog($this->input->getSession("id"));
-            
         }
         
         $result = array(
@@ -194,7 +164,6 @@ class ScpreaderController extends AbstractController
      */
     public function searchAction()
     {
-        
         $records = array();
         
         // 検索クエリを取得

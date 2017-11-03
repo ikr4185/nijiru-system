@@ -5,8 +5,10 @@
 		<div class="side_section">
 			{if !empty($view["id"]) }
 				User: <span class="b">{$view["user_name"]}</span>({$view["id"]})<br>
-				{if !empty($view["point"])}
-					Nijipo: <span class="b">{$view["point"]}</span><br>
+				{if !empty($view["tera_point"])}
+					Nijipo: <span class="b">{number_format($view["tera_point"])}T{number_format($view["point"])} Njp</span><br>
+				{else}
+					Nijipo: <span class="b">{number_format($view["point"])}</span><br>
 				{/if}
 			{else}
 				User: <span class="b">guest</span>
@@ -85,7 +87,8 @@
 		<h2 class="sub_title">links</h2>
 		<div class="side_section">
 			<a href="http://ja.scp-wiki.net/forum:recent-posts">日本支部フォーラム：最近の投稿</a><br>
-			<a href="http://ja.scp-wiki.net/ikr-4185-s-personnel-file">エージェント・育良の人事ファイル</a><br>
+			<a href="http://ja.scp-wiki.net/author:ikr-4185">エージェント・育良の人事ファイル</a><br>
+			<a href="https://twitter.com/ikr_4185">Twitter@ikr_4158</a><br>
 		</div>
 
 		<h2 class="sub_title">System</h2>

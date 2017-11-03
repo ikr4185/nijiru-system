@@ -33,7 +33,7 @@ abstract class AbstractKashima
      * @return mixed
      */
     abstract protected function saveLog($nick, $message);
-
+    
     /**
      * ログ保存
      * @param Kashima_Core $irc
@@ -98,7 +98,7 @@ abstract class AbstractKashima
             $text = '記事が見つかりませんでした';
             $sub = ": {$data->message}";
         }
-
+        
         if ($errorNum === 3) {
             $text = '不正なコマンド';
             $sub = ": {$data->message}";
@@ -142,7 +142,7 @@ abstract class AbstractKashima
             "葉加瀬博士",
             "ハンス=ウルリッヒ=ルーデル博士",
         );
-        $rand = mt_rand(0, count($names));
+        $rand = mt_rand(0, count($names) - 1);
         return $names[$rand];
     }
     
@@ -248,7 +248,7 @@ abstract class AbstractKashima
         } else {
             $url = "http://ja.scp-wiki.net/scp-series";
         }
-
+        
         return $url;
     }
     
@@ -272,10 +272,10 @@ abstract class AbstractKashima
             $itemName .= "-" . strtoupper($branchPrefix);
             $url .= "-" . strtolower($branchPrefix);
         }
-
+        
         return $this->createMsg($nick, $category, "{$itemName} \"{$title}\"", $url);
     }
-
+    
     /**
      * wikidotのSCP記事一覧から該当記事を探し、メッセージを送信する
      * @param $irc
@@ -293,21 +293,21 @@ abstract class AbstractKashima
             $this->sendError($irc, $data, 1);
             return false;
         }
-
+        
         // 該当行のマッチ
         $pattern = "@(<li><a href=\"/scp-{$num}\">(.*?)SCP-{$num}</a> - )(.*?)(</li>)@iu";
         if (!empty($branchPrefix)) {
             $pattern = "@(<li><a href=\"/scp-{$num}-{$branchPrefix}\">(.*?)SCP-{$num}-" . strtoupper($branchPrefix) . "</a> - )(.*?)(</li>)@iu";
         }
         preg_match($pattern, $html, $matches);
-
+        
         unset($html); // メモリ節約
-
+        
         if (!isset($matches[1])) {
             $this->sendError($irc, $data, 2);
             return false;
         }
-
+        
         $msg = $this->createMsgByScp($data->nick, $matches[3], $num, $branchPrefix);
         return $this->sendMsg($irc, $data, $msg);
     }
@@ -330,7 +330,7 @@ abstract class AbstractKashima
         
         $num = $match[2];
         unset($match); // メモリ節約
-
+        
         // SCP記事一覧スクレイピング
         $this->sendMsgByScp($irc, $data, $num);
     }
@@ -353,7 +353,7 @@ abstract class AbstractKashima
         
         $num = $match[2];
         unset($match); // メモリ節約
-
+        
         // SCP記事一覧スクレイピング
         $this->sendMsgByScp($irc, $data, $num, "jp");
     }
@@ -466,6 +466,134 @@ abstract class AbstractKashima
         $msg = $this->createMsg($data->nick, "WIKI", $title, "{$url}");
         $this->sendMsg($irc, $data, $msg);
     }
+
+    /**
+     * 予約ページリンク
+     * @param $irc
+     * @param $data
+     */
+    function draft($irc, $data)
+    {
+        $match = $this->validateCommand($data->message, array(
+            '/^(\.draft)$/iu',
+            '/^(\.draft )(.*?)$/iu',
+        ));
+        if (empty($match)) {
+            $this->sendError($irc, $data, 0);
+            return;
+        }
+        
+        $link = "http://njr-sys.net/irc/draftReserve/";
+        $dateStr = date("Y-m-d");
+        $dateStatus = "Today";
+        
+        if (isset($match[2])) {
+            if (!strtotime($match[2])) {
+                $this->sendError($irc, $data, 0);
+                return;
+            }
+            $dateStr = date("Y-m-d", strtotime($match[2]));
+            $dateStatus = "Custom";
+        }
+        
+        $link .= $dateStr;
+        unset($match); // メモリ節約
+        
+        $msg = $this->createMsg($data->nick, "DRAFT", $dateStatus, $link);
+        $this->sendMsg($irc, $data, $msg);
+    }
+
+    /**
+     * 予約状況確認
+     * @param $irc
+     * @param $data
+     */
+    function draftstatus($irc, $data){
+        $match = $this->validateCommand($data->message, array(
+            '/^(\.draft-status)$/iu',
+            '/^(\.draft-status )(.*?)$/iu',
+        ));
+        if (empty($match)) {
+            $this->sendError($irc, $data, 0);
+            return;
+        }
+
+        $dateStr = date("Y-m-d");
+        $dateStatus = "Today";
+
+        if (isset($match[2])) {
+            if (!strtotime($match[2])) {
+                $this->sendError($irc, $data, 0);
+                return;
+            }
+            $dateStr = date("Y-m-d", strtotime($match[2]));
+            $dateStatus = "";
+        }
+        unset($match); // メモリ節約
+
+        $drafts = $this->getDraftReserve($dateStr);
+        if (empty($drafts)) {
+            $this->sendError($irc, $data, 1);
+            return;
+        }
+        $draftsStr = "";
+        foreach ($drafts as $draft) {
+            $time = date("H:i:s", strtotime(str_replace($dateStr, "", $draft[0])));
+
+//            $draftsStr .= "{$time} {$draft[1]} " . trim($draft[3]) . " / ";
+            $draftsStr .= "{$time} {$draft[1]} > ";
+        }
+
+        $msg = $this->createMsg($data->nick, "DRAFT", $dateStatus, $draftsStr);
+        $this->sendMsg($irc, $data, $msg);
+    }
+
+    /**
+     * 下書き批評予約の読み込み
+     * @param $date
+     * @return array
+     */
+    private function getDraftReserve($date)
+    {
+        $dirName = "/home/njr-sys/public_html/logs/irc/draft_reserve/";
+        $fileName = $dirName . $date . ".log";
+
+        $logs = array();
+
+        // ファイル読み込み
+        $fp = @fopen($fileName, 'r');
+
+        // ファイルが存在しない場合
+        if (!$fp) {
+            return $logs;
+        }
+
+        if (flock($fp, LOCK_SH)) {
+
+            while (!feof($fp)) {
+
+                // 一行ずつ読み込んで$logsに格納
+                $buffer = fgets($fp);
+
+                if (empty($buffer)) {
+                    break;
+                }
+
+                $buffer = str_replace("@@,@@", ",", $buffer);
+                $buffer = htmlspecialchars($buffer);
+
+                $logs[] = explode(",", $buffer);
+            }
+            flock($fp, LOCK_UN);
+
+        } else {
+            return false;
+        }
+
+        fclose($fp);
+
+        return $logs;
+    }
     
     /**
      * サンドボックス出力
@@ -486,7 +614,7 @@ abstract class AbstractKashima
         $user = $match[2];
         $user = str_replace("_", "-", $user);
         unset($match); // メモリ節約
-
+        
         // スクレイピング
         $url = "http://scp-jp-sandbox2.wikidot.com/{$user}/";
         $html = $this->curl($url, "27000-36000");
@@ -501,18 +629,18 @@ abstract class AbstractKashima
             return;
         }
         unset($html); // メモリ節約
-
+        
         // タイトルの取得
         $title = $matches[2];
         $title = preg_replace('/^[ 　]+/u', '', $title);
         $title = preg_replace('/[ 　]+$/u', '', $title);
         $title = trim($title);
         unset($matches); // メモリ節約
-
+        
         $msg = $this->createMsg($data->nick, "SANDBOX / {$user}", $title, "{$url}");
         $this->sendMsg($irc, $data, $msg);
     }
-
+    
     /**
      * 強制終了
      * @param Kashima_Core $irc
@@ -521,15 +649,15 @@ abstract class AbstractKashima
     function quit($irc, $data)
     {
         $pass = file_get_contents(\Cores\Config\Config::load("dir.cli") . "/logs/KASHIMA_quit.log");
-
+        
         preg_match('/^(\.quit )(.*)$/i', $data->message, $match);
-
+        
         if ($pass == $match[2]) {
-
+            
             file_put_contents(\Cores\Config\Config::load("dir.cli") . "/logs/KASHIMA_quit.log", $this->random(8));
             $msg = '強制終了します';
             $irc->quit($msg);
-
+            
         } else {
             $this->sendError($irc, $data, 3);
         }
@@ -554,11 +682,11 @@ abstract class AbstractKashima
         $a = array("あ", "う", "い", "び", "お", "ひゃ", "ほ", "わ");
         $b = array("う", "い", "お", "ひゃ", "ほ", "わ");
         $c = array("ゃ", "ゅ", "ょ", "ぁ", "ぃ", "ぅ", "ぇ", "ぉ", "い", "び", "お", "ひゃ", "ほ", "わ", "");
-
+        
         $msg = $a[array_rand($a)];
         $msg .= $b[array_rand($b)];
         $msg .= $c[array_rand($c)];
-
+        
         $this->sendMsg($irc, $data, $msg);
     }
 }

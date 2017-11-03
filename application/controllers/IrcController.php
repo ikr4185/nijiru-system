@@ -1,41 +1,31 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\IrcLogic;
 use Logics\Irc81Logic;
-use Inputs\BasicInput;
-
 
 /**
  * Class IrcController
  * @package Controllers
  */
-class IrcController extends AbstractController
+class IrcController extends WebController
 {
-    
     /**
      * @var IrcLogic
      */
     protected $IrcLogic;
+    
     /**
      * @var Irc81Logic
      */
     protected $Irc81Logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
     
     protected function getLogic()
     {
+        parent::getLogic();
         $this->IrcLogic = new IrcLogic();
         $this->Irc81Logic = new Irc81Logic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     public function indexAction()
@@ -48,7 +38,6 @@ class IrcController extends AbstractController
             "msg" => $this->IrcLogic->getMsg(),
         );
         $this->getView("index", "IRC-Reader", $result);
-        
     }
     
     public function logAction($date)
@@ -88,7 +77,6 @@ class IrcController extends AbstractController
             "msg" => $this->IrcLogic->getMsg(),
         );
         $this->getView("index_81", "IRC-Reader #site8181", $result);
-        
     }
     
     public function log81Action($date)
@@ -208,6 +196,4 @@ class IrcController extends AbstractController
         $jsPathArray = array();
         $this->getView("search", "IRC-Reader Search", $result, $jsPathArray);
     }
-    
-    
 }

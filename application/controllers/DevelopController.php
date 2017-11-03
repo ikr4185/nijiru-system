@@ -1,42 +1,29 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\DevelopLogic;
-use Inputs\BasicInput;
-
 
 /**
  * Class DevelopController
  * 開発中の機能
  * @package Controllers
  */
-class DevelopController extends AbstractController
+class DevelopController extends WebController
 {
-
     /**
      * @var DevelopLogic
      */
     protected $logic;
 
-    /**
-     * @var BasicInput
-     */
-    protected $input;
-
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new DevelopLogic();
-    }
-
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
 
     public function indexAction()
     {
-
         $result = array(
             "msg" => $this->logic->getMsg(),
         );
@@ -45,12 +32,10 @@ class DevelopController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/markdown_parser.js",
         );
         $this->getViewDev("index", "Develop", $result, $jsPathArray);
-
     }
 
     public function scpSearchAction()
     {
-
         // ポストされたらリダイレクト
         if ($this->input->isPost()) {
 
@@ -69,9 +54,11 @@ class DevelopController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/scp_search.js",
         );
         $this->getViewDev("scp_search", "Develop", $result, $jsPathArray);
-
     }
 
+    /**
+     * 1から100までの乱数を表示
+     */
     public function randAction()
     {
         // スリープ
@@ -81,23 +68,11 @@ class DevelopController extends AbstractController
         echo (string)$rand;
     }
 
-//	public function apiAction() {
-//
-//		$result = $this->logic->getApi();
-//
-//		echo "<pre>";
-//		var_dump($result);
-//		echo "</pre>";
-//
-//	}
-
-//	public function apiTestAction() {
-//		$result = $this->logic->test();
-//
-//		echo "<pre>";
-//		var_dump($result);
-//		echo "</pre>";
-//	}
-
-
+    /**
+     * IPの表示
+     */
+    public function ipAction()
+    {
+        echo $_SERVER["REMOTE_ADDR"];
+    }
 }

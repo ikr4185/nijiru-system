@@ -421,7 +421,11 @@ class IrcLogic extends AbstractLogic
             
             // ログの各行ごとの配列を取得
             $logs = $this->getLogArray($logFilePath);
-            
+
+            if (!is_array($logs)) {
+                continue;
+            }
+
             foreach ($logs as $log) {
                 
                 // 該当行に検索文字列が無ければ次へ

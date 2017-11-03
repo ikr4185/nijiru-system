@@ -118,6 +118,11 @@ $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox')
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox .*$', $bot, 'sandbox'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.quit .*$', $bot, 'quit');
 
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft (.*)$', $bot, 'draft');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status$', $bot, 'draftstatus');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft-status (.*)$', $bot, 'draftstatus');
+
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.wiki .*$', $bot, 'wiki');
 
 // 接続

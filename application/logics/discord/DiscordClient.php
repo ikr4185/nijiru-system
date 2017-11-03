@@ -3,6 +3,7 @@
 namespace Logics\Discord;
 
 //use WebSocket\Client;
+use Ratchet\Wamp\Exception;
 use WebSocket\ConnectionException;
 
 use Logics\Commons\Api;
@@ -260,6 +261,7 @@ class DiscordClient
      * Receiveペイロード毎の分岐処理
      * @param $json
      * @return mixed
+     * @throws Exception
      */
     protected function parseReceive($json)
     {
@@ -304,6 +306,10 @@ class DiscordClient
                 Console::log("[OPERATION] OP 8 Request Guild Members", "RECEIVE");
             } elseif ($receive->op === 9) {
                 Console::log("[OPERATION] OP 9 Invalid Session", "RECEIVE");
+
+                // これが原因で接続が切れる事があるっぽいので、例外を投げて再接続させる
+                throw new DiscordException("[OPERATION] OP 9 Invalid Session");
+
             } elseif ($receive->op === 10) {
                 Console::log("[OPERATION] OP 10 Gateway Hello", "RECEIVE");
             } elseif ($receive->op === 11) {
