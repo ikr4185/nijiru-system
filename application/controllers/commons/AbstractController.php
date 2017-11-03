@@ -1,6 +1,7 @@
 <?php
 namespace Controllers\Commons;
 
+use Inputs\BasicInput;
 use Logics\Commons\AbstractLogic;
 use Inputs\Commons\AbstractInput;
 use Smarty;
@@ -17,7 +18,7 @@ abstract class AbstractController
      */
     protected $logic;
     /**
-     * @var AbstractInput
+     * @var AbstractInput|BasicInput
      */
     protected $input;
     
@@ -56,7 +57,6 @@ abstract class AbstractController
      */
     abstract protected function getInput();
     
-    
     /**
      * indexメソッドを強制
      * @return mixed
@@ -71,7 +71,7 @@ abstract class AbstractController
      * @param $jsPathArray array    JSファイルのパス
      * @param $header string    ヘッダーの追記
      */
-    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header="")
+    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "")
     {
         // 読み込み先ディレクトリの設定
         $directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
@@ -88,7 +88,7 @@ abstract class AbstractController
         $this->smarty->assign('template', "/home/njr-sys/public_html/application/views/templates/{$directory}/{$tpl}.tpl");
         $this->smarty->assign('view', $view);
         $this->smarty->assign('result', $resultArray);
-
+        
         // キャッシュ有効/無効
         $this->smarty->caching = 0;
         
@@ -177,10 +177,6 @@ abstract class AbstractController
      */
     protected function getViewArray($page_title = null, $jsPathArray = null, $header = null)
     {
-
-//		$urlArray = explode( "/", $_SERVER['REMOTE_HOST'] );
-//		$upper = $urlArray[ count( $urlArray ) - 3 ];
-        
         $view = array(
             "serverName" => 'njr-sys.net',
             "page_title" => $page_title,
@@ -191,9 +187,9 @@ abstract class AbstractController
             "id" => $this->input->getSession("id"),
             "user_name" => $this->input->getSession("user_name"),
             "point" => $this->input->getSession("point"),
+            "tera_point" => $this->input->getSession("tera_point"),
             "loginRedirect" => \Cores\Helper\UrlHelper::convertGetParam(),
             "header" => $header,
-//			"upper" => $urlArray,
         );
         return $view;
     }
@@ -226,6 +222,4 @@ abstract class AbstractController
         header('Location: ' . $url);
         exit;
     }
-    
-    
 }

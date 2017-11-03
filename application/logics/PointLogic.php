@@ -4,6 +4,7 @@ namespace Logics;
 use Logics\Commons\AbstractLogic;
 use Models\UsersModel;
 use Models\PointLogModel;
+use Models\NjrAssetModel;
 
 /**
  * Class PointLogic
@@ -15,6 +16,12 @@ class PointLogic extends AbstractLogic
      * @var UsersModel
      */
     protected $Users;
+
+    /**
+     * @var NjrAssetModel
+     */
+    protected $NjrAsset;
+
     /**
      * @var PointLogModel
      */
@@ -24,20 +31,23 @@ class PointLogic extends AbstractLogic
     {
         $this->Users = UsersModel::getInstance();
         $this->PointLog = PointLogModel::getInstance();
+        $this->NjrAsset = NjrAssetModel::getInstance();
     }
     
     /**
      * ユーザー所有のニジポ額を取得
      * @param $id
-     * @return mixed|string
+     * @return array
      */
-    public function getPoint($id)
+    public function getAssets($id)
     {
-        $point = $this->Users->getPoint($id);
-        if (is_null($point)) {
+        $usersNum = $this->Users->getNumberById($id);
+        $assets = $this->NjrAsset->getAssets($usersNum);
+    
+        if (is_null($assets)) {
             $this->setError("ニジポ取得に失敗しました");
         }
-        return $point;
+        return $assets;
     }
     
     /**
@@ -65,21 +75,7 @@ class PointLogic extends AbstractLogic
         }
         return true;
     }
-    
-    /**
-     * 送信する金額のチェック
-     * @param $point
-     * @param $userPoint
-     * @return bool
-     */
-    public function checkRemainPoint($point, $userPoint)
-    {
-        if ($point >= $userPoint) {
-            $this->setError("保有ポイント {$userPoint} NP を超えています");
-            return false;
-        }
-        return true;
-    }
+
     
     /**
      * ポイントの移譲
@@ -123,7 +119,8 @@ class PointLogic extends AbstractLogic
         }
         
         // ニジルポイント加算
-        $error_str = $this->Users->addPoint($add_point, $id);
+        $userNumber = $this->Users->getNumberById($id);
+        $error_str = $this->NjrAsset->addPoint($add_point, $userNumber);
         
         // 成否判定
         if ($error_str === false) {
@@ -142,7 +139,8 @@ class PointLogic extends AbstractLogic
     public function reduce_point($id, $reduce_point)
     {
         // ニジルポイント減算
-        $error_str = $this->Users->delPoint($reduce_point, $id);
+        $usersNum = $this->Users->getNumberById($id);
+        $error_str = $this->NjrAsset->delPoint($reduce_point, $usersNum);
         
         // 成否判定
         if ($error_str === false) {
@@ -176,8 +174,9 @@ class PointLogic extends AbstractLogic
             $this->setError("ログ書き込みに失敗しました");
             return false;
         }
-        
-        $this->setMsg("{$given_users_id} さんへ {$moved_point} ニジポを贈りました");
+
+        $movedStr = number_format($moved_point);
+        $this->setMsg("{$given_users_id} さんへ {$movedStr} ニジポを贈りました");
         return true;
     }
     

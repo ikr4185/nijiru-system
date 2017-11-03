@@ -1,38 +1,35 @@
 <?php
 namespace Controllers;
-use Controllers\Commons\AbstractController;
+
+use Controllers\Commons\WebController;
 use Logics\IndexLogic;
-use Inputs\BasicInput;
 
-class IndexController extends AbstractController {
-	
-	/**
-	 * @var IndexLogic
-	 */
-	protected $logic;	
-	/**
-	 * @var BasicInput
-	 */
-	protected $input;
-	
-	protected function getLogic() {
-		$this->logic = new IndexLogic();
-	}
-	
-	protected function getInput() {
-		$this->input = new BasicInput();
-	}
-	
-	
-	public function indexAction() {
-
-		$id = $this->logic->getIdFromName('ikr_4185');
-
-		$resultArray = array(
-			"hello" =>  "hello ",
-			"world" =>  $id,
-		);
-		$this->getView( "index", "", $resultArray );
-	}
-
+class IndexController extends WebController
+{
+    /**
+     * @var IndexLogic
+     */
+    protected $logic;
+    
+    protected function getLogic()
+    {
+        parent::getLogic();
+        $this->logic = new IndexLogic();
+    }
+    
+    public function indexAction()
+    {
+        $user_id = $this->input->getSession("id");
+        $userName = "";
+        if (!empty($user_id)) {
+            $userName = $this->logic->getIdFromName($user_id);
+        }
+        
+        $resultArray = array(
+            "hello" => "hello ",
+            "world" => $userName,
+        );
+        $this->getView("index", "", $resultArray);
+    }
+    
 }

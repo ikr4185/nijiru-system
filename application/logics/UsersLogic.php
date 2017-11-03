@@ -1,7 +1,9 @@
 <?php
 namespace Logics;
+
 use Logics\Commons\AbstractLogic;
 use Models\UsersModel;
+use Models\NjrAssetModel;
 
 /**
  * Class UsersLogic
@@ -10,33 +12,42 @@ use Models\UsersModel;
  *
  * @package Logics
  */
-class UsersLogic extends AbstractLogic {
-	
-	/**
-	 * @var UsersModel
-	 */
-	protected $Users;
-	
-	protected function getModel() {
-		$this->Users = UsersModel::getInstance();
-	}
-	
-	/**
-	 * 現在のニジルポイントを取得
-	 * @param $id
-	 * @return mixed|string
-	 */
-	public function getPoint($id) {
-		return $this->Users->getPoint($id);
-	}
-	
-	/**
-	 * IDからユニークナンバーを取得
-	 * @param $id
-	 * @return array|string
-	 */
-	public function getNumberById( $id ) {
-		return $this->Users->getNumberById($id);
-		
-	}
+class UsersLogic extends AbstractLogic
+{
+    /**
+     * @var UsersModel
+     */
+    protected $Users;
+    /**
+     * @var NjrAssetModel
+     */
+    protected $NjrAsset;
+    
+    protected function getModel()
+    {
+        $this->Users = UsersModel::getInstance();
+        $this->NjrAsset = NjrAssetModel::getInstance();
+    }
+    
+    /**
+     * ユーザー所有のニジポ額を取得
+     * @param $id
+     * @return array
+     */
+    public function getAssets($id)
+    {
+        $usersNum = $this->Users->getNumberById($id);
+        return $this->NjrAsset->getAssets($usersNum);
+    }
+    
+    /**
+     * IDからユニークナンバーを取得
+     * @param $id
+     * @return array|string
+     */
+    public function getNumberById($id)
+    {
+        return $this->Users->getNumberById($id);
+        
+    }
 }

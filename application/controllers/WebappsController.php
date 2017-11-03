@@ -1,43 +1,32 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\WebAppsLogic;
-use Inputs\BasicInput;
-
 
 /**
  * Class WebAppsController
  * ニジルシステムWEBアプリケーション
  * @package Controllers
  */
-class WebAppsController extends AbstractController
+class WebAppsController extends WebController
 {
     
     /**
      * @var WebAppsLogic
      */
     protected $logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
     
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new WebAppsLogic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     public function indexAction()
     {
         // 国へ帰るんだな
         $this->redirect("index");
-        
     }
     
     /**
@@ -63,7 +52,6 @@ class WebAppsController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/webapps/scp_search.js",
         );
         $this->getViewWebApps("scp_search", "WebApps", $result, $jsPathArray);
-        
     }
     
     /**

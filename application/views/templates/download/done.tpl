@@ -1,6 +1,6 @@
 <div class="secton1">
 
-	<h2 class="sub_title">Download</h2>
+	<h2 class="sub_title">決済完了: Download</h2>
 
 	<div class="section__inner">
 		<p>ニジポ決済が完了しました。下記ボタンからダウンロードが可能です。</p>

@@ -1,42 +1,31 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\DiscordLogic;
-use Inputs\BasicInput;
 use Cores\Config\Config;
 
 /**
  * Class DiscordController
  * @package Controllers
  */
-class DiscordController extends AbstractController
+class DiscordController extends WebController
 {
     /**
      * @var DiscordLogic
      */
     protected $DiscordLogic = null;
     
-    /**
-     * @var BasicInput
-     */
-    protected $input;
-    
     protected function getLogic()
     {
+        parent::getLogic();
         $this->DiscordLogic = new DiscordLogic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     public function indexAction()
     {
         $subDirs = $this->DiscordLogic->getSubDirList(Config::load("dir.logs") . "/discord/messages/");
-
-
+        
         // 認証チェック
         $isStaff = $this->auth();
         

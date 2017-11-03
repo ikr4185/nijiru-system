@@ -1,41 +1,25 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
-use Inputs\BasicInput;
-
+use Controllers\Commons\WebController;
 
 /**
  * Class MinerController
  * @package Controllers
  */
-class MinerController extends AbstractController
+class MinerController extends WebController
 {
-
     /**
      * @var null
      */
     protected $logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
 
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = null;
     }
-
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
-    }
-
-    public function indexAction()
-    {
-        // TODO 未使用
-    }
-
+    
     /**
      * Coinhive のテスト
      */
