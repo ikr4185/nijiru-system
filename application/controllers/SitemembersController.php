@@ -1,35 +1,24 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\SiteMembersLogic;
-use Inputs\BasicInput;
-
 
 /**
  * Class SitemembersController
  * @package Controllers
  */
-class SitemembersController extends AbstractController
+class SitemembersController extends WebController
 {
-    
     /**
      * @var SiteMembersLogic
      */
     protected $logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
     
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new SiteMembersLogic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     public function indexAction()

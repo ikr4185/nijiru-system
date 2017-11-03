@@ -1,8 +1,7 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
-use Inputs\BasicInput;
+use Controllers\Commons\WebController;
 use Cores\Config\Config;
 
 
@@ -10,34 +9,8 @@ use Cores\Config\Config;
  * Class HashController
  * @package Controllers
  */
-class HashController extends AbstractController
+class HashController extends WebController
 {
-    
-    /**
-     * @var null
-     */
-    protected $logic;
-    /**
-     * @var BasicInput
-     */
-    protected $input;
-    
-    protected function getLogic()
-    {
-        $this->logic = null;
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
-    }
-    
-    public function indexAction()
-    {
-        // TODO 未使用
-        var_dump(PHP_INT_MAX);
-    }
-    
     /**
      * SHA256 hash
      */
@@ -57,8 +30,5 @@ class HashController extends AbstractController
             "hash" => $hash,
         );
         $this->getView("create", "Create Hash", $result);
-        
     }
-    
-    
 }

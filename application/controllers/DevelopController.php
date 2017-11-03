@@ -1,37 +1,25 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\DevelopLogic;
-use Inputs\BasicInput;
-
 
 /**
  * Class DevelopController
  * 開発中の機能
  * @package Controllers
  */
-class DevelopController extends AbstractController
+class DevelopController extends WebController
 {
-
     /**
      * @var DevelopLogic
      */
     protected $logic;
 
-    /**
-     * @var BasicInput
-     */
-    protected $input;
-
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new DevelopLogic();
-    }
-
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
 
     public function indexAction()
@@ -44,7 +32,6 @@ class DevelopController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/markdown_parser.js",
         );
         $this->getViewDev("index", "Develop", $result, $jsPathArray);
-
     }
 
     public function scpSearchAction()
@@ -67,7 +54,6 @@ class DevelopController extends AbstractController
             "http://njr-sys.net/application/views/assets/js/scp_search.js",
         );
         $this->getViewDev("scp_search", "Develop", $result, $jsPathArray);
-
     }
 
     /**
@@ -89,32 +75,4 @@ class DevelopController extends AbstractController
     {
         echo $_SERVER["REMOTE_ADDR"];
     }
-
-
-    // 汎用テスト
-    public function ikrtestAction()
-    {
-        $users_number = 15;
-        $this->logic->njrAssetTest($users_number);
-    }
-
-//	public function apiAction() {
-//
-//		$result = $this->logic->getApi();
-//
-//		echo "<pre>";
-//		var_dump($result);
-//		echo "</pre>";
-//
-//	}
-
-//	public function apiTestAction() {
-//		$result = $this->logic->test();
-//
-//		echo "<pre>";
-//		var_dump($result);
-//		echo "</pre>";
-//	}
-
-
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Controllers\Commons;
 
+use Inputs\BasicInput;
 use Logics\Commons\AbstractLogic;
 use Inputs\Commons\AbstractInput;
 use Smarty;
@@ -17,7 +18,7 @@ abstract class AbstractController
      */
     protected $logic;
     /**
-     * @var AbstractInput
+     * @var AbstractInput|BasicInput
      */
     protected $input;
     

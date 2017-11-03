@@ -3,7 +3,6 @@ namespace Controllers;
 
 use Controllers\Commons\WebController;
 use Logics\PointLogic;
-use Inputs\BasicInput;
 
 /**
  * Class PointController
@@ -15,11 +14,6 @@ class PointController extends WebController
      * @var PointLogic
      */
     protected $logic;
-    
-    /**
-     * @var BasicInput
-     */
-    protected $input;
 
     protected function getLogic()
     {

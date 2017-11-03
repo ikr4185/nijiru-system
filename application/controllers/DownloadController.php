@@ -1,42 +1,24 @@
 <?php
 namespace Controllers;
 
-use Controllers\Commons\AbstractController;
+use Controllers\Commons\WebController;
 use Logics\DownloadLogic;
-use Logics\UsersLogic;
-use Inputs\BasicInput;
-
 
 /**
  * Class DownloadController
  * @package Controllers
  */
-class DownloadController extends AbstractController
+class DownloadController extends WebController
 {
     /**
      * @var DownloadLogic
      */
     protected $logic;
     
-    /**
-     * @var UsersLogic
-     */
-    protected $UsersLogic;
-    
-    /**
-     * @var BasicInput
-     */
-    protected $input;
-    
     protected function getLogic()
     {
+        parent::getLogic();
         $this->logic = new DownloadLogic();
-        $this->UsersLogic = new UsersLogic();
-    }
-    
-    protected function getInput()
-    {
-        $this->input = new BasicInput();
     }
     
     public function indexAction()
@@ -111,7 +93,6 @@ class DownloadController extends AbstractController
             "msg" => $this->logic->getMsg(),
         );
         $this->getView("confirm", "確認画面", $result);
-        
     }
     
     public function doneAction()
@@ -151,6 +132,4 @@ class DownloadController extends AbstractController
         }
         
     }
-    
-    
 }
