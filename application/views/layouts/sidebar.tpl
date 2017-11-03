@@ -6,7 +6,7 @@
 			{if !empty($view["id"]) }
 				User: <span class="b">{$view["user_name"]}</span>({$view["id"]})<br>
 				{if !empty($view["tera_point"])}
-					Nijipo: <span class="b">{number_format($view["tera_point"])}T {number_format($view["point"])} Njp</span><br>
+					Nijipo: <span class="b">{number_format($view["tera_point"])}T{number_format($view["point"])} Njp</span><br>
 				{else}
 					Nijipo: <span class="b">{number_format($view["point"])}</span><br>
 				{/if}

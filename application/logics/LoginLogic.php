@@ -69,7 +69,7 @@ class LoginLogic extends AbstractLogic
     public function setWelcomeMsg($user_name, $asset)
     {
         if (!empty($asset["tera_point"])) {
-            $this->setMsg("Welcome User {$user_name} @ {$asset["tera_point"]}T {$asset["point"]} Njp.");
+            $this->setMsg("Welcome User {$user_name} @ {$asset["tera_point"]}T{$asset["point"]} Njp.");
             return;
         }
         $this->setMsg("Welcome User {$user_name} @ {$asset["point"]} Njp.");

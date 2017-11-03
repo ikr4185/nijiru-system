@@ -27,7 +27,7 @@
 						<tr>
 							{if !empty($view["tera_point"])}
 								<th>
-									<label>Nijipo Value<br>(your: {number_format($view["tera_point"])}T {number_format($view["point"])} Njp)</label>
+									<label>Nijipo Value<br>(your: {number_format($view["tera_point"])}T{number_format($view["point"])} Njp)</label>
 								</th>
 							{else}
 								<th><label>Nijipo Value<br>(your: {number_format($view["point"])} Njp)</label></th>
