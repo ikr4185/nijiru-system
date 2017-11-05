@@ -70,8 +70,9 @@ abstract class AbstractController
      * @param $resultArray array    Controller内の処理結果
      * @param $jsPathArray array    JSファイルのパス
      * @param $header string    ヘッダーの追記
+     * @param $noJquery bool    Jquery無効化
      */
-    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "")
+    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "", $noJquery = false)
     {
         // 読み込み先ディレクトリの設定
         $directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
@@ -79,6 +80,10 @@ abstract class AbstractController
         
         // 変数準備
         $view = $this->getViewArray($page_title, $jsPathArray, $header);
+    
+        // View変数の書き換え・追加
+        $view["appClass"] = $tpl;
+        $view["noJquery"] = $noJquery;
         
         // サニタイズ
         $this->smarty->default_modifiers = array("escape:'html'");
@@ -102,16 +107,17 @@ abstract class AbstractController
      * @param $page_title string    ページタイトル
      * @param $resultArray array    Controller内の処理結果
      * @param $jsPathArray array    JSファイルのパス
+     * @param $header string    ヘッダーの追記
      * @param $noJquery bool    Jquery無効化
      */
-    protected function getViewWebApps($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $noJquery = false)
+    protected function getViewWebApps($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "", $noJquery = false)
     {
         // 読み込み先ディレクトリの設定
         $directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
         $this->smarty->compile_dir = '/home/njr-sys/public_html/application/views/_compiles';
         
         // View変数準備
-        $view = $this->getViewArray($page_title, $jsPathArray);
+        $view = $this->getViewArray($page_title, $jsPathArray, $header);
         
         // View変数の書き換え・追加
         $view["css"] = "application/views/assets/css/web_apps.css";
@@ -139,19 +145,22 @@ abstract class AbstractController
      * @param $page_title string    ページタイトル
      * @param $resultArray array    Controller内の処理結果
      * @param $jsPathArray array    JSファイルのパス
+     * @param $header string    ヘッダーの追記
+     * @param $noJquery bool    Jquery無効化
      */
-    protected function getViewDev($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array())
+    protected function getViewDev($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "", $noJquery = false)
     {
         // 読み込み先ディレクトリの設定
         $directory = strtolower(str_replace("s\\", "", str_replace("Controller", "", get_called_class())));
         $this->smarty->compile_dir = '/home/njr-sys/public_html/application/views/_compiles';
         
         // View変数準備
-        $view = $this->getViewArray($page_title, $jsPathArray);
+        $view = $this->getViewArray($page_title, $jsPathArray, $header);
         
         // View変数の書き換え・追加
         $view["css"] = "application/views/assets/css/dev_nijiru.css";
         $view["appClass"] = $tpl;
+        $view["noJquery"] = $noJquery;
         
         // サニタイズ
         $this->smarty->default_modifiers = array("escape:'html'");

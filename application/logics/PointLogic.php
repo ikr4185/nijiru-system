@@ -120,10 +120,10 @@ class PointLogic extends AbstractLogic
         
         // ニジルポイント加算
         $userNumber = $this->Users->getNumberById($id);
-        $error_str = $this->NjrAsset->addPoint($add_point, $userNumber);
+        $return = $this->NjrAsset->addPoint($add_point, $userNumber);
         
         // 成否判定
-        if ($error_str === false) {
+        if ($return === false) {
             $this->setError("ポイント付与に失敗しました");
             return false;
         }
@@ -140,10 +140,10 @@ class PointLogic extends AbstractLogic
     {
         // ニジルポイント減算
         $usersNum = $this->Users->getNumberById($id);
-        $error_str = $this->NjrAsset->delPoint($reduce_point, $usersNum);
+        $return = $this->NjrAsset->delPoint($reduce_point, $usersNum);
         
         // 成否判定
-        if ($error_str === false) {
+        if ($return === false) {
             $this->setError("ポイント減算に失敗しました");
             return false;
         }

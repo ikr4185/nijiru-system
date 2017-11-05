@@ -10,12 +10,19 @@
 
 	<link rel="stylesheet" type="text/css" href="http://{$view["serverName"]}/{$view["css"]}">
 	<meta name="viewport" content="width=device-width,user-scalable=0">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	{if !$view["noJquery"]}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	{/if}
 
 	{if !empty($view["jsPathArray"])}
 		{foreach $view["jsPathArray"] as $jsPath}
 			<script type="text/javascript" src="{$jsPath}"></script>
 		{/foreach}
+	{/if}
+
+	{if !empty($view["header"])}
+		{$view["header"] nofilter}
 	{/if}
 
 </head>
