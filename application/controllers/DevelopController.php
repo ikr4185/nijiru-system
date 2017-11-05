@@ -61,10 +61,20 @@ class DevelopController extends WebController
      */
     public function randAction()
     {
-        // スリープ
-        sleep(5);
+        if ($this->input->isPost()) {
 
-        $rand = mt_rand(0, 100);
+            $a = $this->input->getRequest("a");
+            $b = $this->input->getRequest("b");
+
+            $rand = mt_rand($a, $b);
+        } else {
+            // スリープ
+            sleep(5);
+
+            $rand = mt_rand(0, 100);
+        }
+
+
         echo (string)$rand;
     }
 

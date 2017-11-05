@@ -7,6 +7,11 @@
 
 	<script>
 
+		this.data = {
+			a: 100,
+			b: 200,
+		}
+
 		this.ui = {
 			log: "loading...",
 			button: "乱数を発生させる",
@@ -23,7 +28,8 @@
 			this.ui.button = '数秒お待ち下さい';
 
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", 'http://njr-sys.net/develop/rand', true);
+			xhr.open("POST", 'http://njr-sys.net/develop/rand', true);
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onload = function (e) {
 				switch (xhr.readyState) {
 					case 0:
@@ -53,11 +59,23 @@
 			}.bind(this);
 			xhr.onerror = function (e) {
 				this.ui.log = 'Error: ' + xhr.statusText;
-				console.error('Error: ' + xhr.statusText);
 				this.update();
 			}.bind(this);
-			xhr.send(null);
+			xhr.send(this.EncodeHTMLForm(this.data));
 		};
+
+		this.EncodeHTMLForm = function (data) {
+			var params = [];
+
+			for (var name in data) {
+				var value = data[name];
+				var param = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+
+				params.push(param);
+			}
+
+			return params.join('&').replace(/%20/g, '+');
+		}
 
 
 	</script>
