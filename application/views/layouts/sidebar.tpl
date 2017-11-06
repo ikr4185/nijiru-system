@@ -22,6 +22,7 @@
 			{if !empty($view["id"]) }
 				<a href="http://{$view["serverName"]}/login/update">Update</a><br>
 				<a href="http://{$view["serverName"]}/point/give">Give Someone Nijipo</a><br>
+				<a href="http://{$view["serverName"]}/miner/njpminer">Njp-Monero Mining</a><br>
 			{/if}
 		</div>
 
