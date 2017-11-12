@@ -1,5 +1,10 @@
 <div class="section">
 
+	<h2 class="sub_title">Send NJC</h2>
+	<div class="section__inner">
+		<p>ニジルコインを送金します。</p>
+	</div>
+
 	{if !empty($view["id"]) }
 
 		{if !empty($result["msg"])}
@@ -9,16 +14,12 @@
 				</div>
 			</div>
 		{/if}
-		<h2 class="sub_title">Send NJC</h2>
-		<div class="section__inner">
-			<p>ニジルコインを送金します。</p>
-		</div>
 		<div class="section__inner">
 			<div class="multi-box multi-box__bg">
 				<h3 class="subhead">あなたのウォレットデータ</h3>
 				<div class="multi-box__mini">
-					<span class="b">ウォレットアドレス:</span><br>
-					{$result["fromAddress"]}
+					<p class="b">メインアドレス:</p>
+					<p style="word-break: break-all">{$result["fromAddress"]}</p>
 				</div>
 				{if $result["totalAmount"]!==false}
 					<div class="multi-box__mini"><span class="b">保有:</span> {number_format($result["totalAmount"])} NJC
