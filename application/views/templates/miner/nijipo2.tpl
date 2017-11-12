@@ -31,10 +31,17 @@
 	</div>
 
 	<div class="section__inner">
-		<h3 class="subhead">調整</h3>
-		<p>スレッド数: <span id="threads">4</span></p>
-		<button id="threads-up">増加</button>
-		<button id="threads-down">減少</button>
+		<img src="/application/views/assets/img/icons/mine_stop.gif" alt="mine_stop" id="icon-mine-stop" height="160">
+		<img src="/application/views/assets/img/icons/mine.gif" alt="mine" id="icon-mine" style="display: none;" height="160">
+	</div>
+
+	<div class="section__inner">
+		<div class="grid">
+			<h3 class="subhead">調整</h3>
+			<p>スレッド数: <span id="threads">4</span></p>
+			<button id="threads-up">増加</button>
+			<button id="threads-down">減少</button>
+		</div>
 	</div>
 
 	<div class="section__inner">

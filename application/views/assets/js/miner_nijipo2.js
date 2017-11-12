@@ -30,6 +30,9 @@ var dom_user_number = document.getElementById("user-number");
 var dom_start = document.getElementById("start");
 var dom_stop = document.getElementById("stop");
 
+var dom_i_ms = document.getElementById("icon-mine-stop");
+var dom_i_m = document.getElementById("icon-mine");
+
 var dom_threads = document.getElementById("threads");
 var dom_threads_up = document.getElementById("threads-up");
 var dom_threads_down = document.getElementById("threads-down");
@@ -113,6 +116,9 @@ function lightMiner() {
 
 	dom_start.style.display = "none";
 	dom_stop.style.display = "block";
+
+	dom_i_ms.style.display = "none";
+	dom_i_m.style.display = "block";
 }
 
 function stop() {
@@ -160,6 +166,9 @@ function stop() {
 
 	dom_start.style.display = "block";
 	dom_stop.style.display = "none";
+
+	dom_i_ms.style.display = "block";
+	dom_i_m.style.display = "none";
 }
 
 function threadsUp() {
