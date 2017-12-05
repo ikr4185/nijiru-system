@@ -123,6 +123,11 @@ class ApiController extends WebController
         echo json_encode(array("token error."));
     }
 
+    public function monaAction()
+    {
+        echo $this->logic->getMonaFromZaif();
+    }
+
     public function testAction()
     {
         $hash = $this->input->getRequest("hash");

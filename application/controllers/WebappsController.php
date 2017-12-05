@@ -196,4 +196,17 @@ class WebAppsController extends WebController
         touch($fileName);
         file_put_contents("/home/njr-sys/public_html/logs/webapps/ip/{$fileName}", $dataStr, FILE_APPEND);
     }
+    
+    // MONA の価格をチェックするやつ
+    public function monaAction()
+    {
+        $result = array(
+            "msg"   => null,
+        );
+        $jsPathArray = array(
+            "http://njr-sys.net/application/views/assets/js/chart.js",
+            "http://njr-sys.net/application/views/assets/js/zaif_mona.js",
+        );
+        $this->getViewWebApps( "mona", "WebApps", $result, $jsPathArray );
+    }
 }
