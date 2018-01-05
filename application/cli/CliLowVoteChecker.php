@@ -71,9 +71,9 @@ class CliLowVoteChecker extends CliAbstract{
 		$redAndYellow  = $this->isExpanding( $lvcArray );
 
 		if ($this->is_debug) {
-			// 評価を無理やり回復したことにする
-			$redAndYellow["yellow"]["SCP-395-JP"] = $redAndYellow["red"]["SCP-395-JP"];
-			unset($redAndYellow["red"]["SCP-395-JP"]);
+			// （テスト用）評価を無理やり回復したことにする
+//			$redAndYellow["yellow"]["SCP-395-JP"] = $redAndYellow["red"]["SCP-395-JP"];
+//			unset($redAndYellow["red"]["SCP-395-JP"]);
 		}
 
 		// イエローカード記事配列の中から、DBに記録があるもの = 過去記録されたが、評価が回復した記事を抽出
@@ -82,7 +82,7 @@ class CliLowVoteChecker extends CliAbstract{
 		if ( !empty($redAndYellow["yellow"]) ) {
 			$recovered_lvcArray = $this->logic->extractRecoveredPosts( $redAndYellow["yellow"] );
 		}
-		
+
 		// DB保存
 		Console::log("Save Data");
 		$saveInfoArray = $this->logic->saveData( $redAndYellow["red"] );
