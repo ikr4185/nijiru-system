@@ -35,7 +35,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic
         
         // curlのrangeオプションが死んでるっぽいので暫定対応
 //        $html = substr($html, 23326, 4761);
-
+        
         return $html;
     }
     
@@ -50,7 +50,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic
         $contents = mb_strstr($html, '<div id="main-content">', false);
         $contents = mb_strstr($contents, '<div class="list-pages-box">', false);
         $contents = mb_strstr($contents, '<div class="page-tags">', true);
-
+        
         // <a href="/scp-395-jp">Scp 395 Jp　望遠眼鏡</a> <span style="color: #777">(評価: -35, コメント: 3)</span>
         preg_match_all('@(<a href="/)([\s\S]*?)(">)([\s\S]*?)(</a> <span style="color: #777">\(評価: )([\s\S]*?)(, コメント: )([\s\S]*?)(\)</span>)@', $contents, $allArticle);
         
@@ -74,7 +74,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     public function checkVote($lowVotes)
     {
-        
         $result = array();
         
         // 低評価記事一覧掲載記事の配列でループ
@@ -98,7 +97,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     public function convertLvcArray($lowVotes, $is_debug = false)
     {
-        
         $lvcArray = array();
         
         // 低評価記事一覧掲載記事の配列でループ
@@ -138,7 +136,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     protected function convertLvcPost($post)
     {
-        
         $lvcPost["{$post['title']}"] = $this->countExtensionTime("http://ja.scp-wiki.net/" . $post['url']);
         
         $lvcPost["{$post['title']}"]['vote'] = $post['vote'];
@@ -191,7 +188,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     protected function getDiscussionHtml($url)
     {
-        
         // フォーラムURLの取得
         $html = Scraping::run($url);
         preg_match_all('@(<a href="/forum/)([\s\S]*?)(" class="btn btn-default" id="discuss-button">)@', $html, $discussUrlArray);
@@ -228,7 +224,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     protected function calculateGracePeriod()
     {
-        
         // 削除基準到達から72時間 の同意待ち
         $gracePeriod = date("Y-m-d H:i:s", time() + 72 * 60 * 60);
         return $gracePeriod;
@@ -241,12 +236,11 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     public function extractRecoveredPosts($yellowCardsLvcArray)
     {
-        
         $recoveredLvcArray = array();
         foreach ($yellowCardsLvcArray as $post) {
             
             // DBにある記事 = 評価が回復した記事を抽出
-            $dbResult = $this->model->searchLowVotesNonDel($post["url"]);
+            $dbResult = $this->model->searchLowVotesNonDel($post["url"], $post["post"]);
             
             // 回復記事があれば
             if (!empty($dbResult)) {
@@ -282,7 +276,6 @@ class CliLowVoteCheckerLogic extends AbstractLogic
      */
     public function saveData($redCardsLvcArray)
     {
-        
         // 処理結果として使用する、LVC標準配列
         $saveInfoArray = array();
         
@@ -292,7 +285,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic
             foreach ($redCardsLvcArray as $key => $info) {
                 
                 // 既存DBレコードから、過去の削除対象記事含めて検索
-                $dbRecord = $this->model->searchLowVotes($info['url']);
+                $dbRecord = $this->model->searchLowVotes($info['url'], $info['post']);
                 
                 if (!$dbRecord) {
                     // DBにレコードがなかった時の処理
@@ -313,10 +306,10 @@ class CliLowVoteCheckerLogic extends AbstractLogic
                         Console::log("ReEntry {$info['url']}", "saveData");
                         
                         // ソフトデリート解除
-                        $this->model->setSoftDeleteLowVotes(0, $dbRecord["url"]);
+                        $this->model->setSoftDeleteLowVotes(0, $dbRecord["url"], $dbRecord["post_date"]);
                         
-                        // 猶予期限+基準超え日時+記事タイトルを更新する
-                        $this->updateLowVotes($dbRecord["url"], $key);
+                        // 猶予期限+基準超え日時+記事タイトル($key)を更新する
+                        $this->updateLowVotes($dbRecord["url"], $dbRecord["post_date"], $key);
                         
                         // 処理結果を配列に追加
                         $saveInfoArray[$key] = $info;
@@ -327,10 +320,10 @@ class CliLowVoteCheckerLogic extends AbstractLogic
                 if ($info['is_notified']) {
                     
                     // 猶予済みフラグを更新する
-                    $this->model->updateNotified($info['url'], "1");
+                    $this->model->updateNotified($info['url'], $info['post'], "1");
                     
                     // 猶予期限を更新する
-                    $this->model->updateMulti($info['url'], "del_date", $info["del_date"]); // とりあえず期限の更新
+                    $this->model->updateMulti($info['url'], $info['post'], "del_date", $info["del_date"]); // とりあえず期限の更新
                     
                 }
             }
@@ -382,60 +375,64 @@ class CliLowVoteCheckerLogic extends AbstractLogic
     
     /**
      * 猶予期限+基準超え日時を更新する
-     * @param $url
+     * @param string $url 記事URL
+     * @param string $postDate 投稿日
      * @param $name
      * @return bool
      * @see CliLvcModel::saveData()
      */
-    protected function updateLowVotes($url, $name)
+    protected function updateLowVotes($url, $postDate, $name)
     {
-        
         // 猶予期間の算出
         $gracePeriod = $this->calculateGracePeriod();
         
         // UPDATE実行
-        $result = $this->model->updateLowVotes($url, $gracePeriod, $name);
+        $result = $this->model->updateLowVotes($url, $postDate, $gracePeriod, $name);
         return $result;
     }
     
     /**
      * DBにあるが、低評価記事データになかった記事(評価回復記事)をソフトデリート
-     * @param $lvcArray
+     * @param array $lvcArray 削除基準以下になった記事のLVC標準形式配列
      * @return bool
      */
     public function deleteLowVotes($lvcArray)
     {
-        // LVC標準形式配列から、URLの配列を抽出
-        $postUrls = array();
+        // 低評価記事データ（LVC標準形式配列）から、URL をキーとする post_date の配列を生成
+        $redPosts = array();
         foreach ($lvcArray as $info) {
             if ($info["url"]) {
-                $postUrls[] = $info["url"];
+                $redPosts[$info["url"]] = $info["post"];
             }
         }
-        
+
         // DBの全記事レコードを取得(ソフトデリートされた記事は含まない)
         $delInfoArray = $this->model->getAllLowVotes();
-        
-        // 記事レコード配列から、URLの配列を抽出
-        $SavedUrls = array();
+
+        // 記事レコード配列から、URL をキーとする post_date の配列を生成
+        $recordedPosts = array();
         if (is_array($delInfoArray)) {
             foreach ($delInfoArray as $info) {
-                $SavedUrls[] = $info["url"];
+                $recordedPosts[$info["url"]] = $info["post_date"];
+            }
+        }
+
+        // もしDB上に、ソフトデリートされていない同一URLのレコードがあり、投稿日時も同一なら、同一記事と判定し、ソフトデリート対象にする
+        $delTargets = array();
+        foreach ($redPosts as $redPostsUrl => $redPostsDate) {
+            if (isset($recordedPosts[$redPostsUrl]) && $recordedPosts[$redPostsUrl] == $redPostsDate) {
+                $delTargets[] = $recordedPosts[$redPostsUrl];
             }
         }
         
-        // DB配列に、新規削除対象記事があったら削除して、その残り = ソフトデリート対象
-        // ( DBにあるが、低評価記事データになかった記事 )
-        $delUrls = array_diff($SavedUrls, $postUrls);
-        
         // ソフトデリート対象レコードがなかったら false 返して終了
-        if (empty($delUrls)) {
+        if (empty($delTargets)) {
             return false;
         }
         
         // ソフトデリート実行
-        foreach ($delUrls as $url) {
-            $result = $this->model->setSoftDeleteLowVotes(1, $url);
+        foreach ($delTargets as $delTarget) {
+            $result = $this->model->setSoftDeleteLowVotes(1, $delTarget["url"], $delTarget["post_date"]);
             // エラーで中止
             if (!$result) {
                 return false;
@@ -484,7 +481,7 @@ class CliLowVoteCheckerLogic extends AbstractLogic
         foreach ($lvcArray as $key => $info) {
             
             // 該当記事のDB情報を取得
-            $db_info = $this->model->searchLowVotes($info["url"]);
+            $db_info = $this->model->searchLowVotes($info["url"], $info["post"]);
             
             // 猶予期限のチェック
             $del_date_diff = $this->compareTimestamp(time(), strtotime($db_info["del_date"]));
@@ -496,14 +493,14 @@ class CliLowVoteCheckerLogic extends AbstractLogic
                 }
                 
                 // status を 1 にする
-                $this->model->updateMulti($info['url'], "status", 1);
+                $this->model->updateMulti($info['url'], $info['post'], "status", 1);
                 
             } else {
                 // 猶予期限を過ぎていなければ
                 
                 // status が 1 の場合、 0 にする ( = 猶予期限切れ後に、期限が延長された場合など )
                 if ($db_info["status"] != 1) {
-                    $this->model->updateMulti($info['url'], "status", 0);
+                    $this->model->updateMulti($info['url'], $info['post'], "status", 0);
                 }
             }
         }
@@ -606,9 +603,6 @@ EOD;
                 $msg = "[猶予期限を過ぎています]";
             }
             
-            // debug //////////
-//			var_dump($info);
-            
             $message2 .= <<< EOD
 
 {$key}
@@ -656,39 +650,40 @@ EOD;
         
         // 送信する
         $logMsg = "";
-        if (!$is_debug) {
-            
-            $lvcUsers = $this->model->getAvailableLvcUsers();
-            foreach ($lvcUsers as $item) {
-                
+//        if (!$is_debug) {
+//
+//            $lvcUsers = $this->model->getAvailableLvcUsers();
+//            foreach ($lvcUsers as $item) {
+//
+//                $mail->send($item["mail"], array(
+//                    "user" => $item["name"],
+//                    "now" => $now,
+//                    "message1" => $message1,
+//                    "message2" => $message2,
+//                ));
+//
+//            }
+//
+//        } else { // debug mode
+
+        // debug ////////////////////////////////////////
+        Console::log("debug mode!", "semdMail");
+        $lvcUsers = $this->model->getAvailableLvcUsers();
+        foreach ($lvcUsers as $item) {
+
+            if ($item["name"] == "ikr_4185") { // 育良だけに送信
                 $mail->send($item["mail"], array(
                     "user" => $item["name"],
                     "now" => $now,
                     "message1" => $message1,
                     "message2" => $message2,
                 ));
-                
             }
-            
-        } else { // debug mode
-            
-            Console::log("debug mode!", "semdMail");
-            $lvcUsers = $this->model->getAvailableLvcUsers();
-            foreach ($lvcUsers as $item) {
-                
-                if ($item["name"] == "ikr_4185") { // 育良だけに送信
-                    $mail->send($item["mail"], array(
-                        "user" => $item["name"],
-                        "now" => $now,
-                        "message1" => $message1,
-                        "message2" => $message2,
-                    ));
-                }
-            }
-            
-            $logMsg = "is_debug";
-            
         }
+
+        $logMsg = "is_debug";
+
+//        }
         
         // メール送信ログ
         $this->saveLogs(date("Y-m-d H:i:s") . "\t" . $message1_title . "\t" . $lvcStatus . count($saveInfoArray) . "\t" . count($dbRecords) . "\t" . $logMsg);
@@ -703,7 +698,6 @@ EOD;
      */
     protected function setMessageTitle($lvcStatus, $recovered_lvcArray, $lvcArray)
     {
-        
         // 評価が回復した記事名
         $recoveredPostsNames = array();
         if ($lvcStatus == (2 || 6)) {
@@ -804,15 +798,18 @@ EOD;
             
             // LVC標準配列に追加する
             $records = array_merge($records, $lvcPost);
-
+            
             // 該当する低評価記事配列がない場合
             if (isset($lvcArray[$record["name"]])) {
                 // TODO 暫定対応
                 // エラーっぽいのでロギングする
+                $msg = "{$record["name"]} not found in lvcArray.";
                 $result = file_put_contents("/home/njr-sys/public_html/application/cli/logs/low_vote_log_err.log", $msg . "\n", FILE_APPEND);
                 if ($result) {
-                    Console::log("{$record["name"]} not found in lvcArray.", "convertDbRecord");
+                    Console::log($msg, "convertDbRecord");
                 }
+                
+                exit;
             }
             
             // レコードの無いデータは、該当する低評価記事配列から引っ張ってくる

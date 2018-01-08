@@ -95,7 +95,7 @@ class CliLowVoteChecker extends CliAbstract{
 		// 各メール通知の条件をまとめる ( Linuxパーミッションの要領で計算 )
 		Console::log("calculateLvcStatus");
 		$lvcStatus = $this->logic->calculateLvcStatus( $saveInfoArray, $recovered_lvcArray, $redAndYellow["red"], $deletion_existed );
-		
+
 		$sendMail = false;
 		// 新着(1)があれば | 基準抜け(2)がアレば | 猶予期間を過ぎていたら(4) → メール通知
 		if ( $lvcStatus > 0 ) {
