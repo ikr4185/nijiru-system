@@ -37,7 +37,7 @@ class CliEnTopRateChecker extends CliAbstract
         Console::log("Posting.");
 
         $text = "> [http://www.scp-wiki.net SCP-EN]で最も好まれているSCP記事,Tale記事を見ることができます。投票数はSCP-ENの物です。
-> このページは [[*user ikr_4185]] 作成の Nijiru-System Bot により、毎週土曜0:00頃、自動で更新されます(システム都合上、履歴には [[*user holy_nova]]さんが表示されます)。
+> このページは [[*user ikr_4185]] 作成の Nijiru-System Bot により、毎週土曜0:00頃、自動で更新されます(システム都合上、履歴には [[*user nanimono-demonai]]さんが表示されます)。
 > 
 > SCP-JPで、最も支持されたページを見るには[[[top-rated-pages|評価の高い記事]]]を参照してください。
 

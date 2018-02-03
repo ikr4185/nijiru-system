@@ -97,7 +97,7 @@ class CliEnTopRateCheckerLogic extends AbstractLogic
         $html = Scraping::run('http://www.scp-wiki.net/top-rated-pages/p/' . $page);
         
         // curlのrangeオプションが死んでるっぽいので暫定対応
-        $html = substr($html, 28796, 11607);
+        $html = substr($html, 30580, 15000);
         return $this->setSource($html);
     }
 
