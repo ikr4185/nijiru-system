@@ -640,6 +640,52 @@ abstract class AbstractKashima
         $msg = $this->createMsg($data->nick, "SANDBOX / {$user}", $title, "{$url}");
         $this->sendMsg($irc, $data, $msg);
     }
+
+    /**
+     * サンドボックス3出力
+     * @param Kashima_Core $irc
+     * @param $data
+     */
+    function sandbox3($irc, $data)
+    {
+        $match = $this->validateCommand($data->message, array(
+            '/^(\.sb3 )(.*)$/i',
+            '/^(\.sandbox3 )(.*)$/i',
+        ));
+        if (empty($match)) {
+            $this->sendError($irc, $data, 0);
+            return;
+        }
+
+        $page = $match[2];
+        $page = str_replace("_", "-", $page);
+        unset($match); // メモリ節約
+
+        // スクレイピング
+        $url = "http://scp-jp-sandbox3.wikidot.com/{$page}/";
+        $html = $this->curl($url, "0-10000");
+        if (!$html) {
+            $this->sendError($irc, $data, 1);
+            return;
+        }
+
+        preg_match('@(<title>)([\s|\S]*?)( - SCP-JPサンドボックスⅢ</title>)@iu', $html, $matches);
+        if (!isset($matches[2])) {
+            $this->sendError($irc, $data, 2);
+            return;
+        }
+        unset($html); // メモリ節約
+
+        // タイトルの取得
+        $title = $matches[2];
+        $title = preg_replace('/^[ 　]+/u', '', $title);
+        $title = preg_replace('/[ 　]+$/u', '', $title);
+        $title = trim($title);
+        unset($matches); // メモリ節約
+
+        $msg = $this->createMsg($data->nick, "SANDBOX3 / {$page}", $title, "{$url}");
+        $this->sendMsg($irc, $data, $msg);
+    }
     
     /**
      * 強制終了

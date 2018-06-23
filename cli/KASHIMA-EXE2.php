@@ -95,8 +95,10 @@ $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.tale (.*)$', $bot, 'tale'
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.talejp-(.*)$', $bot, 'talejp');
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.talejp (.*)$', $bot, 'talejp'); // エイリアス
 
-$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox'); // エイリアス
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb .*$', $bot, 'sandbox');
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox .*$', $bot, 'sandbox'); // エイリアス
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sb3 .*$', $bot, 'sandbox3');
+$irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.sandbox3 .*$', $bot, 'sandbox3'); // エイリアス
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.quit .*$', $bot, 'quit');
 
 $irc->registerActionHandler(SMARTIRC_TYPE_CHANNEL, '^\.draft$', $bot, 'draft');
