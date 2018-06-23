@@ -61,10 +61,20 @@ class DevelopController extends WebController
      */
     public function randAction()
     {
-        // スリープ
-        sleep(5);
+        if ($this->input->isPost()) {
 
-        $rand = mt_rand(0, 100);
+            $a = $this->input->getRequest("a");
+            $b = $this->input->getRequest("b");
+
+            $rand = mt_rand($a, $b);
+        } else {
+            // スリープ
+            sleep(5);
+
+            $rand = mt_rand(0, 100);
+        }
+
+
         echo (string)$rand;
     }
 
@@ -74,5 +84,20 @@ class DevelopController extends WebController
     public function ipAction()
     {
         echo $_SERVER["REMOTE_ADDR"];
+    }
+    
+    /**
+     * Riot.jsのテスト
+     */
+    public function riotAction()
+    {
+        $result = array(
+            "msg" => $this->logic->getMsg(),
+        );
+        $jsPathArray = array(
+            "https://cdnjs.cloudflare.com/ajax/libs/riot/3.7.3/riot+compiler.min.js",
+        );
+        $header = '<script src="http://njr-sys.net/application/views/assets/riot_templates/develop/ajax_test.tag" type="riot/tag"></script>' . "<script>riot.mount('*')</script>";
+        $this->getViewDev("riot", "Develop", $result, $jsPathArray, $header, true);
     }
 }

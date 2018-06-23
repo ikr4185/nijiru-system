@@ -2,6 +2,7 @@
 namespace Logics;
 use Logics\Commons\AbstractLogic;
 use Models\WhiteBoardModel;
+use Logics\Commons\Scraping;
 
 /**
  * Class WebAppsLogic
@@ -96,5 +97,12 @@ class WebAppsLogic extends AbstractLogic {
         // 新規保存
         return $this->WhiteBoard->insert($token, $data, $pass);
     }
-	
+    
+    /**
+     * ZaifのAPIを叩く
+     */
+    public function getMonaFromZaif()
+    {
+        return Scraping::run("https://api.zaif.jp/api/1/ticker/mona_jpy");
+    }
 }

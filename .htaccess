@@ -27,7 +27,7 @@ RewriteCond %{REQUEST_URI} !^/test/test2\.html
 RewriteCond %{REQUEST_URI} !^/node_application/
 
 # リソースファイルを除く、全アクセスを application/index.php に集中
-RewriteRule !\.(js|ico|gif|jpg|png|css)$ application/index.php
+RewriteRule !\.(js|ico|gif|jpg|png|css|tag)$ application/index.php
 
 # ==========================================================================================
 # アクセス制限

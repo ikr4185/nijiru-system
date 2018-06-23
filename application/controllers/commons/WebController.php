@@ -43,10 +43,11 @@ class WebController extends AbstractController
      * @param $resultArray array    Controller内の処理結果
      * @param $jsPathArray array    JSファイルのパス
      * @param $header string    ヘッダーの追記
+     * @param $noJquery bool    Jquery無効化
      */
-    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "")
+    protected function getView($tpl, $page_title = "", $resultArray = array(), $jsPathArray = array(), $header = "", $noJquery = false)
     {
-        parent::getView($tpl, $page_title, $resultArray, $jsPathArray, $header);
+        parent::getView($tpl, $page_title, $resultArray, $jsPathArray, $header, $noJquery);
     }
 
     /**

@@ -17,11 +17,15 @@
 
 		<h2 class="sub_title">User Settings</h2>
 		<div class="side_section">
+			<div class="mb10">
 			<a href="http://{$view["serverName"]}/login/login">Login/Logout</a><br>
 			<a href="http://{$view["serverName"]}/login/register">Register</a><br>
+			<a href="http://{$view["serverName"]}/njcwallet">NjcWallet</a><br>
+			</div>
 			{if !empty($view["id"]) }
 				<a href="http://{$view["serverName"]}/login/update">Update</a><br>
 				<a href="http://{$view["serverName"]}/point/give">Give Someone Nijipo</a><br>
+				<a href="http://{$view["serverName"]}/miner/njpminer">Njp-Monero Mining</a><br>
 			{/if}
 		</div>
 
